@@ -3,6 +3,8 @@ package net.playlegend.questsystem;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import net.playlegend.questsystem.quest.Quest;
+import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.translation.Language;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -22,6 +24,14 @@ public class QuestPlayer {
     private final Player player;
     private Language currentLanguage;
     private int coins;
+
+    private List<Quest> finishedQuests;
+    private List<Quest> foundQuests;
+
+    private Quest activeQuest;
+    private QuestStep currentStep;
+
+
 
     public void sendMessage(String translationKey) {
         player.sendMessage(currentLanguage.translateMessage(translationKey));

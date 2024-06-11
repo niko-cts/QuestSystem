@@ -1,6 +1,7 @@
 package net.playlegend.questsystem;
 
 import lombok.Getter;
+import net.playlegend.questsystem.database.DatabaseHandler;
 import net.playlegend.questsystem.translation.LanguageHandler;
 import net.playlegend.questsystem.translation.defaults.DefaultGermanMessages;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,6 +18,7 @@ public final class QuestSystem extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        this.saveDefaultConfig();
         this.languageHandler = new LanguageHandler();
 
         new DefaultGermanMessages();
@@ -24,7 +26,7 @@ public final class QuestSystem extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        DatabaseHandler.getInstance().closeConnection();
     }
 
 }

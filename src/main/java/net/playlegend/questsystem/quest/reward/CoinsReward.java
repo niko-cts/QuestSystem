@@ -3,16 +3,13 @@ package net.playlegend.questsystem.quest.reward;
 import net.playlegend.questsystem.QuestPlayer;
 import org.bukkit.Sound;
 
+
 /**
- * {@inheritDoc}
+ * CoinsReward will reward the player with coins.
+ *
+ * @author Niko
  */
-public class CoinsReward extends IQuestReward {
-
-
-    public CoinsReward(int amount) {
-        super(RewardType.COINS, amount);
-    }
-
+public record CoinsReward(int amount) implements IQuestReward {
 
     /**
      * Will be called, when a player finished the quest.
@@ -21,8 +18,8 @@ public class CoinsReward extends IQuestReward {
      * @param player {@link QuestPlayer} - the quest player who finished the quest.
      */
     @Override
-    void rewardPlayer(QuestPlayer player) {
-        player.setCoins(player.getCoins() + getAmount());
+    public void rewardPlayer(QuestPlayer player) {
+        player.setCoins(player.getCoins() + amount());
         player.playSound(Sound.ENTITY_PLAYER_LEVELUP);
     }
 }

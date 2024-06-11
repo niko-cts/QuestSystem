@@ -34,11 +34,11 @@ public abstract class AbstractDefaultMessages {
 
     /**
      * This should eb called after every default message was added. <br>
-     * This method will call {@link LanguageHandler#saveAndCacheDefaultMessagesInConfig(Locale, Map)}
+     * This method will call {@link LanguageHandler#cacheAndSaveMessagesToConfig(Locale, Map)}
      * with the added values.
      */
     protected void save() {
-        QuestSystem.getInstance().getLanguageHandler().saveAndCacheDefaultMessagesInConfig(
+        QuestSystem.getInstance().getLanguageHandler().cacheAndSaveMessagesToConfig(
                 this.locale, getDefaultMessage()
         );
     }

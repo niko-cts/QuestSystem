@@ -1,0 +1,10 @@
+# This is the config for the quest system
+
+
+# database section
+database:
+  host: 'localhost'
+  port: '3306'
+  user: ''
+  dbname: ''
+  pass: ''
