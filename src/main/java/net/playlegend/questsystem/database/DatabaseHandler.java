@@ -109,11 +109,14 @@ public final class DatabaseHandler {
 	/**
 	 * Creates a table in the database with the given columns.
 	 *
-	 * @param tableName        String - the name of the table.
-	 * @param columns      List<String> - a list of the columns
+	 * @param tableName String - the name of the table.
+	 * @param columns   List<String> - a list of the columns
 	 */
 	public void createTableIfNotExists(String tableName, List<String> columns) {
 		if (!this.reconnectIfClosed())
+			return;
+
+		if (!doesTableExist(tableName))
 			return;
 
 		if (columns.isEmpty()) {
@@ -122,7 +125,7 @@ public final class DatabaseHandler {
 		}
 
 		StringBuilder sql = new StringBuilder();
-		sql.append("create table if not exists ").append(tableName).append("(");
+		sql.append("create table ").append(tableName).append("(");
 		Iterator<String> column = columns.iterator();
 		while (column.hasNext()) {
 			sql.append(column.next());
@@ -233,6 +236,7 @@ public final class DatabaseHandler {
 
 	/**
 	 * Executes an SQL script from the plain String.
+	 *
 	 * @param sql String - the sql script.
 	 * @return ResultSet - the query result
 	 */
@@ -256,16 +260,16 @@ public final class DatabaseHandler {
 	 * @param tableNames   List<String> - the table names.
 	 * @param allColumns   List<List<String>> - a list of all list column names.
 	 * @param allValues    List<List<String>> - a list of all list values.
-	 * @param allDataTypes List<List<String>> - a list of all list dataTypes.
+	 * @param allIsString  List<List<Boolean>> - a list of all list booleans.
 	 * @param whereClauses List<String> - the where clauses;
 	 * @return True/False whether the query got executed.
 	 */
-	public boolean update(List<String> tableNames, List<List<String>> allColumns, List<List<String>> allValues, List<List<String>> allDataTypes, List<String> whereClauses) {
+	public boolean update(List<String> tableNames, List<List<String>> allColumns, List<List<String>> allValues, List<List<Boolean>> allIsString, List<String> whereClauses) {
 		if (!this.reconnectIfClosed()) {
 			return false;
 		}
 
-		if (tableNames.size() != whereClauses.size() || allColumns.size() != allValues.size() || allColumns.size() != allDataTypes.size() || whereClauses.size() != allColumns.size()) {
+		if (tableNames.size() != whereClauses.size() || allColumns.size() != allValues.size() || allColumns.size() != allIsString.size() || whereClauses.size() != allColumns.size()) {
 			logger.warning("Length of columns is not equal to the length of tableNames, values, data types or where clause.");
 			return false;
 		}
@@ -274,14 +278,14 @@ public final class DatabaseHandler {
 			for (int w = 0; w < whereClauses.size(); w++) {
 				List<String> columns = allColumns.get(w);
 				List<String> values = allValues.get(w);
-				List<String> dataTypes = allDataTypes.get(w);
+				List<Boolean> isString = allIsString.get(w);
 
-				if (columns.size() != values.size() || columns.size() != dataTypes.size()) {
+				if (columns.size() != values.size() || columns.size() != isString.size()) {
 					logger.warning("Length of columns is not equal to the length of values or length of data types.");
 					return false;
 				}
 
-				stmt.addBatch(getUpdateBatchData(tableNames.get(w), columns, values, dataTypes, whereClauses.get(w)));
+				stmt.addBatch(getUpdateBatchData(tableNames.get(w), columns, values, isString, whereClauses.get(w)));
 			}
 			stmt.executeBatch();
 			return true;
@@ -297,15 +301,15 @@ public final class DatabaseHandler {
 	 * @param tableName   String - the table name
 	 * @param columns     List<String> - all columns of the row
 	 * @param values      List<String> - all values of the row
-	 * @param dataTypes   List<String> - all data types of the row
+	 * @param isString    List<String> - all data types of the row
 	 * @param whereClause String - the where clause
 	 * @return String - the finished statement batch.
 	 */
-	private String getUpdateBatchData(String tableName, List<String> columns, List<String> values, List<String> dataTypes, String whereClause) {
+	private String getUpdateBatchData(String tableName, List<String> columns, List<String> values, List<Boolean> isString, String whereClause) {
 		StringBuilder sql = new StringBuilder().append("update ").append(tableName).append(" set ");
 		for (int i = 0; i < columns.size(); i++) {
 			sql.append(columns.get(i)).append("=");
-			if (dataTypes.get(i).equals("string"))
+			if (isString.get(i))
 				sql.append("'").append(values.get(i)).append("'");
 			else
 				sql.append(values.get(i));

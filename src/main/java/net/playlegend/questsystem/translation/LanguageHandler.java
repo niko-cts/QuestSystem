@@ -1,5 +1,6 @@
 package net.playlegend.questsystem.translation;
 
+import lombok.Getter;
 import net.playlegend.questsystem.QuestSystem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,15 +18,19 @@ public class LanguageHandler {
 	private final Map<String, Map<String, String>> translatedMessages;
 	private final Set<Language> supportedLanguages;
 	private final File baseFolder;
+	@Getter
+	private final Language fallbackLanguage;
 
 	public LanguageHandler() {
 		this.translatedMessages = new HashMap<>();
 		this.supportedLanguages = new HashSet<>();
 		this.baseFolder = new File(QuestSystem.getInstance().getDataFolder(), TRANSLATIONS_DIR);
+		this.fallbackLanguage = new Language(Locale.ENGLISH);
 
 		// load saved messages
 		this.loadStoredMessages();
 	}
+
 
 	/**
 	 * Returns a cached translation of the translationKey
@@ -61,10 +66,10 @@ public class LanguageHandler {
 	/**
 	 * Saves every key, which has not been set yet. Additionally, stores new keys in the map.
 	 *
-	 * @param locale Locale - the language to save the message in.
+	 * @param locale   Locale - the language to save the message in.
 	 * @param messages Map<String, String> - every translation key with the translated message to save
 	 */
-    protected void cacheAndSaveMessagesToConfig(Locale locale, Map<String, String> messages) {
+	protected void cacheAndSaveMessagesToConfig(Locale locale, Map<String, String> messages) {
 		this.translatedMessages.compute(locale.getLanguage(), (s, translationMap) -> {
 
 			File languageFile = new File(baseFolder, locale.getLanguage());
@@ -90,10 +95,10 @@ public class LanguageHandler {
 				if (!translationMap.containsKey(entry.getKey())) {
 					translationMap.put(entry.getKey(), entry.getValue());
 
-                    if (!cfg.contains(entry.getKey())) {
-                        cfg.set(entry.getKey(), entry.getValue());
-                        saveConfig = true;
-                    }
+					if (!cfg.contains(entry.getKey())) {
+						cfg.set(entry.getKey(), entry.getValue());
+						saveConfig = true;
+					}
 				}
 			}
 
@@ -152,5 +157,8 @@ public class LanguageHandler {
 		}
 	}
 
+	public Optional<Language> getLanguageByKey(String language) {
+		return supportedLanguages.stream().filter(l -> l.getLanguageKey().equals(language)).findFirst();
+	}
 
 }

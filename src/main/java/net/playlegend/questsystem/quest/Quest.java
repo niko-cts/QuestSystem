@@ -14,7 +14,8 @@ public record Quest(int id,
                     List<IQuestReward> rewards,
                     List<QuestStep> completionSteps,
                     QuestStepOrder order,
-                    long finishTimeInSeconds
+                    long finishTimeInSeconds,
+                    boolean timerRunsOffline
                     ) {
 
     public ItemStack getQuestItem(Language language) {

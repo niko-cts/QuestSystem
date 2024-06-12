@@ -1,22 +1,29 @@
 package net.playlegend.questsystem.database;
 
 import java.sql.ResultSet;
-import java.util.Arrays;
 import java.util.List;
 
 public class QuestDatabase {
 
     protected static final String TABLE_QUESTS = "system_quests_overview";
-    private static final String TABLE_QUEST_STEPS_INFO = "system_quests_steps";
+    protected static final String TABLE_QUEST_STEPS_INFO = "system_quests_steps";
     private static final String TABLE_QUEST_REWARD_INFO = "system_quests_rewards";
     private static final String TABLE_QUEST_REWARD_MAP = "system_quests_has_rewards";
+
+    private static QuestDatabase instance;
+
+    public static QuestDatabase getInstance() {
+        if (instance == null)
+            instance = new QuestDatabase();
+        return instance;
+    }
 
     private final DatabaseHandler dbHandler;
 
     /**
      * Creates all database tables regarding basic quest informations
      */
-    public QuestDatabase() {
+    private QuestDatabase() {
         this.dbHandler = DatabaseHandler.getInstance();
 
         dbHandler.createTableIfNotExists(TABLE_QUESTS, List.of(
@@ -26,6 +33,7 @@ public class QuestDatabase {
                 "public BOOLEAN NOT NULL DEFAULT 1",
                 "step_order VARCHAR(36) NOT NULL DEFAULT 'CHRONOLOGICAL'",
                 "finish_time BIGINT default 3600",
+                "timer_runs_offline BOOLEAN NOT NULL DEFAULT 1",
                 "comment 'Information about every quest. NOTE: CHRONOLOGICAL order of the steps are will be determined by the step id. public determines if the player does not need to discover it'"));
 
         dbHandler.createTableIfNotExists(TABLE_QUEST_STEPS_INFO, List.of(
