@@ -1,6 +1,6 @@
 package net.playlegend.questsystem.quest.reward;
 
-import net.playlegend.questsystem.QuestPlayer;
+import net.playlegend.questsystem.player.QuestPlayer;
 import org.bukkit.Sound;
 
 
@@ -9,7 +9,7 @@ import org.bukkit.Sound;
  *
  * @author Niko
  */
-public record CoinsReward(int amount) implements IQuestReward {
+public record CoinsReward(Integer amount) implements IQuestReward {
 
     /**
      * Will be called, when a player finished the quest.

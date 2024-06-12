@@ -1,8 +1,8 @@
 package net.playlegend.questsystem.quest.steps;
 
-import chatzis.nikolas.mc.npcsystem.event.PlayerInteractAtNPCEvent;
 import lombok.Getter;
 import net.playlegend.questsystem.QuestSystem;
+import net.playlegend.questsystem.events.PlayerClickedOnQuestNPCEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.Event;
@@ -23,24 +23,24 @@ import java.util.UUID;
  */
 public enum QuestStepType {
 
-	CRAFT(CraftItemEvent.class, CraftQuestStep.class, ItemStack.class),
+	CRAFT(CraftItemEvent.class, CraftQuestStep.class, ItemStack.class), // base64 in database
 	KILL(EntityDeathEvent.class, KillQuestStep.class, EntityType.class),
 	MINE(BlockBreakEvent.class, MineQuestStep.class, Material.class),
-	SPEAK(PlayerInteractAtNPCEvent.class, TalkToNPCQuestStep.class, UUID.class);
+	SPEAK(PlayerClickedOnQuestNPCEvent.class, TalkToNPCQuestStep.class, UUID.class);
 
 	private final Class<? extends QuestStep> questStepClass;
 	@Getter
-	private final Class<?> stepObject;
+	private final Class<?> constructorStepClass;
 
 	// TODO impl trigger event
-	QuestStepType(Class<? extends Event> toTriggerEvent, Class<? extends QuestStep> questStepClass, Class<?> stepObject) {
+	QuestStepType(Class<? extends Event> toTriggerEvent, Class<? extends QuestStep> questStepClass, Class<?> constructorStepClass) {
 		this.questStepClass = questStepClass;
-		this.stepObject = stepObject;
+		this.constructorStepClass = constructorStepClass;
 	}
 
 	/**
 	 * Instantiates a {@link QuestStep} class based on given parameters.
-	 * The parameters should be: id of the step (as int), amount that takes to complete the step (as int), object to complete the step (must match the {@link QuestStepType#stepObject})
+	 * The parameters should be: id of the step (as int), amount that takes to complete the step (as int), object to complete the step (must match the {@link QuestStepType#constructorStepClass})
 	 *
 	 * @param parameters Object[] - the parameters the quest step class need. This should match the {@link QuestStepType#getConstructorParameters()}
 	 * @return {@link QuestStep} - An instance of {@link QuestStepType#questStepClass}
@@ -65,7 +65,7 @@ public enum QuestStepType {
 	}
 
 	private Class<?>[] getConstructorParameters() {
-		return new Class<?>[]{int.class, int.class, stepObject};
+		return new Class<?>[]{int.class, int.class, constructorStepClass};
 	}
 
 }

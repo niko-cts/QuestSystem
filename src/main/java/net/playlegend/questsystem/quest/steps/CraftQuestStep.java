@@ -1,6 +1,6 @@
 package net.playlegend.questsystem.quest.steps;
 
-import net.playlegend.questsystem.QuestPlayer;
+import net.playlegend.questsystem.player.QuestPlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;

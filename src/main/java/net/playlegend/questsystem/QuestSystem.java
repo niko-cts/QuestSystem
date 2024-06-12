@@ -3,7 +3,7 @@ package net.playlegend.questsystem;
 import lombok.Getter;
 import net.playlegend.questsystem.database.DatabaseHandler;
 import net.playlegend.questsystem.translation.LanguageHandler;
-import net.playlegend.questsystem.translation.defaults.DefaultGermanMessages;
+import net.playlegend.questsystem.translation.DefaultGermanMessages;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class QuestSystem extends JavaPlugin {

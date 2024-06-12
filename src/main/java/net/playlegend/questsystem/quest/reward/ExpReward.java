@@ -1,9 +1,9 @@
 package net.playlegend.questsystem.quest.reward;
 
-import net.playlegend.questsystem.QuestPlayer;
+import net.playlegend.questsystem.player.QuestPlayer;
 import org.bukkit.Sound;
 
-public record ExpReward(int amount) implements IQuestReward {
+public record ExpReward(Integer amount) implements IQuestReward {
 
 	/**
 	 * Will be called, when a player finished the quest.

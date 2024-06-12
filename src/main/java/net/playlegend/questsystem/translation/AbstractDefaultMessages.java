@@ -1,7 +1,6 @@
-package net.playlegend.questsystem.translation.defaults;
+package net.playlegend.questsystem.translation;
 
 import net.playlegend.questsystem.QuestSystem;
-import net.playlegend.questsystem.translation.LanguageHandler;
 
 import java.util.HashMap;
 import java.util.Locale;

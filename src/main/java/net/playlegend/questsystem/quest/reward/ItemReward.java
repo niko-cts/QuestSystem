@@ -1,6 +1,6 @@
 package net.playlegend.questsystem.quest.reward;
 
-import net.playlegend.questsystem.QuestPlayer;
+import net.playlegend.questsystem.player.QuestPlayer;
 import org.bukkit.inventory.ItemStack;
 
 public record ItemReward(ItemStack item) implements IQuestReward {

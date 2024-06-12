@@ -1,10 +1,10 @@
 package net.playlegend.questsystem.quest.steps;
 
-import lombok.RequiredArgsConstructor;
-import net.playlegend.questsystem.QuestPlayer;
+import lombok.Data;
+import net.playlegend.questsystem.player.QuestPlayer;
 import org.bukkit.event.Event;
 
-@RequiredArgsConstructor
+@Data
 public abstract class QuestStep {
 
 	private final int id;

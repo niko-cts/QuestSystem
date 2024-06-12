@@ -1,11 +1,11 @@
 package net.playlegend.questsystem.quest.reward;
 
+import lombok.Getter;
 import net.playlegend.questsystem.QuestSystem;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.Optional;
 
 /**
  * Lists every type of reward with the representative classes.
@@ -20,31 +20,26 @@ public enum RewardType {
     ITEM(ItemReward.class, ItemStack.class);
 
     private final Class<? extends IQuestReward> rewardClass;
-    private final Class<?>[] constructorParameters;
+    @Getter
+    private final Class<?> constructorParameter;
 
-    RewardType(Class<? extends IQuestReward> rewardClass, Class<?>... constructorParameters) {
+    RewardType(Class<? extends IQuestReward> rewardClass, Class<?> constructorParameters) {
         this.rewardClass = rewardClass;
-        this.constructorParameters = constructorParameters;
+        this.constructorParameter = constructorParameters;
     }
 
     /**
-     * Instantiates a quest reward based on given parameters.
+     * Instantiates a quest reward based on given parameter.
      *
-     * @param parameters Object[] - the parameters the reward class needs. This should match the {@link RewardType#constructorParameters}
+     * @param parameter Object - the parameter the reward class needs. This should match the {@link RewardType#constructorParameter}
      * @return {@link IQuestReward} - A instance of {@link RewardType#rewardClass}
+     * @throws IllegalStateException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException - Could be thrown if the parameters do not match the constructor of the reward class
      */
-    public IQuestReward getQuestRewardInstance(Object... parameters) {
-        if (parameters.length != constructorParameters.length) {
-            throw new IllegalStateException("Cannot create a QuestReward instance: The number of parameters does not match the number of the constructor");
+    public IQuestReward getQuestRewardInstance(Object parameter) throws IllegalStateException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        if (!constructorParameter.isInstance(parameter)) {
+            throw new IllegalStateException("Given parameter does not match the reward constructor");
         }
-
-        try {
-            return rewardClass.getConstructor(constructorParameters).newInstance(parameters);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                 NoSuchMethodException e) {
-            QuestSystem.getInstance().getLogger().warning("Could not instantiate the QuestRewardClass. Wrong parameters? :" + e.getMessage());
-            return null;
-        }
+        return rewardClass.getConstructor(constructorParameter).newInstance(parameter);
     }
 
     /**

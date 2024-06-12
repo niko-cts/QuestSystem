@@ -1,4 +1,4 @@
-package net.playlegend.questsystem;
+package net.playlegend.questsystem.player;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

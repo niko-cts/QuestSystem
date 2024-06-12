@@ -1,7 +1,7 @@
 package net.playlegend.questsystem.quest.steps;
 
-import chatzis.nikolas.mc.npcsystem.event.PlayerInteractAtNPCEvent;
-import net.playlegend.questsystem.QuestPlayer;
+import net.playlegend.questsystem.player.QuestPlayer;
+import net.playlegend.questsystem.events.PlayerClickedOnQuestNPCEvent;
 import org.bukkit.event.Event;
 
 import java.util.UUID;
@@ -24,8 +24,8 @@ public class TalkToNPCQuestStep extends QuestStep {
 	 */
 	@Override
 	public boolean checkIfPlayerDoesQuestStep(QuestPlayer player, Event event) {
-		if (event instanceof PlayerInteractAtNPCEvent npcEvent) {
-			return npcEvent.isRightClicking() && npcEvent.getNPC().getUniqueID().equals(npcUUID);
+		if (event instanceof PlayerClickedOnQuestNPCEvent npcEvent) {
+			return npcEvent.getNpcUUID().equals(npcUUID);
 		}
 		return false;
 	}

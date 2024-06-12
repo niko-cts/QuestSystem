@@ -1,4 +1,4 @@
-package net.playlegend.questsystem.translation.defaults;
+package net.playlegend.questsystem.translation;
 
 import java.util.Locale;
 

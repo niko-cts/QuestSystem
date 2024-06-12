@@ -1,11 +1,8 @@
 package net.playlegend.questsystem.database;
 
 import net.playlegend.questsystem.QuestSystem;
-import net.playlegend.questsystem.quest.steps.QuestStepType;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
 import java.sql.*;
 import java.util.Iterator;
 import java.util.List;
@@ -115,7 +112,7 @@ public final class DatabaseHandler {
 	 * @param tableName        String - the name of the table.
 	 * @param columns      List<String> - a list of the columns
 	 */
-	public void createTable(String tableName, List<String> columns) {
+	public void createTableIfNotExists(String tableName, List<String> columns) {
 		if (!this.reconnectIfClosed())
 			return;
 
@@ -246,7 +243,7 @@ public final class DatabaseHandler {
 		try (Statement stmt = this.dbConnection.createStatement()) {
 			return stmt.executeQuery(sql);
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Could not perform select on table {0}: {1} (code: {2})", new String[]{tableName, e.getMessage(), e.getErrorCode() + ""});
+			logger.log(Level.WARNING, "Could not perform sql: {0}", e);
 			logger.log(Level.WARNING, "SQL-Query: {0}", sql);
 			return null;
 		}

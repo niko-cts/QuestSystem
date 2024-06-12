@@ -10,6 +10,7 @@ import java.util.List;
 public record Quest(int id,
                     String name,
                     String description,
+                    boolean isPublic,
                     List<IQuestReward> rewards,
                     List<QuestStep> completionSteps,
                     QuestStepOrder order,
