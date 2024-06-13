@@ -62,9 +62,16 @@ public class PlayerHandler {
 		}
 	}
 
-
-	public void updatePlayerLanguage(UUID uuid, Language language) {
-		this.playerDb.updatePlayerLanguage(uuid, language.getLanguageKey());
+	/**
+	 * Will remove the QuestPlayer from the map and update all information to the database.
+	 * @param uuid UUID - the uuid of the player.
+	 */
+	public void playerDisconnected(UUID uuid) {
+		this.questPlayerMap.computeIfPresent(uuid, (uuid1, questPlayer) -> {
+			questPlayer.checkIfExpired();
+			playerDb.updateAllPlayerData(questPlayer);
+			return null;
+		});
 	}
 
 }

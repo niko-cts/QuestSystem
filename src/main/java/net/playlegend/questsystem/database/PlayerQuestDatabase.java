@@ -4,17 +4,17 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.UUID;
 
-public class QuestPlayerDatabase {
+public class PlayerQuestDatabase {
 
-	private static final String TABLE_PLAYER_FOUND_QUESTS = "system_quests_player_found";
-	private static final String TABLE_PLAYER_COMPLETED_QUESTS = "system_quests_player_completed";
-	private static final String TABLE_PLAYER_ACTIVE_QUEST = "system_quests_player_active_quest";
-	private static final String TABLE_PLAYER_ACTIVE_QUEST_STEPS = "system_quests_player_active_steps";
-	private static QuestPlayerDatabase instance;
+	protected static final String TABLE_PLAYER_FOUND_QUESTS = "system_quests_player_found";
+	protected static final String TABLE_PLAYER_COMPLETED_QUESTS = "system_quests_player_completed";
+	protected static final String TABLE_PLAYER_ACTIVE_QUEST = "system_quests_player_active_quest";
+	protected static final String TABLE_PLAYER_ACTIVE_QUEST_STEPS = "system_quests_player_active_steps";
+	private static PlayerQuestDatabase instance;
 
-	public static QuestPlayerDatabase getInstance() {
+	public static PlayerQuestDatabase getInstance() {
 		if (instance == null)
-			instance = new QuestPlayerDatabase();
+			instance = new PlayerQuestDatabase();
 		return instance;
 	}
 
@@ -23,7 +23,7 @@ public class QuestPlayerDatabase {
 	/**
 	 * Creates all database tables regarding quest and player information
 	 */
-	private QuestPlayerDatabase() {
+	private PlayerQuestDatabase() {
 		this.dbHandler = DatabaseHandler.getInstance();
 
 		dbHandler.createTableIfNotExists(TABLE_PLAYER_FOUND_QUESTS, List.of(

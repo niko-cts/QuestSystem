@@ -37,11 +37,11 @@ public class Language {
      *
      * @param translationKey String - the translation key which will be converted
      * @param placeholder    String - the placeholder the replacement will be at
-     * @param replacement    String - the replacement of the placeholder
+     * @param replacement    Object - the replacement of the placeholder
      * @return String - the translated and formatted message.
      */
-    public String translateMessage(String translationKey, String placeholder, String replacement) {
-        return translateMessage(translationKey).replace(placeholder, replacement);
+    public String translateMessage(String translationKey, String placeholder, Object replacement) {
+        return translateMessage(translationKey).replace(placeholder, String.valueOf(replacement));
     }
 
 
@@ -50,17 +50,17 @@ public class Language {
      *
      * @param translationKey String - the translation key which will be converted
      * @param placeholder    List<String> - the placeholders the replacement will be at
-     * @param replacement    List<String> - the replacement of the placeholder
+     * @param replacement    List<Object> - the replacement of the placeholder
      * @return String - the translated and formatted message.
      */
-    public String translateMessage(String translationKey, List<String> placeholder, List<String> replacement) {
+    public String translateMessage(String translationKey, List<String> placeholder, List<Object> replacement) {
         if (placeholder.size() != replacement.size()) {
             throw new IllegalStateException("Placeholder and replacements of the message are not the same size");
         }
 
         String messsage = translateMessage(translationKey);
         for (int i = 0; i < placeholder.size(); i++) {
-            messsage = messsage.replace(placeholder.get(i), replacement.get(i));
+            messsage = messsage.replace(placeholder.get(i), String.valueOf(replacement.get(i)));
         }
 
         return messsage;

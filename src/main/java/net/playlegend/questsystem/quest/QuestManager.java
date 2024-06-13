@@ -1,20 +1,19 @@
 package net.playlegend.questsystem.quest;
 
 import net.playlegend.questsystem.QuestSystem;
+import net.playlegend.questsystem.database.PlayerQuestDatabase;
 import net.playlegend.questsystem.database.QuestDatabase;
-import net.playlegend.questsystem.database.QuestPlayerDatabase;
 import net.playlegend.questsystem.player.ActivePlayerQuest;
 import net.playlegend.questsystem.quest.reward.IQuestReward;
 import net.playlegend.questsystem.quest.reward.RewardType;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.quest.steps.QuestStepType;
 import net.playlegend.questsystem.util.QuestObjectConverterUtil;
+import net.playlegend.questsystem.util.QuestTimingsUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +28,7 @@ public class QuestManager {
 
 	private final List<Quest> quests;
 	private final QuestDatabase questDatabase;
-	private final QuestPlayerDatabase playerDatabase;
+	private final PlayerQuestDatabase playerDatabase;
 
 	/**
 	 * Will load every quest and adds it to the List.
@@ -41,7 +40,7 @@ public class QuestManager {
 	public QuestManager() {
 		this.quests = new ArrayList<>();
 		this.questDatabase = QuestDatabase.getInstance();
-		this.playerDatabase = QuestPlayerDatabase.getInstance();
+		this.playerDatabase = PlayerQuestDatabase.getInstance();
 		Logger log = QuestSystem.getInstance().getLogger();
 
 		try (ResultSet questResult = questDatabase.getAllQuests()) {
@@ -79,7 +78,7 @@ public class QuestManager {
 						int amount = stepResult.getInt("amount");
 						try {
 							Object stepObject = QuestObjectConverterUtil.convertDatabaseStringToQuestStepObject(stepResult.getString("step_object"), questStepType);
-							steps.add(questStepType.getQuestStepInstance(stepId, stepObject, amount));
+							steps.add(questStepType.getQuestStepInstance(stepId, amount, stepObject));
 						} catch (Exception e) {
 							log.log(Level.SEVERE, "Could not create quest step for quest {0} at quest step '{0}'! " +
 							                      "The step_object could not be parsed. Probably the wrong string was inserted in the step_object." +
@@ -207,11 +206,10 @@ public class QuestManager {
 				return Optional.empty();
 			}
 
-			Instant timeLeft = questOverviewResult.getTimestamp("time_left").toInstant();
-			if (quest.timerRunsOffline())
-				timeLeft = timeLeft.minus(System.currentTimeMillis() - lastlogin.getTime(), ChronoUnit.MILLIS);
+			long secondsLeft = questOverviewResult.getLong("time_left");
 
-			return Optional.of(new ActivePlayerQuest(quest, steps, timeLeft));
+			return Optional.of(new ActivePlayerQuest(quest, steps,
+					QuestTimingsUtil.calculatedInstantLeftAfterLogin(secondsLeft, quest.timerRunsOffline(), lastlogin)));
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, "Could not load active player quests", e);
 		}

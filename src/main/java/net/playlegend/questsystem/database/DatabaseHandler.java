@@ -169,10 +169,9 @@ public final class DatabaseHandler {
 	 * Values and stringtypes need to have the same size!
 	 *
 	 * @param tableNames  List<String> - tables to insert to.
-	 * @param values      List<List<String>> - the list all values - 'null' will add another line to the insertion in the same table.
-	 * @param stringTypes List<List<Boolean>> - the list for every value that marks it as a string (true) or other (false).
+	 * @param values      List<List<Object>> - the list all values - 'null' will add another line to the insertion in the same table.
 	 */
-	public void insertIntoTable(List<String> tableNames, List<List<String>> values, List<List<Boolean>> stringTypes) {
+	public void insertIntoTable(List<String> tableNames, List<List<Object>> values) {
 		if (!this.reconnectIfClosed())
 			return;
 
@@ -186,10 +185,11 @@ public final class DatabaseHandler {
 						continue;
 					}
 
-					if (stringTypes.get(i).get(j)) {
-						sql.append("'").append(values.get(i).get(j)).append("'");
+					Object value = values.get(i).get(j);
+					if (value instanceof String) {
+						sql.append("'").append(values).append("'");
 					} else {
-						sql.append(values.get(i).get(j));
+						sql.append(values);
 					}
 					if (j != values.get(i).size() - 1 && values.get(i).get(j + 1) != null)
 						sql.append(",");
@@ -244,7 +244,7 @@ public final class DatabaseHandler {
 		if (!this.reconnectIfClosed())
 			return null;
 
-		try (Statement stmt = this.dbConnection.createStatement()) {
+		try (Statement stmt = this.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
 			return stmt.executeQuery(sql);
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Could not perform sql: {0}", e);
@@ -259,33 +259,31 @@ public final class DatabaseHandler {
 	 *
 	 * @param tableNames   List<String> - the table names.
 	 * @param allColumns   List<List<String>> - a list of all list column names.
-	 * @param allValues    List<List<String>> - a list of all list values.
-	 * @param allIsString  List<List<Boolean>> - a list of all list booleans.
+	 * @param allValues    List<List<Object>> - a list of all list values.
 	 * @param whereClauses List<String> - the where clauses;
 	 * @return True/False whether the query got executed.
 	 */
-	public boolean update(List<String> tableNames, List<List<String>> allColumns, List<List<String>> allValues, List<List<Boolean>> allIsString, List<String> whereClauses) {
+	public boolean update(List<String> tableNames, List<List<String>> allColumns, List<List<Object>> allValues, List<String> whereClauses) {
 		if (!this.reconnectIfClosed()) {
 			return false;
 		}
 
-		if (tableNames.size() != whereClauses.size() || allColumns.size() != allValues.size() || allColumns.size() != allIsString.size() || whereClauses.size() != allColumns.size()) {
-			logger.warning("Length of columns is not equal to the length of tableNames, values, data types or where clause.");
+		if (tableNames.size() != whereClauses.size() || allColumns.size() != allValues.size() || whereClauses.size() != allColumns.size()) {
+			logger.warning("Length of columns is not equal to the length of tableNames, values or where clause.");
 			return false;
 		}
 
 		try (Statement stmt = this.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
 			for (int w = 0; w < whereClauses.size(); w++) {
 				List<String> columns = allColumns.get(w);
-				List<String> values = allValues.get(w);
-				List<Boolean> isString = allIsString.get(w);
+				List<Object> values = allValues.get(w);
 
-				if (columns.size() != values.size() || columns.size() != isString.size()) {
+				if (columns.size() != values.size()) {
 					logger.warning("Length of columns is not equal to the length of values or length of data types.");
 					return false;
 				}
 
-				stmt.addBatch(getUpdateBatchData(tableNames.get(w), columns, values, isString, whereClauses.get(w)));
+				stmt.addBatch(getUpdateBatchData(tableNames.get(w), columns, values, whereClauses.get(w)));
 			}
 			stmt.executeBatch();
 			return true;
@@ -300,16 +298,16 @@ public final class DatabaseHandler {
 	 *
 	 * @param tableName   String - the table name
 	 * @param columns     List<String> - all columns of the row
-	 * @param values      List<String> - all values of the row
-	 * @param isString    List<String> - all data types of the row
+	 * @param values      List<Object> - all values of the row
 	 * @param whereClause String - the where clause
 	 * @return String - the finished statement batch.
 	 */
-	private String getUpdateBatchData(String tableName, List<String> columns, List<String> values, List<Boolean> isString, String whereClause) {
+	private String getUpdateBatchData(String tableName, List<String> columns, List<Object> values, String whereClause) {
 		StringBuilder sql = new StringBuilder().append("update ").append(tableName).append(" set ");
 		for (int i = 0; i < columns.size(); i++) {
 			sql.append(columns.get(i)).append("=");
-			if (isString.get(i))
+			Object value = values.get(i);
+			if (value instanceof String)
 				sql.append("'").append(values.get(i)).append("'");
 			else
 				sql.append(values.get(i));
@@ -321,29 +319,31 @@ public final class DatabaseHandler {
 	}
 
 	/**
-	 * Tries to delete rows with the given where clause.
+	 * Tries to delete multiple rows through out multiple tables..
 	 *
-	 * @param tableName   String - the table name.
-	 * @param whereClause String - the where clause.
-	 * @return True/False whether the query executed.
+	 * @param tableNames   List<String> - the table name.
+	 * @param whereClauses List<String> - the where clauses.
 	 */
-	public boolean delete(String tableName, String whereClause) {
+	public void delete(List<String> tableNames, List<String> whereClauses) {
 		if (!this.reconnectIfClosed())
-			return false;
+			return;
 
-		if (!this.doesTableExist(tableName)) {
-			logger.log(Level.WARNING, ERROR_COULDNT_DELETE + " " + ERROR_TABLE_DOESNT_EXIST);
-			return false;
+		if (tableNames.size() != whereClauses.size()) {
+			logger.warning("Length of columns is not equal to the length of tableNames, values, data types or where clause.");
+			return;
 		}
 
-		StringBuilder sql = new StringBuilder();
-		sql.append("delete from ").append(tableName).append(" ").append(whereClause).append(";");
-		try (Statement stmt = this.dbConnection.createStatement()) {
-			stmt.execute(sql.toString());
-			return true;
+		try (Statement stmt = this.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+			for (int i = 0; i < tableNames.size(); i++) {
+				String tableName = tableNames.get(i);
+				String whereClause = whereClauses.get(i);
+				StringBuilder sql = new StringBuilder();
+				sql.append("delete from ").append(tableName).append(" ").append(whereClause).append(";");
+				stmt.addBatch(sql.toString());
+			}
+			stmt.executeBatch();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, ERROR_COULDNT_DELETE + " {0}", e.getMessage());
-			return false;
 		}
 	}
 
