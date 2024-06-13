@@ -19,7 +19,7 @@ public class PlayerDatabaseInformationHolder {
     private boolean markLanguageDirty;
     private boolean markActiveQuestDirty;
 
-    protected PlayerDatabaseInformationHolder(boolean needsInsertActiveDirty) {
+    public PlayerDatabaseInformationHolder(boolean needsInsertActiveDirty) {
         this.needsInsertActiveDirty = needsInsertActiveDirty;
         this.newFoundQuests = new HashMap<>();
         this.newCompletedQuests = new HashMap<>();
