@@ -3,8 +3,8 @@ package net.playlegend.questsystem.player;
 import lombok.Getter;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class only holds information about the current session of the player.
@@ -21,12 +21,19 @@ public class PlayerDatabaseInformationHolder {
 
     public PlayerDatabaseInformationHolder(boolean needsInsertActiveDirty) {
         this.needsInsertActiveDirty = needsInsertActiveDirty;
-        this.newFoundQuests = new HashMap<>();
-        this.newCompletedQuests = new HashMap<>();
+        this.newFoundQuests = new ConcurrentHashMap<>();
+        this.newCompletedQuests = new ConcurrentHashMap<>();
         this.markActiveQuestDirty = false;
         this.markLanguageDirty = false;
     }
 
+    protected void addFoundQuest(Integer questId, Timestamp foundAt) {
+        this.newFoundQuests.put(questId, foundAt);
+    }
+
+    protected void addCompletedQuest(Integer questId, Timestamp foundAt) {
+        this.newCompletedQuests.put(questId, foundAt);
+    }
 
     protected void markActiveQuestDirty() {
         this.markActiveQuestDirty = true;

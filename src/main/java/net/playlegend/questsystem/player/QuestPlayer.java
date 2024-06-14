@@ -5,6 +5,9 @@ import lombok.NonNull;
 import lombok.Setter;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.quest.Quest;
+import net.playlegend.questsystem.quest.QuestManager;
+import net.playlegend.questsystem.quest.exception.QuestNotFoundException;
+import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import net.playlegend.questsystem.util.ScoreboardUtil;
@@ -17,6 +20,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Class which stores all important information about the player and the quest.
@@ -35,19 +39,27 @@ public class QuestPlayer {
 
     private final Map<Quest, Timestamp> finishedQuests;
     private final Map<Quest, Timestamp> foundQuests;
-    private final PlayerDatabaseInformationHolder playerDatabaseInformationHolder;
+    private final PlayerDatabaseInformationHolder playerDbInformationHolder;
 
     private ActivePlayerQuest activePlayerQuest;
-
 
     public QuestPlayer(Player player, Language language, Timestamp lastLogout) {
         this.player = player;
         this.currentLanguage = language;
         this.lastLogout = lastLogout;
-        this.finishedQuests = QuestSystem.getInstance().getQuestManager().loadCompletedQuestIdsByPlayer(player.getUniqueId());
-        this.foundQuests = QuestSystem.getInstance().getQuestManager().loadFoundQuestIdsByPlayer(player.getUniqueId());
-        this.activePlayerQuest = QuestSystem.getInstance().getQuestManager().loadActiveQuestIdByPlayer(player.getUniqueId(), lastLogout).orElse(null);
-        this.playerDatabaseInformationHolder = new PlayerDatabaseInformationHolder(activePlayerQuest == null);
+        QuestManager questManager = QuestSystem.getInstance().getQuestManager();
+        this.finishedQuests = questManager.loadCompletedQuestIdsByPlayer(player.getUniqueId());
+        this.foundQuests = questManager.loadFoundQuestIdsByPlayer(player.getUniqueId());
+        this.playerDbInformationHolder = new PlayerDatabaseInformationHolder(activePlayerQuest == null);
+        try {
+            this.activePlayerQuest = questManager.loadActiveQuestIdByPlayer(player.getUniqueId(), lastLogout).orElse(null);
+        } catch (QuestNotFoundException exception) {
+            QuestSystem.getInstance().getLogger().info("Player had active quest which could not be found: " + exception.getMessage());
+            this.playerDbInformationHolder.markActiveQuestDirty();
+            this.activePlayerQuest = null;
+        }
+
+        checkAndFinishActiveQuest();
         this.questTimer = new QuestTimerPlayer(this);
     }
 
@@ -58,8 +70,9 @@ public class QuestPlayer {
     public void checkAndFinishActiveQuest() {
         if (activePlayerQuest != null && activePlayerQuest.isQuestFinished()) {
             activePlayerQuest.getActiveQuest().rewards().forEach(r -> r.rewardPlayer(this));
-            finishedQuests.put(activePlayerQuest.getActiveQuest(), Timestamp.from(Instant.now()));
-            playerDatabaseInformationHolder.getNewCompletedQuests().put(activePlayerQuest.getActiveQuest().id(), Timestamp.from(Instant.now()));
+            Timestamp completedAt = Timestamp.from(Instant.now());
+            finishedQuests.put(activePlayerQuest.getActiveQuest(), completedAt);
+            playerDbInformationHolder.addCompletedQuest(activePlayerQuest.getActiveQuest().id(), completedAt);
             sendMessage(TranslationKeys.QUESTS_EVENT_FINISHED, "${name}", activePlayerQuest.getActiveQuest().name());
             setActivePlayerQuest(null);
 
@@ -67,10 +80,25 @@ public class QuestPlayer {
         }
     }
 
+    public void foundQuest(Quest quest) {
+        Timestamp foundAt = Timestamp.from(Instant.now());
+        foundQuests.put(quest, foundAt);
+        playerDbInformationHolder.addFoundQuest(quest.id(), foundAt);
+        sendMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, "${name}", quest.name());
+    }
+
+    public List<Quest> getEveryFoundOrPublicQuest() {
+        return QuestSystem.getInstance().getQuestManager().getQuests().stream()
+                .filter(q -> activePlayerQuest == null || activePlayerQuest.getActiveQuest().id() != q.id())
+                .filter(q -> !finishedQuests.containsKey(q))
+                .filter(q -> q.isPublic() || foundQuests.containsKey(q)).toList();
+    }
+
     /**
      * Check if expired and send every needed update
      */
     public void checkIfExpired() {
+        checkAndFinishActiveQuest();
         if (activePlayerQuest != null && activePlayerQuest.getSecondsLeft() <= 0) {
             sendMessage(TranslationKeys.QUESTS_EVENT_TIMER_EXPIRED, "${name}", activePlayerQuest.getActiveQuest().name());
             setActivePlayerQuest(null);
@@ -101,6 +129,57 @@ public class QuestPlayer {
         ScoreboardUtil.updateScoreboard(this);
     }
 
+    /**
+     * Adds one to the current step. Marks the active quest as dirty.
+     *
+     * @param quest ActivePlayerQuest - the quest the player did the step in.
+     * @param step  QuestStep - the step which was done
+     * @return boolean - The questStep is finished
+     */
+    public boolean playerDidQuestStep(ActivePlayerQuest quest, QuestStep step) {
+        playerDbInformationHolder.markActiveQuestDirty();
+        return quest.playerDidQuestStep(step);
+
+    }
+
+    /**
+     * Will create a new ActivePlayerQuest.
+     *
+     * @param quest Quest - the quest to create from
+     */
+    private void createAndSetPlayerQuest(@NonNull Quest quest) {
+        setActivePlayerQuest(new ActivePlayerQuest(quest, Instant.now().plusSeconds(quest.finishTimeInSeconds())));
+    }
+
+    /**
+     * Sets a new active player quest, restarts the countdown.
+     *
+     * @param activePlayerQuest ActivePlayerQuest - the active player quest (nullable)
+     */
+    private void setActivePlayerQuest(ActivePlayerQuest activePlayerQuest) {
+        if (this.activePlayerQuest == activePlayerQuest)
+            return;
+        this.questTimer.cancelTask();
+        this.activePlayerQuest = activePlayerQuest;
+        this.playerDbInformationHolder.markActiveQuestDirty();
+        this.questTimer.startTimerIfActiveQuestPresent();
+    }
+
+    public UUID getUniqueId() {
+        return player.getUniqueId();
+    }
+
+    /**
+     * Changes the language and updates the scoreboard.
+     *
+     * @param currentLanguage Language - the new language of the player
+     */
+    public void setCurrentLanguage(Language currentLanguage) {
+        this.currentLanguage = currentLanguage;
+        this.playerDbInformationHolder.markLanguageDirty();
+        ScoreboardUtil.updateScoreboard(this);
+    }
+
 
     public Optional<ActivePlayerQuest> getActivePlayerQuest() {
         return Optional.ofNullable(activePlayerQuest);
@@ -124,41 +203,5 @@ public class QuestPlayer {
 
     public void addItem(ItemStack... item) {
         player.getInventory().addItem(item);
-    }
-
-    /**
-     * Will create a new ActivePlayerQuest.
-     *
-     * @param quest Quest - the quest to create from
-     */
-    private void createAndSetPlayerQuest(@NonNull Quest quest) {
-        setActivePlayerQuest(new ActivePlayerQuest(quest, Instant.now().plusSeconds(quest.finishTimeInSeconds())));
-    }
-
-    /**
-     * Sets a new active player quest, restarts the countdown.
-     *
-     * @param activePlayerQuest ActivePlayerQuest - the active player quest (nullable)
-     */
-    private void setActivePlayerQuest(ActivePlayerQuest activePlayerQuest) {
-        if (this.activePlayerQuest == activePlayerQuest)
-            return;
-        this.questTimer.cancelTask();
-        this.activePlayerQuest = activePlayerQuest;
-        playerDatabaseInformationHolder.markActiveQuestDirty();
-
-
-        this.questTimer.startTimerIfActiveQuestPresent();
-    }
-
-    /**
-     * Changes the language and updates the scoreboard.
-     *
-     * @param currentLanguage Language - the new language of the player
-     */
-    public void setCurrentLanguage(Language currentLanguage) {
-        this.currentLanguage = currentLanguage;
-        this.playerDatabaseInformationHolder.markLanguageDirty();
-        ScoreboardUtil.updateScoreboard(this);
     }
 }

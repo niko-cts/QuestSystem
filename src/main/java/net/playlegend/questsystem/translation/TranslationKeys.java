@@ -20,6 +20,7 @@ public class TranslationKeys {
     public static final String QUESTS_EVENT_CANCELED = QUEST_EVENT + "canceled";
     public static final String QUESTS_EVENT_STARTED = QUEST_EVENT + "started";
     public static final String QUESTS_EVENT_COUNTDOWN = QUEST_EVENT + "timer";
+    public static final String QUESTS_EVENT_FOUND_NEW = QUEST_EVENT + "found";
 
     public static final String QUESTS_DISPLAY_DAYS = QUEST + "display.days";
     public static final String QUESTS_DISPLAY_HOURS = QUEST + "display.hours";

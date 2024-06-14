@@ -8,6 +8,7 @@ import org.bukkit.event.Event;
 public abstract class QuestStep {
 
 	private final int id;
+	private final int order;
 	private final int maxAmount;
 
 	public boolean isStepComplete(int currentAmount) {
@@ -21,7 +22,7 @@ public abstract class QuestStep {
 	 * @param event Event - the event that was triggered
 	 * @return boolean - player did a quest step
 	 */
-	public abstract boolean checkIfPlayerDoesQuestStep(QuestPlayer player, Event event);
+	public abstract boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event);
 
 }
 

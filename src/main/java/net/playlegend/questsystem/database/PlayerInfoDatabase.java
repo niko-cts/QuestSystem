@@ -31,21 +31,53 @@ public class PlayerInfoDatabase {
         databaseHandler.createTableIfNotExists(TABLE_PLAYER, List.of(
                 "uuid VARCHAR(36) NOT NULL PRIMARY KEY",
                 "last_logout TIMESTAMP",
-                "language VARCHAR(36) NOT NULL DEFAULT en-US"
+                "language VARCHAR(36) NOT NULL DEFAULT 'en'"
         ));
     }
 
     public void insertPlayer(UUID uuid, String languageKey) {
-        this.databaseHandler.insertIntoTable(List.of(TABLE_PLAYER), List.of(List.of(uuid.toString(), Timestamp.from(Instant.now()), languageKey)));
+        this.databaseHandler.insertIntoTable(List.of(TABLE_PLAYER), List.of(List.of(uuid.toString(), Timestamp.from(Instant.now()).toString(), languageKey)));
     }
 
     public ResultSet getPlayerInfos(UUID uuid) {
         return this.databaseHandler.select(TABLE_PLAYER, List.of("*"), "WHERE uuid='" + uuid + "' LIMIT 1");
     }
 
-    public void updateAllPlayerData(QuestPlayer questPlayer) {
-        UUID uuid = questPlayer.getPlayer().getUniqueId();
-        PlayerDatabaseInformationHolder dbInfo = questPlayer.getPlayerDatabaseInformationHolder();
+    /**
+     * Performs one big SQL Batch to update every player data accordingly.
+     *
+     * @param questPlayersWithLogout Map<QuestPlayer, Instant> - the quest player and logout instant
+     */
+    public void updatePlayerDataFromMultiplePlayers(Map<QuestPlayer, Instant> questPlayersWithLogout) {
+        StringBuilder completeSQL = new StringBuilder();
+        for (Map.Entry<QuestPlayer, Instant> entry : questPlayersWithLogout.entrySet()) {
+            completeSQL.append(getUpdatePlayerSQLStatements(entry.getKey(), entry.getValue()));
+        }
+        this.databaseHandler.executeSQL(completeSQL.toString());
+    }
+
+    /**
+     * Performs a sql statement which contains every necessary information to update the players data accordingly.
+     *
+     * @param questPlayer QuestPlayer - the quest player to update
+     * @param lastLogout  Instant - the lastLogout to set in the database
+     */
+    public void updateAllPlayerData(QuestPlayer questPlayer, Instant lastLogout) {
+        this.databaseHandler.executeSQL(
+                getUpdatePlayerSQLStatements(questPlayer, lastLogout)
+        );
+    }
+
+    /**
+     * Returns a sql statement which contains every necessary information to update the players data accordingly.
+     *
+     * @param questPlayer QuestPlayer - the quest player to update
+     * @param lastLogout  Instant - the lastLogout to set in the database
+     * @return String - the sql statements
+     */
+    private String getUpdatePlayerSQLStatements(QuestPlayer questPlayer, Instant lastLogout) {
+        UUID uuid = questPlayer.getUniqueId();
+        PlayerDatabaseInformationHolder dbInfo = questPlayer.getPlayerDbInformationHolder();
         StringBuilder sql = new StringBuilder();
         if (dbInfo.isMarkActiveQuestDirty()) {
             Optional<ActivePlayerQuest> activePlayerQuest = questPlayer.getActivePlayerQuest();
@@ -92,22 +124,22 @@ public class PlayerInfoDatabase {
         }
         for (Map.Entry<Integer, Timestamp> newFoundQuest : dbInfo.getNewFoundQuests().entrySet()) {
             sql.append(String.format(
-                    "INSERT INTO %s VALUES('%s', %s, %s)",
+                    "INSERT INTO %s VALUES('%s', %s, '%s');",
                     PlayerQuestDatabase.TABLE_PLAYER_FOUND_QUESTS, uuid, newFoundQuest.getKey(), newFoundQuest.getValue()
             ));
         }
 
         for (Map.Entry<Integer, Timestamp> newCompletedQuest : dbInfo.getNewCompletedQuests().entrySet()) {
             sql.append(String.format(
-                    "INSERT INTO %s VALUES('%s', %s, %s)",
+                    "INSERT INTO %s VALUES('%s', %s, '%s');",
                     PlayerQuestDatabase.TABLE_PLAYER_COMPLETED_QUESTS, uuid, newCompletedQuest.getKey(), newCompletedQuest.getValue()
             ));
         }
 
-        sql.append(String.format("UPDATE %s SET last_logout=%s", TABLE_PLAYER, Timestamp.from(Instant.now())))
+        sql.append(String.format("UPDATE %s SET last_logout='%s'", TABLE_PLAYER, Timestamp.from(lastLogout)))
                 .append(dbInfo.isMarkLanguageDirty() ? ", language='" + questPlayer.getCurrentLanguage().getLanguageKey() + "'" : "")
-                .append("WHERE uuid='").append(uuid).append("' LIMIT 1;");
+                .append(" WHERE uuid='").append(uuid).append("' LIMIT 1;");
 
-        this.databaseHandler.executeSQL(sql.toString());
+        return sql.toString();
     }
 }

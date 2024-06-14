@@ -9,8 +9,8 @@ public class MineQuestStep extends QuestStep {
 
 	private final Material blockToBreak;
 
-	public MineQuestStep(int id, int maxAmount, Material blockToBreak) {
-		super(id, maxAmount);
+	public MineQuestStep(int id, int order, int maxAmount, Material blockToBreak) {
+		super(id, order, maxAmount);
 		this.blockToBreak = blockToBreak;
 	}
 
@@ -22,7 +22,7 @@ public class MineQuestStep extends QuestStep {
 	 * @return boolean - player did a quest step
 	 */
 	@Override
-	public boolean checkIfPlayerDoesQuestStep(QuestPlayer player, Event event) {
+	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof BlockBreakEvent blockBreak) {
 			return blockBreak.getBlock().getType() == blockToBreak;
 		}

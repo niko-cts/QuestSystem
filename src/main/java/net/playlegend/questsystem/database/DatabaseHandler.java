@@ -241,6 +241,7 @@ public final class DatabaseHandler {
 	 * @return ResultSet - the query result
 	 */
 	public ResultSet executeSQL(String sql) {
+		System.out.println("update 1");
 		if (!this.reconnectIfClosed())
 			return null;
 

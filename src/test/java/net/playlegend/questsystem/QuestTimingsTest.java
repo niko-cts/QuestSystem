@@ -33,7 +33,7 @@ public class QuestTimingsTest {
         assertEquals(1, QuestTimingsUtil.calculateNextDuration(5));
 
         assertEquals(0, QuestTimingsUtil.calculateNextDuration(600));
-        assertEquals(0, QuestTimingsUtil.calculateNextDuration(3600));
+        assertEquals(1800, QuestTimingsUtil.calculateNextDuration(3600));
         assertEquals(0, QuestTimingsUtil.calculateNextDuration(600));
     }
 

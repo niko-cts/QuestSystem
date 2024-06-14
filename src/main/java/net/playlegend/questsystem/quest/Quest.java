@@ -13,7 +13,6 @@ public record Quest(int id,
                     boolean isPublic,
                     List<IQuestReward> rewards,
                     List<QuestStep> completionSteps,
-                    QuestStepOrder order,
                     long finishTimeInSeconds,
                     boolean timerRunsOffline
                     ) {

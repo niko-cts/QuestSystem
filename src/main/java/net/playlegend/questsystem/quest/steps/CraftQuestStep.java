@@ -9,8 +9,8 @@ public class CraftQuestStep extends QuestStep {
 
 	private final ItemStack stackToCraft;
 
-	public CraftQuestStep(int id, int maxAmount, ItemStack stackToCraft) {
-		super(id, maxAmount);
+	public CraftQuestStep(int id, int order, int maxAmount, ItemStack stackToCraft) {
+		super(id, order, maxAmount);
 		this.stackToCraft = stackToCraft;
 	}
 
@@ -22,7 +22,7 @@ public class CraftQuestStep extends QuestStep {
 	 * @return boolean - player did a quest step
 	 */
 	@Override
-	public boolean checkIfPlayerDoesQuestStep(QuestPlayer player, Event event) {
+	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof CraftItemEvent craftItem) {
 			return craftItem.getRecipe().getResult().equals(stackToCraft);
 		}

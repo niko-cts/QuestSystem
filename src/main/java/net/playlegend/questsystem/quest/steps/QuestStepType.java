@@ -65,7 +65,7 @@ public enum QuestStepType {
 	}
 
 	private Class<?>[] getConstructorParameters() {
-		return new Class<?>[]{int.class, int.class, constructorStepClass};
+		return new Class<?>[]{int.class, int.class, int.class, constructorStepClass};
 	}
 
 }

@@ -16,8 +16,8 @@ public class KillQuestStep extends QuestStep {
 
 	private final EntityType entityToKill;
 
-	public KillQuestStep(int id, int maxAmount, EntityType entityType) {
-		super(id, maxAmount);
+	public KillQuestStep(int id, int order, int maxAmount, EntityType entityType) {
+		super(id, order, maxAmount);
 		this.entityToKill = entityType;
 	}
 
@@ -29,7 +29,7 @@ public class KillQuestStep extends QuestStep {
 	 * @return boolean - player did a quest step
 	 */
 	@Override
-	public boolean checkIfPlayerDoesQuestStep(QuestPlayer player, Event event) {
+	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof EntityDeathEvent deathEvent) {
 			return deathEvent.getEntityType() == entityToKill;
 		}
