@@ -61,8 +61,6 @@ public class QuestStepCompletedTest {
 						0, "", "", true, rewards, completionSteps, 10000, false
 				), stepsWithAmount, Instant.now().plusSeconds(10000));
 
-		when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
-		when(player.getUniqueId()).thenReturn(UUID.randomUUID());
 		when(questPlayer.getActivePlayerQuest()).thenReturn(Optional.of(activePlayerQuest));
 
 		Field playerDbInformationHolder = QuestPlayer.class.getDeclaredField("playerDbInformationHolder");
@@ -77,6 +75,7 @@ public class QuestStepCompletedTest {
 
 	@Test
 	public void questCompleted_OnBlockbreak() {
+		when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
 		BlockMock block = worldMock.getBlockAt(0, 0, 0);
 		block.setType(Material.STONE);
 		QuestStep questStep = new MineQuestStep(0, 0, 1, block.getType());
