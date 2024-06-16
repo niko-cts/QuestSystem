@@ -2,18 +2,8 @@ package net.playlegend.questsystem.quest.steps;
 
 import lombok.Getter;
 import net.playlegend.questsystem.QuestSystem;
-import net.playlegend.questsystem.events.PlayerClickedOnQuestNPCEvent;
-import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
-import org.bukkit.event.Event;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.UUID;
 
 /**
  * This enum holds every possible type of quest step.
@@ -21,34 +11,20 @@ import java.util.UUID;
  *
  * @author Niko
  */
+@Getter
 public enum QuestStepType {
 
-	CRAFT(CraftItemEvent.class, CraftQuestStep.class, ItemStack.class), // base64 in database
-	KILL(EntityDeathEvent.class, KillQuestStep.class, EntityType.class),
-	MINE(BlockBreakEvent.class, MineQuestStep.class, Material.class),
-	SPEAK(PlayerClickedOnQuestNPCEvent.class, TalkToNPCQuestStep.class, UUID.class);
+	CRAFT(CraftQuestStep.class), // base64 in database
+	KILL(KillQuestStep.class),
+	MINE(MineQuestStep.class),
+	SPEAK(TalkToNPCQuestStep.class);
 
 	private final Class<? extends QuestStep> questStepClass;
-	@Getter
-	private final Class<?> constructorStepClass;
 
-	// TODO impl trigger event
-	QuestStepType(Class<? extends Event> toTriggerEvent, Class<? extends QuestStep> questStepClass, Class<?> constructorStepClass) {
+	QuestStepType(Class<? extends QuestStep> questStepClass) {
 		this.questStepClass = questStepClass;
-		this.constructorStepClass = constructorStepClass;
 	}
 
-	/**
-	 * Instantiates a {@link QuestStep} class based on given parameters.
-	 * The parameters should be: id of the step (as int), amount that takes to complete the step (as int), object to complete the step (must match the {@link QuestStepType#constructorStepClass})
-	 *
-	 * @param parameters Object[] - the parameters the quest step class need. This should match the {@link QuestStepType#getConstructorParameters()}
-	 * @return {@link QuestStep} - An instance of {@link QuestStepType#questStepClass}
-	 * @throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException - When wrong parameters were inputted
-	 */
-	public QuestStep getQuestStepInstance(Object... parameters) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-		return questStepClass.getConstructor(getConstructorParameters()).newInstance(parameters);
-	}
 
 	/**
 	 * Gets the reward type based on the given class.
@@ -63,9 +39,4 @@ public enum QuestStepType {
 			return null;
 		});
 	}
-
-	private Class<?>[] getConstructorParameters() {
-		return new Class<?>[]{int.class, int.class, int.class, constructorStepClass};
-	}
-
 }

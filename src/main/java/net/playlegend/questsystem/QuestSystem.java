@@ -3,6 +3,7 @@ package net.playlegend.questsystem;
 import lombok.Getter;
 import net.playlegend.questsystem.database.DatabaseHandler;
 import net.playlegend.questsystem.listener.QuestPlayerConnectionListener;
+import net.playlegend.questsystem.listener.QuestStepListener;
 import net.playlegend.questsystem.player.PlayerHandler;
 import net.playlegend.questsystem.quest.QuestManager;
 import net.playlegend.questsystem.translation.DefaultGermanMessages;
@@ -30,6 +31,7 @@ public final class QuestSystem extends JavaPlugin {
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new QuestPlayerConnectionListener(this, playerHandler), this);
+        pm.registerEvents(new QuestStepListener(playerHandler), this);
 
         new DefaultGermanMessages();
     }

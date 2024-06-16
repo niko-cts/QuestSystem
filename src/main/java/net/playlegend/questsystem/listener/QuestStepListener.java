@@ -38,7 +38,7 @@ public class QuestStepListener implements Listener {
 
     /**
      * Checks if the event executes a quest step.
-     * Checks if quest step is finished.
+     * Checks if a quest step is finished.
      * If so, calls {@link QuestPlayer#checkAndFinishActiveQuest()}
      *
      * @param player Player - player who made the event
@@ -52,7 +52,7 @@ public class QuestStepListener implements Listener {
                 .flatMap(quest ->
                         quest.getNextUncompletedSteps().stream()
                                 .filter(step -> step.checkIfEventExecutesQuestStep(questPlayer, event))
-                                // adds one to the current amount and returns true if step is now completed
+                                // adds one to the current amount and returns true if a step is now completed
                                 .filter(step -> questPlayer.playerDidQuestStep(quest, step)).findFirst())
                 // QUEST FINISHED
                 .ifPresent(step -> questPlayer.checkAndFinishActiveQuest());

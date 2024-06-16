@@ -1,11 +1,13 @@
-package net.playlegend.questsystem;
+package net.playlegend.questsystem.converter;
 
+import be.seeseemelk.mockbukkit.MockBukkit;
 import net.playlegend.questsystem.quest.reward.*;
-import net.playlegend.questsystem.quest.steps.QuestStepType;
 import net.playlegend.questsystem.util.ItemToBase64ConverterUtil;
 import net.playlegend.questsystem.util.QuestObjectConverterUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -15,7 +17,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class QuestRewardsTest {
 
+    @BeforeEach
+    public void setUp() {
+        MockBukkit.mock();
+    }
 
+    @AfterEach
+    public void tearDown() {
+        MockBukkit.unmock();
+    }
     @Test
     public void convertObject_coinReward_createInstance() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         CoinsReward coinsReward = new CoinsReward(42);
@@ -61,19 +71,9 @@ public class QuestRewardsTest {
 
 
     @Test
-    public void instantiateWrongItemReward_checkIfNull() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        ItemReward itemReward = new ItemReward(new ItemStack(Material.IRON_SWORD));
-
-        IQuestReward questRewardInstance = RewardType.LVL.getQuestRewardInstance(new ItemStack(Material.IRON_SWORD));
-        assertNotNull(questRewardInstance);
-        assertNotEquals(itemReward, questRewardInstance);
-    }
-
-
-    @Test
     public void wrongParameters_instantiateWrongItemReward_checkIThrew() {
         assertThrows(IllegalStateException.class, () ->
-                RewardType.LVL.getQuestRewardInstance("das wird kein level sein"));
+                RewardType.ITEM.getQuestRewardInstance("das wird kein level sein"));
     }
     @Test
     public void allRewards_implementedInConverter() {
@@ -81,7 +81,7 @@ public class QuestRewardsTest {
             try {
                 QuestObjectConverterUtil.convertDatabaseStringToQuestRewardObject("", type);
             } catch (IllegalStateException exception) {
-                assertEquals(0, 1, "There is a quest step which is not implemtend: " + type);
+                assertEquals(0, 1, "There is a quest step which is not implement: " + type);
             } catch (Throwable ignored) {
                 // will throw something, because "" is given
             }

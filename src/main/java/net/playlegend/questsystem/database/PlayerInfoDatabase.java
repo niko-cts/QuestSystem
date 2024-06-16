@@ -75,7 +75,7 @@ public class PlayerInfoDatabase {
      * @param lastLogout  Instant - the lastLogout to set in the database
      * @return String - the sql statements
      */
-    private String getUpdatePlayerSQLStatements(QuestPlayer questPlayer, Instant lastLogout) {
+    public String getUpdatePlayerSQLStatements(QuestPlayer questPlayer, Instant lastLogout) {
         UUID uuid = questPlayer.getUniqueId();
         PlayerDatabaseInformationHolder dbInfo = questPlayer.getPlayerDbInformationHolder();
         StringBuilder sql = new StringBuilder();
