@@ -98,6 +98,7 @@ public class QuestStepCompletedTest {
 
 		questStepListener.onMine(new BlockBreakEvent(block, player));
 
+		verify(questPlayer, never()).playerDidQuestStep(any(), any());
 		verify(questPlayer, never()).checkAndFinishActiveQuest();
 	}
 
