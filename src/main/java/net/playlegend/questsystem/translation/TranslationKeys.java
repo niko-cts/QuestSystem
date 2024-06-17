@@ -26,4 +26,12 @@ public class TranslationKeys {
     public static final String QUESTS_DISPLAY_HOURS = QUEST + "display.hours";
     public static final String QUESTS_DISPLAY_MINUTES = QUEST + "display.minutes";
     public static final String QUESTS_DISPLAY_SECONDS = QUEST + "display.seconds";
+
+
+    private static final String SYSTEM = QUEST + "system.";
+    private static final String COMMAND = SYSTEM + "command.";
+    public static final String SYSTEM_DISABLED_COMMAND = COMMAND + "disabled";
+    public static final String SYSTEM_NO_PERMISSION = COMMAND + "nopermission";
+    public static final String SYSTEM_COMMAND_USAGE = COMMAND + "usage";
+
 }

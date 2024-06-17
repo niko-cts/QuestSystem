@@ -42,6 +42,7 @@ public class PlayerHandler {
         try (ResultSet resultSet = this.playerDb.getPlayerInfos(uuid)) {
             Language language;
             Timestamp lastLogout;
+            int coins;
             if (resultSet != null && resultSet.next()) {
                 Optional<Language> languageOptional = languageHandler.getLanguageByKey(resultSet.getString("language"));
                 if (languageOptional.isPresent()) {
@@ -52,13 +53,15 @@ public class PlayerHandler {
                             new Object[]{resultSet.getString("language"), uuid});
                 }
                 lastLogout = resultSet.getTimestamp("last_logout");
+                coins = resultSet.getInt("coins");
             } else {
                 language = QuestSystem.getInstance().getLanguageHandler().getFallbackLanguage();
                 playerDb.insertPlayer(uuid, language.getLanguageKey());
                 lastLogout = Timestamp.from(Instant.now());
+                coins = 0;
             }
 
-            this.questPlayerMap.put(uuid, new QuestPlayer(player, language, lastLogout));
+            this.questPlayerMap.put(uuid, new QuestPlayer(player, language, lastLogout, coins));
         } catch (SQLException exception) {
             logger.log(Level.SEVERE, "Error while loading QuestPlayer", exception);
         }
@@ -90,7 +93,11 @@ public class PlayerHandler {
         }
     }
 
-    public QuestPlayer getQuestPlayer(UUID uuid) {
+    public QuestPlayer getPlayer(UUID uuid) {
         return questPlayerMap.get(uuid);
+    }
+
+    public QuestPlayer getPlayer(Player player) {
+        return getPlayer(player.getUniqueId());
     }
 }

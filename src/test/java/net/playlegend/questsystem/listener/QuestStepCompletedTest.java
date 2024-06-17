@@ -26,6 +26,8 @@ import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -55,7 +57,9 @@ public class QuestStepCompletedTest {
 		questStepListener = new QuestStepListener(playerHandler);
 		server = MockBukkit.mock();
 		worldMock = server.addSimpleWorld("mocked");
-		when(playerHandler.getQuestPlayer(any())).thenReturn(questPlayer);
+		UUID uuid = UUID.randomUUID();
+		when(player.getUniqueId()).thenReturn(uuid);
+		when(playerHandler.getPlayer(uuid)).thenReturn(questPlayer);
 		activePlayerQuest = new ActivePlayerQuest(
 				new Quest(
 						0, "", "", true, rewards, completionSteps, 10000, false
@@ -85,6 +89,7 @@ public class QuestStepCompletedTest {
 		questStepListener.onMine(new BlockBreakEvent(block, player));
 
 		verify(questPlayer).checkAndFinishActiveQuest();
+		assertTrue(activePlayerQuest.isQuestFinished());
 	}
 
 
@@ -100,6 +105,51 @@ public class QuestStepCompletedTest {
 
 		verify(questPlayer, never()).playerDidQuestStep(any(), any());
 		verify(questPlayer, never()).checkAndFinishActiveQuest();
+		assertFalse(activePlayerQuest.isQuestFinished());
 	}
+
+	@Test
+	public void questStepCompleted_OnMineCorrectBlock_QuestUncompleted() {
+		when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
+		BlockMock block = worldMock.getBlockAt(0, 0, 0);
+		block.setType(Material.STONE);
+		QuestStep questStep = new MineQuestStep(0, 0, 1, block.getType());
+		stepsWithAmount.put(questStep, 0);
+		completionSteps.add(questStep);
+
+		QuestStep questStep2 = new MineQuestStep(0, 1, 1, Material.GLASS);
+		stepsWithAmount.put(questStep2, 0);
+		completionSteps.add(questStep2);
+
+		questStepListener.onMine(new BlockBreakEvent(block, player));
+
+		verify(questPlayer).checkAndFinishActiveQuest();
+		assertFalse(activePlayerQuest.isQuestFinished());
+	}
+
+
+	@Test
+	public void questStepCompleted_OnMineCorrectBlock_twoStepsIncreased() {
+		when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
+		BlockMock block = worldMock.getBlockAt(0, 0, 0);
+		block.setType(Material.STONE);
+		QuestStep questStep = new MineQuestStep(0, 0, 1, block.getType());
+		stepsWithAmount.put(questStep, 0);
+		completionSteps.add(questStep);
+
+		QuestStep questStep2 = new MineQuestStep(0, 0, 2, block.getType());
+		stepsWithAmount.put(questStep2, 0);
+		completionSteps.add(questStep2);
+
+		questStepListener.onMine(new BlockBreakEvent(block, player));
+
+		assertFalse(activePlayerQuest.isQuestFinished());
+
+		questStepListener.onMine(new BlockBreakEvent(block, player));
+
+		verify(questPlayer, times(2)).checkAndFinishActiveQuest();
+		assertTrue(activePlayerQuest.isQuestFinished());
+	}
+
 
 }

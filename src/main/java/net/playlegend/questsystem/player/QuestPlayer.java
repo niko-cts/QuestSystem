@@ -2,7 +2,6 @@ package net.playlegend.questsystem.player;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.quest.QuestManager;
@@ -34,7 +33,6 @@ public class QuestPlayer {
     private final Timestamp lastLogout;
     private final QuestTimerPlayer questTimer;
     private Language currentLanguage;
-    @Setter
     private int coins;
 
     private final Map<Quest, Timestamp> finishedQuests;
@@ -43,10 +41,11 @@ public class QuestPlayer {
 
     private ActivePlayerQuest activePlayerQuest;
 
-    public QuestPlayer(Player player, Language language, Timestamp lastLogout) {
+    public QuestPlayer(Player player, Language language, Timestamp lastLogout, int coins) {
         this.player = player;
         this.currentLanguage = language;
         this.lastLogout = lastLogout;
+        this.coins = coins;
         QuestManager questManager = QuestSystem.getInstance().getQuestManager();
         this.finishedQuests = questManager.loadCompletedQuestIdsByPlayer(player.getUniqueId());
         this.foundQuests = questManager.loadFoundQuestIdsByPlayer(player.getUniqueId());
@@ -138,8 +137,9 @@ public class QuestPlayer {
      */
     public boolean playerDidQuestStep(ActivePlayerQuest quest, QuestStep step) {
         playerDbInformationHolder.markActiveQuestDirty();
-        return quest.playerDidQuestStep(step);
-
+        boolean isDone = quest.playerDidQuestStep(step);
+        ScoreboardUtil.updateScoreboard(this);
+        return isDone;
     }
 
     /**
@@ -177,6 +177,17 @@ public class QuestPlayer {
     public void setCurrentLanguage(Language currentLanguage) {
         this.currentLanguage = currentLanguage;
         this.playerDbInformationHolder.markLanguageDirty();
+        ScoreboardUtil.updateScoreboard(this);
+    }
+
+    /**
+     * Changes the number of coins and updates the scoreboard.
+     *
+     * @param coins int - the new coins of the player
+     */
+    public void setCoins(int coins) {
+        this.coins = coins;
+        this.playerDbInformationHolder.markCoinsDirty();
         ScoreboardUtil.updateScoreboard(this);
     }
 

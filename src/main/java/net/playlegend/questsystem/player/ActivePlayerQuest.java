@@ -30,7 +30,7 @@ public class ActivePlayerQuest {
         quest.completionSteps().forEach(step -> this.stepsWithAmounts.put(step, 0));
     }
 
-    protected boolean isQuestFinished() {
+    public boolean isQuestFinished() {
         return getCompletedQuestSteps().size() >= activeQuest.completionSteps().size();
     }
 

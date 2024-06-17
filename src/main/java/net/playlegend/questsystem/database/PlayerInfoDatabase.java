@@ -31,12 +31,14 @@ public class PlayerInfoDatabase {
         databaseHandler.createTableIfNotExists(TABLE_PLAYER, List.of(
                 "uuid VARCHAR(36) NOT NULL PRIMARY KEY",
                 "last_logout TIMESTAMP",
-                "language VARCHAR(36) NOT NULL DEFAULT 'en'"
+                "language TEXT NOT NULL DEFAULT 'en'",
+                "coins INT NOT NULL DEFAULT 0"
         ));
     }
 
     public void insertPlayer(UUID uuid, String languageKey) {
-        this.databaseHandler.insertIntoTable(List.of(TABLE_PLAYER), List.of(List.of(uuid.toString(), Timestamp.from(Instant.now()).toString(), languageKey)));
+        this.databaseHandler.insertIntoTable(List.of(TABLE_PLAYER),
+                List.of(List.of(uuid.toString(), Timestamp.from(Instant.now()).toString(), languageKey, 0)));
     }
 
     public ResultSet getPlayerInfos(UUID uuid) {
@@ -138,6 +140,7 @@ public class PlayerInfoDatabase {
 
         sql.append(String.format("UPDATE %s SET last_logout='%s'", TABLE_PLAYER, Timestamp.from(lastLogout)))
                 .append(dbInfo.isMarkLanguageDirty() ? ", language='" + questPlayer.getCurrentLanguage().getLanguageKey() + "'" : "")
+                .append(dbInfo.isMarkCoinsDirty() ? ", coins=" + questPlayer.getCoins() : "")
                 .append(" WHERE uuid='").append(uuid).append("' LIMIT 1;");
 
         return sql.toString();

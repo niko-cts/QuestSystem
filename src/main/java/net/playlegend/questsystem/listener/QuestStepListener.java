@@ -46,15 +46,15 @@ public class QuestStepListener implements Listener {
      */
     private void checkConditionsAndCallSteps(Player player, Event event) {
         if (event instanceof Cancellable cancellable && cancellable.isCancelled()) return;
-        QuestPlayer questPlayer = playerHandler.getQuestPlayer(player.getUniqueId());
+        QuestPlayer questPlayer = playerHandler.getPlayer(player.getUniqueId());
         if (questPlayer == null) return;
         questPlayer.getActivePlayerQuest()
                 .flatMap(quest ->
                         quest.getNextUncompletedSteps().stream()
                                 .filter(step -> step.checkIfEventExecutesQuestStep(questPlayer, event))
                                 // adds one to the current amount and returns true if a step is now completed
-                                .filter(step -> questPlayer.playerDidQuestStep(quest, step)).findFirst())
-                // QUEST FINISHED
+                                .filter(step -> questPlayer.playerDidQuestStep(quest, step)).findAny())
+                // CHECK QUEST FINISHED
                 .ifPresent(step -> questPlayer.checkAndFinishActiveQuest());
     }
 }

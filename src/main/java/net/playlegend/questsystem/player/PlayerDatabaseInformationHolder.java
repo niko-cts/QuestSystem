@@ -18,6 +18,7 @@ public class PlayerDatabaseInformationHolder {
     private final boolean needsInsertActiveDirty;
     private boolean markLanguageDirty;
     private boolean markActiveQuestDirty;
+    private boolean markCoinsDirty;
 
     public PlayerDatabaseInformationHolder(boolean needsInsertActiveDirty) {
         this.needsInsertActiveDirty = needsInsertActiveDirty;
@@ -42,4 +43,9 @@ public class PlayerDatabaseInformationHolder {
     protected void markLanguageDirty() {
         this.markLanguageDirty = true;
     }
+
+    protected void markCoinsDirty() {
+        this.markCoinsDirty = true;
+    }
+
 }
