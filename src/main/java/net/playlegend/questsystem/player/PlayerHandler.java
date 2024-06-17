@@ -49,7 +49,7 @@ public class PlayerHandler {
                     language = languageOptional.get();
                 } else {
                     language = languageHandler.getFallbackLanguage();
-                    logger.log(Level.WARNING, "Could not get the language key {0} which was saved for {0}",
+                    logger.log(Level.WARNING, "Could not get the language key {0} which was saved for {1}",
                             new Object[]{resultSet.getString("language"), uuid});
                 }
                 lastLogout = resultSet.getTimestamp("last_logout");

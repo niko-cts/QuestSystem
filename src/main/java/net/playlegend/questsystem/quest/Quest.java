@@ -17,8 +17,8 @@ public record Quest(int id,
                     boolean timerRunsOffline
                     ) {
 
-    public ItemStack getQuestItem(Language language) {
-        return null; // TODO IMPL
+    public List<ItemStack> getQuestItem(Language language) {
+        return List.of(); // TODO IMPL
     }
 
 }

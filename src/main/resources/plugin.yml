@@ -1,9 +1,9 @@
 name: QuestSystem
 version: '${project.version}'
-main: net.playlegend.quests.questsystem.QuestSystem
+main: net.playlegend.questsystem.QuestSystem
 api-version: '1.20'
 authors: [Nikolas Chatzis]
 
-depend:
+softdepend:
   - NikoAPI
   - NPCSystem

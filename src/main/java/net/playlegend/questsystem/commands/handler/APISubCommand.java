@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.player.QuestPlayer;
+import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -107,14 +108,14 @@ public abstract class APISubCommand {
 			String firstArg = arguments[0];
 			APISubCommand subCommand = subCommandMap.get(firstArg);
 			if (subCommand != null) {
-				subCommand.execute(commandSender, arguments);
+				subCommand.execute(commandSender, Arrays.copyOfRange(arguments, 1, arguments.length));
 				return;
 			}
 		}
 
 		if (commandSender instanceof Player p) {
 			QuestPlayer player = QuestSystem.getInstance().getPlayerHandler().getPlayer(p);
-			executePlayer(player, arguments);
+			executePlayer(player, Arrays.copyOfRange(arguments, 1, arguments.length));
 			return;
 		}
 
@@ -138,7 +139,7 @@ public abstract class APISubCommand {
 			return;
 		}
 
-		if (arguments.length < minimumArguments) {
+		if (arguments.length <= minimumArguments) {
 			sendCommandUsage(questPlayer);
 			return;
 		}
@@ -149,11 +150,11 @@ public abstract class APISubCommand {
 	/**
 	 * Method that gets called if a subcommand is executed by a player.
 	 *
-	 * @param apiPlayer {@link QuestPlayer} - the executor.
+	 * @param questPlayer {@link QuestPlayer} - the executor.
 	 * @param arguments String[] - the command arguments.
 	 * @since 0.0.1
 	 */
-	public abstract void onCommand(QuestPlayer apiPlayer, String[] arguments);
+	public abstract void onCommand(QuestPlayer questPlayer, String[] arguments);
 
 	/**
 	 * Method that gets called if a subcommand is executed by the console.
@@ -217,5 +218,14 @@ public abstract class APISubCommand {
 	public void sendCommandUsage(QuestPlayer player) {
 		String commandUsage = player.getCurrentLanguage().translateMessage(getUsage(), "${command}", getName());
 		player.sendMessage(TranslationKeys.SYSTEM_COMMAND_USAGE, "${command}", commandUsage);
+	}
+
+	public Quest getQuestByNameOrMessageError(QuestPlayer questPlayer, String name) {
+		Optional<Quest> quest = QuestSystem.getInstance().getQuestManager().getQuestByName(name);
+		if (quest.isEmpty()) {
+			questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_NOT_FOUND, "${name}", name);
+			return null;
+		}
+		return quest.get();
 	}
 }

@@ -40,12 +40,12 @@ public class QuestManager {
 	 */
 	public QuestManager() {
 		this.quests = new ArrayList<>();
-		QuestDatabase questDatabase = QuestDatabase.getInstance();
 		this.playerDatabase = PlayerQuestDatabase.getInstance();
+		QuestDatabase questDatabase = QuestDatabase.getInstance();
 		Logger log = QuestSystem.getInstance().getLogger();
 
 		try (ResultSet questResult = questDatabase.getAllQuests()) {
-			while (questResult.next()) {
+			while (questResult != null && questResult.next()) {
 				List<IQuestReward> rewards = new ArrayList<>();
 				List<QuestStep> steps = new LinkedList<>();
 				int id = questResult.getInt("id");
@@ -54,14 +54,14 @@ public class QuestManager {
 
 				// STEPS
 				try (ResultSet stepResult = questDatabase.getAllQuestSteps(id)) {
-					while (stepResult.next()) {
+					while (stepResult != null && stepResult.next()) {
 						QuestStepType questStepType;
 						int stepId = stepResult.getInt("id");
 						try {
 							questStepType = QuestStepType.valueOf(stepResult.getString("step_type").toUpperCase());
 						} catch (IllegalArgumentException exception) {
-							log.log(Level.SEVERE, "Invalid step type for quest {0} at quest step '{0}'! " +
-							                      "Tried to insert {0}, but [{0}] is accepted only.",
+							log.log(Level.SEVERE, "Invalid step type for quest {0} at quest step '{1}'! " +
+							                      "Tried to insert {2}, but [{3}] is accepted only.",
 									new Object[]{questIDForLog, stepId, stepResult.getString("step_type"),
 											Arrays.stream(QuestStepType.values()).map(Enum::name).collect(Collectors.joining(", "))});
 							continue;
@@ -75,10 +75,10 @@ public class QuestManager {
 											stepResult.getString("step_object"))
 							);
 						} catch (Exception e) {
-							log.log(Level.SEVERE, "Could not create quest step for quest {0} at quest step '{0}'! " +
+							log.log(Level.SEVERE, "Could not create quest step for quest {0} at quest step '{1}'! " +
 							                      "Probably the wrong string was inserted in the step_object" +
-							                      "Constructor of type was {0} and parameter was {0}" +
-							                      "Exception is: {0}",
+							                      "Constructor of type was {2} and parameter was {3}" +
+							                      "Exception is: {4}",
 									new Object[]{questIDForLog, stepId, Arrays.toString(questStepType.getQuestStepClass().getConstructors()), stepResult.getString("step_object"), e.getMessage()});
 						}
 					}
@@ -88,13 +88,13 @@ public class QuestManager {
 
 				// REWARDS
 				try (ResultSet rewardResult = questDatabase.getAllQuestRewards(id)) {
-					while (rewardResult.next()) {
+					while (rewardResult != null && rewardResult.next()) {
 						RewardType rewardType;
 
 						try {
 							rewardType = RewardType.valueOf(rewardResult.getString("type").toUpperCase());
 						} catch (IllegalArgumentException exception) {
-							log.log(Level.SEVERE, "Invalid reward type for quest {0}! Tried to insert {0}, but [{0}] is accepted only.",
+							log.log(Level.SEVERE, "Invalid reward type for quest {0}! Tried to insert {1}, but [{2}] is accepted only.",
 									new Object[]{questIDForLog, rewardResult.getString("type"),
 											Arrays.stream(RewardType.values()).map(Enum::name).collect(Collectors.joining(", "))});
 							continue;
@@ -106,8 +106,8 @@ public class QuestManager {
 						} catch (Exception e) {
 							log.log(Level.SEVERE, "Could not create reward for quest {0}! " +
 							                      "The reward_object could not be parsed. Probably the wrong string was inserted in the reward_object column." +
-							                      "Needed a {0} and got: {0}" +
-							                      "Exception is: {0}",
+							                      "Needed a {1} and got: {2}" +
+							                      "Exception is: {3}",
 									new Object[]{questIDForLog, rewardType.getConstructorParameter(), rewardResult.getString("reward_object"), e.getMessage()});
 						}
 					}
@@ -127,7 +127,7 @@ public class QuestManager {
 			if (quests.isEmpty())
 				log.warning("No quests were added.");
 			else
-				log.log(Level.INFO, "Added Quests ({0}): {0}",
+				log.log(Level.INFO, "Added Quests ({0}): {1}",
 						new Object[]{quests.size(), quests.stream().map(Quest::name).collect(Collectors.joining(", "))});
 		} catch (SQLException exception) {
 			log.log(Level.SEVERE, "There was an error while trying to get all the quests", exception);
@@ -138,7 +138,7 @@ public class QuestManager {
 	public Map<Quest, Timestamp> loadCompletedQuestIdsByPlayer(UUID uuid) {
 		Map<Quest, Timestamp> quests = new HashMap<>();
 		try (ResultSet set = playerDatabase.getPlayerCompletedQuests(uuid)) {
-			while (set.next()) {
+			while (set != null && set.next()) {
 				putInMapOrLog(quests, set.getInt("quest_id"), set.getTimestamp("created_at"));
 			}
 		} catch (SQLException e) {
@@ -150,7 +150,7 @@ public class QuestManager {
 	public Map<Quest, Timestamp> loadFoundQuestIdsByPlayer(UUID uuid) {
 		Map<Quest, Timestamp> quests = new HashMap<>();
 		try (ResultSet set = playerDatabase.getPlayerFoundQuests(uuid)) {
-			while (set.next()) {
+			while (set != null && set.next()) {
 				putInMapOrLog(quests, set.getInt("quest_id"), set.getTimestamp("created_at"));
 			}
 		} catch (SQLException e) {
@@ -172,7 +172,7 @@ public class QuestManager {
 			throws QuestNotFoundException {
 		Logger log = QuestSystem.getInstance().getLogger();
 		try (ResultSet questOverviewResult = playerDatabase.getPlayerActiveQuest(uuid)) {
-			if (!questOverviewResult.next()) {
+			if (questOverviewResult == null || !questOverviewResult.next()) {
 				return Optional.empty();
 			}
 			int questId = questOverviewResult.getInt("quest_id");
@@ -185,11 +185,11 @@ public class QuestManager {
 
 			Map<QuestStep, Integer> steps = new HashMap<>();
 			try (ResultSet stepResults = playerDatabase.getPlayerActiveQuestSteps(uuid)) {
-				while (stepResults.next()) {
+				while (stepResults != null && stepResults.next()) {
 					int stepId = stepResults.getInt("step_id");
 					Optional<QuestStep> questStep = getQuestStep(quest, stepId);
 					if (questStep.isEmpty()) {
-						log.log(Level.WARNING, "Could not find QuestStep object of step id {0} for quest: {0}",
+						log.log(Level.WARNING, "Could not find QuestStep object of step id {0} for quest: {1}",
 								new Object[]{stepId, questId});
 						continue;
 					}
@@ -197,7 +197,7 @@ public class QuestManager {
 				}
 			} catch (SQLException exception) {
 				log.log(Level.SEVERE,
-						"Could not load quest {0} of player {0}: {0}", new Object[]{questId, uuid, exception.getMessage()});
+						"Could not load quest {0} of player {1}: {2}", new Object[]{questId, uuid, exception.getMessage()});
 			}
 
 			if (steps.isEmpty()) {
@@ -226,6 +226,9 @@ public class QuestManager {
 	public Optional<Quest> getQuestById(int id) {
 		return getQuests().stream().filter(q -> q.id() == id).findFirst();
 	}
+	public Optional<Quest> getQuestByName(String name) {
+		return getQuests().stream().filter(q -> q.name().equals(name)).findFirst();
+	}
 
 	public List<Quest> getQuests() {
 		return new ArrayList<>(quests);
@@ -246,5 +249,12 @@ public class QuestManager {
 			QuestSystem.getInstance().getLogger().log(Level.SEVERE,
 					"Could not load quest {0} but is in players list.", questId);
 		}
+	}
+
+	public void deleteQuest(String name) {
+		getQuestByName(name).ifPresent(quest -> {
+			quests.remove(quest);
+			QuestDatabase.getInstance().deleteQuest(quest.id());
+		});
 	}
 }

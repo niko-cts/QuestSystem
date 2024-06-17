@@ -2,7 +2,6 @@ package net.playlegend.questsystem.translation;
 
 import lombok.Getter;
 import net.playlegend.questsystem.QuestSystem;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -47,7 +46,7 @@ public class LanguageHandler {
 			if (message != null)
 				return message;
 
-			QuestSystem.getInstance().getLogger().warning("Could not find translation for " + languageKey + " key is:" + translationKey);
+			QuestSystem.getInstance().getLogger().warning("Could not find translation for language key " + languageKey + " - translation is: " + translationKey);
 		} else {
 			QuestSystem.getInstance().getLogger().warning("Could not find language " + languageKey);
 		}
@@ -56,7 +55,7 @@ public class LanguageHandler {
 		messagesWithKeys = this.translatedMessages.get(Locale.ENGLISH.getLanguage());
 
 		return messagesWithKeys != null ?
-				messagesWithKeys.getOrDefault(languageKey, languageKey) : languageKey;
+				messagesWithKeys.getOrDefault(languageKey, translationKey) : translationKey;
 	}
 
 	public Set<Language> getSupportedLanguages() {
@@ -72,7 +71,7 @@ public class LanguageHandler {
 	protected void cacheAndSaveMessagesToConfig(Locale locale, Map<String, String> messages) {
 		this.translatedMessages.compute(locale.getLanguage(), (s, translationMap) -> {
 
-			File languageFile = new File(baseFolder, locale.getLanguage());
+			File languageFile = new File(baseFolder, locale.getLanguage() + ".yml");
 			boolean saveConfig = false;
 
 			if (!languageFile.exists()) {
@@ -136,25 +135,31 @@ public class LanguageHandler {
 				continue;
 			}
 
-			Locale language = Locale.forLanguageTag(file.getName());
+			Locale language = Locale.forLanguageTag(file.getName().replace(".yml", ""));
 			if (language == null) {
 				QuestSystem.getInstance().getLogger().log(Level.WARNING,
-						"File name {0} is a non valid language key. This will not be added to the language message.");
+						"File name {0} is a non valid language key. This will not be added to the language message.", file.getName());
 				continue;
 			}
 			supportedLanguages.add(new Language(language));
-			Map<String, String> messages = new HashMap<>();
-
-			YamlConfiguration cfg = YamlConfiguration.loadConfiguration(file);
-			ConfigurationSection section = cfg.getConfigurationSection("");
-			if (section != null) {
-				for (String key : section.getKeys(false)) {
-					messages.put(key, cfg.getString(key));
-				}
-			}
-
-			translatedMessages.put(language.getLanguage(), messages);
+			translatedMessages.put(language.getLanguage(),
+					getMessagesInPath(YamlConfiguration.loadConfiguration(file), ""));
 		}
+		QuestSystem.getInstance().getLogger().log(Level.INFO, "Loaded {0} languages with {1} translations",
+				new Object[]{translatedMessages.size(),
+						translatedMessages.getOrDefault(fallbackLanguage.getLanguageKey(), new HashMap<>()).size()});
+	}
+
+	private Map<String, String> getMessagesInPath(YamlConfiguration cfg, String currentPath) {
+		Map<String, String> messages = new HashMap<>();
+		if (cfg.isConfigurationSection(currentPath)) {
+			for (String child : Objects.requireNonNull(cfg.getConfigurationSection(currentPath)).getKeys(false)) {
+				messages.putAll(getMessagesInPath(cfg, currentPath.isEmpty() ? child : (currentPath + "." + child)));
+			}
+		} else if (cfg.contains(currentPath)) {
+			messages.put(currentPath, cfg.getString(currentPath));
+		}
+		return messages;
 	}
 
 	public Optional<Language> getLanguageByKey(String language) {

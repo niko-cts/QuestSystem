@@ -31,35 +31,31 @@ public class PlayerQuestDatabase {
 				"quest_id INT NOT NULL",
 				"created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
 				"PRIMARY KEY(uuid, quest_id)",
-				"CONSTRAINT fk_foundquests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id)",
-				"comment 'Each player can find multiple quests. The player can only find quests which are not public'"
-		));
+				"CONSTRAINT fk_foundquests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id)")
+		);
 
 		dbHandler.createTableIfNotExists(TABLE_PLAYER_COMPLETED_QUESTS, List.of(
 				"uuid VARCHAR(36) NOT NULL",
 				"quest_id INT NOT NULL",
 				"created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
 				"PRIMARY KEY(uuid, quest_id)",
-				"CONSTRAINT fk_completedquests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id)",
-				"comment 'Each player can complete multiple quests.'"
-		));
+				"CONSTRAINT fk_completedquests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id)")
+		);
 
 		dbHandler.createTableIfNotExists(TABLE_PLAYER_ACTIVE_QUEST_STEPS, List.of(
 				"uuid VARCHAR(36) NOT NULL ",
 				"step_id INT NOT NULL",
 				"amount INT NOT NULL DEFAULT 0",
 				"PRIMARY KEY(uuid, step_id)",
-				"CONSTRAINT fk_activequests_sId FOREIGN KEY(step_id) REFERENCES " + QuestDatabase.TABLE_QUEST_STEPS_INFO + "(id)",
-				"comment 'Each entry represents an active quest-step. Which may be completed or in progress.'"
-		));
+				"CONSTRAINT fk_activequests_sId FOREIGN KEY(step_id) REFERENCES " + QuestDatabase.TABLE_QUEST_STEPS_INFO + "(id)")
+		);
 
 		dbHandler.createTableIfNotExists(TABLE_PLAYER_ACTIVE_QUEST, List.of(
 				"uuid VARCHAR(36) NOT NULL PRIMARY KEY",
 				"quest_id INT NOT NULL",
 				"time_left BIGINT NOT NULL",
-				"CONSTRAINT fk_activequests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id)",
-				"comment 'Each player may activate one quest'"
-		));
+				"CONSTRAINT fk_activequests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id)")
+		);
 	}
 
 	public ResultSet getPlayerFoundQuests(UUID uuid) {

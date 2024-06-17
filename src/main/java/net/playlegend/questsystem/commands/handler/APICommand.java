@@ -249,6 +249,8 @@ public abstract class APICommand extends Command {
      */
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        if (!sender.hasPermission(permission))
+            return new ArrayList<>();
         if (args.length == 0 || getSubCommandList().isEmpty()) {
             List<String> tabRecommendations = new ArrayList<>(getTabRecommendations());
             for (APISubCommand apiSubCommand : getSubCommandList())

@@ -1,12 +1,14 @@
 package net.playlegend.questsystem;
 
 import lombok.Getter;
+import net.playlegend.questsystem.commands.admin.QuestAdminCommand;
 import net.playlegend.questsystem.commands.handler.CommandHandler;
 import net.playlegend.questsystem.database.DatabaseHandler;
 import net.playlegend.questsystem.listener.QuestPlayerConnectionListener;
 import net.playlegend.questsystem.listener.QuestStepListener;
 import net.playlegend.questsystem.player.PlayerHandler;
 import net.playlegend.questsystem.quest.QuestManager;
+import net.playlegend.questsystem.translation.DefaultEnglishMessages;
 import net.playlegend.questsystem.translation.DefaultGermanMessages;
 import net.playlegend.questsystem.translation.LanguageHandler;
 import org.bukkit.plugin.PluginManager;
@@ -28,15 +30,17 @@ public final class QuestSystem extends JavaPlugin {
         instance = this;
         this.saveDefaultConfig();
         this.languageHandler = new LanguageHandler();
-        this.questManager = new QuestManager();
         this.playerHandler = new PlayerHandler();
         this.commandHandler = new CommandHandler();
+        this.questManager = new QuestManager();
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new QuestPlayerConnectionListener(this, playerHandler), this);
         pm.registerEvents(new QuestStepListener(playerHandler), this);
+        this.commandHandler.addCommands(new QuestAdminCommand());
 
         new DefaultGermanMessages();
+        new DefaultEnglishMessages();
     }
 
     @Override

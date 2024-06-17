@@ -2,6 +2,8 @@ package net.playlegend.questsystem.player;
 
 import lombok.Getter;
 import lombok.NonNull;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.quest.QuestManager;
@@ -214,5 +216,11 @@ public class QuestPlayer {
 
     public void addItem(ItemStack... item) {
         player.getInventory().addItem(item);
+    }
+
+    public void sendClickableMessage(String translationKey, String command) {
+        TextComponent textComponent = new TextComponent(currentLanguage.translateMessage(translationKey));
+        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+        player.spigot().sendMessage(textComponent);
     }
 }

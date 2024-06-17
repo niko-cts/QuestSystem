@@ -16,10 +16,6 @@ import java.util.logging.Logger;
  */
 public final class DatabaseHandler {
 
-	private static final String ERROR_TABLE_EXISTS = "Table {0} does already exist!";
-	private static final String ERROR_COULDNT_DELETE = "Could not perform delete.";
-	private static final String ERROR_TABLE_DOESNT_EXIST = "The table {0} does not exist!";
-
 	private static DatabaseHandler instance;
 
 	/**
@@ -49,10 +45,11 @@ public final class DatabaseHandler {
 		this.logger = QuestSystem.getInstance().getLogger();
 
 		try {
-			Class.forName("org.mariadb.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			logger.warning("Could not find mariaDB Driver! " + e.getMessage());
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException exception) {
+			logger.warning("MySQL Driver not registered!");
 		}
+
 
 		this.retrieveConfigData();
 		if (this.username != null && !this.username.isEmpty()) {
@@ -79,7 +76,7 @@ public final class DatabaseHandler {
 	 */
 	private boolean connect() {
 		StringBuilder connectionString = new StringBuilder();
-		connectionString.append("jdbc:mariadb://").append(this.host).append(":").append(this.port).append("/");
+		connectionString.append("jdbc:mysql://").append(this.host).append(":").append(this.port).append("/");
 		connectionString.append(this.dbName).append("?user=").append(this.username).append("&password=").append(this.password).append("&useUnicode=true&passwordCharacterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&SslMode=Required");
 		try {
 			this.dbConnection = DriverManager.getConnection(connectionString.toString());
@@ -116,16 +113,13 @@ public final class DatabaseHandler {
 		if (!this.reconnectIfClosed())
 			return;
 
-		if (!doesTableExist(tableName))
-			return;
-
 		if (columns.isEmpty()) {
 			logger.warning("Cannot create a table with empty columns: " + tableName);
 			return;
 		}
 
 		StringBuilder sql = new StringBuilder();
-		sql.append("create table ").append(tableName).append("(");
+		sql.append("create table if not exists ").append(tableName).append("(");
 		Iterator<String> column = columns.iterator();
 		while (column.hasNext()) {
 			sql.append(column.next());
@@ -133,10 +127,10 @@ public final class DatabaseHandler {
 				sql.append(", ");
 			}
 		}
+
 		sql.append(");");
 		try (Statement stmt = this.dbConnection.createStatement()) {
 			stmt.execute(sql.toString());
-			logger.log(Level.INFO, "Created table: {0}", tableName);
 		} catch (SQLException e) {
 			logger.warning("Error while creation of table: " + e.getMessage());
 		}
@@ -154,9 +148,7 @@ public final class DatabaseHandler {
 			return false;
 
 		try (Statement stmt = this.dbConnection.createStatement()) {
-			return stmt.executeQuery(new StringBuilder().append("show tables like '")
-					.append(tableName).append("';")
-					.toString()).next();
+			return stmt.executeQuery(new StringBuilder().append("show tables like '").append(tableName).append("';").toString()).next();
 		} catch (SQLException exception) {
 			logger.log(Level.WARNING, "Could not check if table exists! {0}", exception.getMessage());
 			return this.reconnectIfClosed() && doesTableExist(tableName);
@@ -187,9 +179,9 @@ public final class DatabaseHandler {
 
 					Object value = values.get(i).get(j);
 					if (value instanceof String) {
-						sql.append("'").append(values).append("'");
+						sql.append("'").append(value).append("'");
 					} else {
-						sql.append(values);
+						sql.append(value);
 					}
 					if (j != values.get(i).size() - 1 && values.get(i).get(j + 1) != null)
 						sql.append(",");
@@ -225,8 +217,8 @@ public final class DatabaseHandler {
 
 		sql.append(" from ").append(tableName).append(" ").append(whereClause).append(";");
 
-		try (Statement stmt = this.dbConnection.createStatement()) {
-			return stmt.executeQuery(sql.toString());
+		try {
+			return this.dbConnection.createStatement().executeQuery(sql.toString());
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Could not perform select on table {0}: {1} (code: {2})", new String[]{tableName, e.getMessage(), e.getErrorCode() + ""});
 			logger.log(Level.WARNING, "SQL-Query: {0}", sql.toString());
@@ -245,8 +237,8 @@ public final class DatabaseHandler {
 		if (!this.reconnectIfClosed())
 			return null;
 
-		try (Statement stmt = this.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-			return stmt.executeQuery(sql);
+		try {
+			return this.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery(sql);
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Could not perform sql: {0}", e);
 			logger.log(Level.WARNING, "SQL-Query: {0}", sql);
@@ -320,7 +312,7 @@ public final class DatabaseHandler {
 	}
 
 	/**
-	 * Tries to delete multiple rows through out multiple tables..
+	 * Tries to delete multiple rows throughout multiple tables.
 	 *
 	 * @param tableNames   List<String> - the table name.
 	 * @param whereClauses List<String> - the where clauses.
@@ -344,7 +336,7 @@ public final class DatabaseHandler {
 			}
 			stmt.executeBatch();
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, ERROR_COULDNT_DELETE + " {0}", e.getMessage());
+			logger.log(Level.WARNING, "Could not perform delete on {0}", e.getMessage());
 		}
 	}
 

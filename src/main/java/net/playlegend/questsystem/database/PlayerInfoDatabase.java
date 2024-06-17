@@ -31,7 +31,7 @@ public class PlayerInfoDatabase {
         databaseHandler.createTableIfNotExists(TABLE_PLAYER, List.of(
                 "uuid VARCHAR(36) NOT NULL PRIMARY KEY",
                 "last_logout TIMESTAMP",
-                "language TEXT NOT NULL DEFAULT 'en'",
+                "language VARCHAR(36) NOT NULL DEFAULT 'en'",
                 "coins INT NOT NULL DEFAULT 0"
         ));
     }
