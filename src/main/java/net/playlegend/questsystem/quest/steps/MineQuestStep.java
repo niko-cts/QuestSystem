@@ -1,9 +1,13 @@
 package net.playlegend.questsystem.quest.steps;
 
 import net.playlegend.questsystem.player.QuestPlayer;
+import net.playlegend.questsystem.translation.Language;
+import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
+
+import java.util.List;
 
 public class MineQuestStep extends QuestStep {
 
@@ -27,5 +31,17 @@ public class MineQuestStep extends QuestStep {
 			return blockBreak.getBlock().getType() == blockToBreak;
 		}
 		return false;
+	}
+
+	@Override
+	public String getTaskName(Language language) {
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_MINE_NAME,
+				List.of("${item}", "${amount}"),
+				List.of(blockToBreak.name().replace("_", "").toLowerCase(), getMaxAmount()));
+	}
+
+	@Override
+	public String getTaskDescription(Language language) {
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_MINE_LORE);
 	}
 }

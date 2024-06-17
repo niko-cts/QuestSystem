@@ -34,7 +34,7 @@ public class PlayerHandler {
         this.playerDb = PlayerInfoDatabase.getInstance();
     }
 
-    public void addPlayer(Player player) {
+    public Optional<QuestPlayer> addPlayer(Player player) {
         UUID uuid = player.getUniqueId();
         LanguageHandler languageHandler = QuestSystem.getInstance().getLanguageHandler();
         Logger logger = QuestSystem.getInstance().getLogger();
@@ -60,11 +60,13 @@ public class PlayerHandler {
                 lastLogout = Timestamp.from(Instant.now());
                 coins = 0;
             }
-
-            this.questPlayerMap.put(uuid, new QuestPlayer(player, language, lastLogout, coins));
+            QuestPlayer questPlayer = new QuestPlayer(player, language, lastLogout, coins);
+            this.questPlayerMap.put(uuid, questPlayer);
+            return Optional.of(questPlayer);
         } catch (SQLException exception) {
             logger.log(Level.SEVERE, "Error while loading QuestPlayer", exception);
         }
+        return Optional.empty();
     }
 
     /**

@@ -1,9 +1,7 @@
 package net.playlegend.questsystem.commands.admin;
 
-import chatzis.nikolas.mc.nikoapi.NikoAPI;
 import chatzis.nikolas.mc.nikoapi.inventory.CustomInventory;
 import chatzis.nikolas.mc.nikoapi.item.UsefulItems;
-import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.commands.handler.APISubCommand;
 import net.playlegend.questsystem.player.QuestPlayer;
@@ -15,8 +13,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public class QuestListSubCommand extends APISubCommand {
+
 	public QuestListSubCommand() {
-		super("list", "command.quest.admin.list", TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_USAGE, TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_DESCRIPTION);
+		super("list", "command.quest.admin.list", TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_USAGE);
 	}
 
 	@Override
@@ -38,16 +37,14 @@ public class QuestListSubCommand extends APISubCommand {
 			String name = arguments[0];
 			Quest quest = getQuestByNameOrMessageError(questPlayer, name);
 			if (quest != null) {
-				List<ItemStack> questItem = quest.getQuestItem(questPlayer.getCurrentLanguage());
+				List<ItemStack> questItem = quest.getQuestBundle(questPlayer.getCurrentLanguage());
 				CustomInventory menu = new CustomInventory(27);
 				menu.fill(UsefulItems.BACKGROUND_BLACK);
 				for (int i = 0, j = 10; i < questItem.size(); i++, j++) {
 					menu.setItem(j, questItem.get(i));
 				}
 
-				APIPlayer apiPlayer = NikoAPI.getInstance().getPlayerHandler().getPlayer(questPlayer.getUniqueId());
-				if (apiPlayer != null)
-					menu.open(apiPlayer);
+				questPlayer.openCustomInv(menu);
 			}
 		}
 	}

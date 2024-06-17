@@ -17,8 +17,15 @@ public record Quest(int id,
                     boolean timerRunsOffline
                     ) {
 
-    public List<ItemStack> getQuestItem(Language language) {
-        return List.of(); // TODO IMPL
+    public ItemStack getQuestItem(Language language) {
+        return null; // TODO IMPL
     }
 
+    public ItemStack getRewardItem(Language language) {
+        return null;
+    }
+
+    public List<ItemStack> getQuestBundle(Language currentLanguage) {
+        return null;
+    }
 }

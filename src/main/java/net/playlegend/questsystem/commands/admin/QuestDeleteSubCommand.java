@@ -19,7 +19,7 @@ public class QuestDeleteSubCommand extends APISubCommand {
 	 * Creates an instance of the quest delete sub command.
 	 */
 	public QuestDeleteSubCommand() {
-		super("delete", "command.quest.admin.delete", TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_USAGE, TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_DESCRIPTION, 1);
+		super("delete", "command.quest.admin.delete", TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_USAGE, 1);
 		this.confirmation = new HashMap<>();
 	}
 

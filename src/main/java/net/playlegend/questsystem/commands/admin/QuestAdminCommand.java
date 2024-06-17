@@ -11,7 +11,7 @@ public class QuestAdminCommand extends APICommand {
 	 * @since 0.0.1
 	 */
 	public QuestAdminCommand() {
-		super("questadmin", "command.quest.admin", TranslationKeys.QUESTS_COMMAND_ADMIN_USAGE, TranslationKeys.QUESTS_COMMAND_ADMIN_DESCRIPTION, "adminquest");
+		super("questadmin", "command.quest.admin", TranslationKeys.QUESTS_COMMAND_ADMIN_USAGE, "adminquest");
 		addSubCommand(new QuestCreateSubCommand());
 		addSubCommand(new QuestDeleteSubCommand());
 		addSubCommand(new QuestListSubCommand());

@@ -1,9 +1,13 @@
 package net.playlegend.questsystem.quest.steps;
 
 import net.playlegend.questsystem.player.QuestPlayer;
+import net.playlegend.questsystem.translation.Language;
+import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDeathEvent;
+
+import java.util.List;
 
 /**
  * Will store an EntityType and amount.
@@ -34,5 +38,17 @@ public class KillQuestStep extends QuestStep {
 			return deathEvent.getEntityType() == entityToKill;
 		}
 		return false;
+	}
+
+	@Override
+	public String getTaskName(Language language) {
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_KILL_NAME,
+				List.of("${item}", "${amount}"),
+				List.of(entityToKill.name().replace("_", "").toLowerCase(), getMaxAmount()));
+	}
+
+	@Override
+	public String getTaskDescription(Language language) {
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_KILL_LORE);
 	}
 }

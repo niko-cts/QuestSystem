@@ -7,10 +7,7 @@ import net.playlegend.questsystem.quest.steps.QuestStep;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class stores every information about an ongoing quest of the player.
@@ -45,7 +42,16 @@ public class ActivePlayerQuest {
         return step.isStepComplete(newAmount);
     }
 
-
+    /**
+     * Returns next quest step to take
+     *
+     * @return Optional<QuestStep> - quest step which needs to be completed next.
+     */
+    public Optional<QuestStep> getNextUncompletedStep() {
+        return stepsWithAmounts.entrySet().stream()
+		        .filter(entry -> !entry.getKey().isStepComplete(entry.getValue()))
+		        .map(Map.Entry::getKey).min(Comparator.comparingInt(QuestStep::getOrder));
+    }
 
     /**
      * Returns a list of all steps which have the same order number as the top one.
@@ -53,7 +59,7 @@ public class ActivePlayerQuest {
      * @return List<QuestStep> - all quest steps which needs to be completed next.
      */
     public List<QuestStep> getNextUncompletedSteps() {
-        List<QuestStep> stepsToComplete = getStepsToComplete();
+        List<QuestStep> stepsToComplete = getUncompletedSteps();
         if (stepsToComplete.isEmpty())
             return stepsToComplete;
 
@@ -66,7 +72,7 @@ public class ActivePlayerQuest {
      *
      * @return List<QuestStep> - the list of quest steps that are not completed.
      */
-    private List<QuestStep> getStepsToComplete() {
+    public List<QuestStep> getUncompletedSteps() {
         return stepsWithAmounts.entrySet().stream()
                 .filter(entry -> !entry.getKey().isStepComplete(entry.getValue()))
                 .map(Map.Entry::getKey)
@@ -79,6 +85,10 @@ public class ActivePlayerQuest {
                 .filter(entry -> entry.getKey().isStepComplete(entry.getValue()))
                 .map(Map.Entry::getKey)
                 .toList();
+    }
+
+    public Map<QuestStep, Integer> getStepsWithAmounts() {
+        return new HashMap<>(stepsWithAmounts);
     }
 
     /**

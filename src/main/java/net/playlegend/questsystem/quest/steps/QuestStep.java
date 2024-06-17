@@ -2,6 +2,7 @@ package net.playlegend.questsystem.quest.steps;
 
 import lombok.Data;
 import net.playlegend.questsystem.player.QuestPlayer;
+import net.playlegend.questsystem.translation.Language;
 import org.bukkit.event.Event;
 
 @Data
@@ -24,5 +25,7 @@ public abstract class QuestStep {
 	 */
 	public abstract boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event);
 
+	public abstract String getTaskName(Language language);
+	public abstract String getTaskDescription(Language language);
 }
 

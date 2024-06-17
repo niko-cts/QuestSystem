@@ -22,8 +22,6 @@ public abstract class APISubCommand {
 	@Getter
 	private final String name;
 	@Getter
-	private final String description;
-	@Getter
 	private final String permission;
 	@Getter
 	private final String usage;
@@ -42,15 +40,13 @@ public abstract class APISubCommand {
 	 * @param name             String - the sub command name.
 	 * @param permission       String - the sub command permission.
 	 * @param usage            String - the usage of the sub command.
-	 * @param description      String - the description of the subcommand.
 	 * @param minimumArguments int - the minimum arguments needed to perform the sub command.
 	 * @since 0.0.1
 	 */
-	public APISubCommand(String name, String permission, String usage, String description, int minimumArguments, String... aliases) {
+	public APISubCommand(String name, String permission, String usage, int minimumArguments, String... aliases) {
 		this.name = name;
 		this.permission = permission;
 		this.usage = usage;
-		this.description = description;
 		this.minimumArguments = minimumArguments;
 		this.aliases = aliases;
 		this.tabRecommendPlayers = false;
@@ -64,11 +60,10 @@ public abstract class APISubCommand {
 	 * @param name        String - the sub command name.
 	 * @param permission  String - the sub command permission.
 	 * @param usage       String - the usage of the sub command.
-	 * @param description String - the description of the subcommand.
 	 * @since 0.0.1
 	 */
-	public APISubCommand(String name, String permission, String usage, String description) {
-		this(name, permission, usage, description, 0);
+	public APISubCommand(String name, String permission, String usage) {
+		this(name, permission, usage, 0);
 	}
 
 	/**
@@ -76,12 +71,11 @@ public abstract class APISubCommand {
 	 *
 	 * @param name             String - the sub command name.
 	 * @param usage            String - the usage of the sub command.
-	 * @param description      String - the description of the subcommand.
 	 * @param minimumArguments int - the minimum arguments needed to perform the sub command.
 	 * @since 0.0.1
 	 */
-	public APISubCommand(String name, String usage, String description, int minimumArguments) {
-		this(name, null, usage, description, minimumArguments);
+	public APISubCommand(String name, String usage, int minimumArguments) {
+		this(name, null, usage, minimumArguments);
 	}
 
 	/**
@@ -89,11 +83,10 @@ public abstract class APISubCommand {
 	 *
 	 * @param name        String - the sub command name.
 	 * @param usage       String - the usage of the sub command.
-	 * @param description String - the description of the subcommand.
 	 * @since 0.0.1
 	 */
-	public APISubCommand(String name, String usage, String description) {
-		this(name, null, usage, description, 0);
+	public APISubCommand(String name, String usage) {
+		this(name, null, usage, 0);
 	}
 
 	/**

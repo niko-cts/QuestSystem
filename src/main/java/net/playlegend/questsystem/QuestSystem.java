@@ -1,6 +1,8 @@
 package net.playlegend.questsystem;
 
 import lombok.Getter;
+import net.playlegend.questsystem.commands.LanguageCommand;
+import net.playlegend.questsystem.commands.QuestCommand;
 import net.playlegend.questsystem.commands.admin.QuestAdminCommand;
 import net.playlegend.questsystem.commands.handler.CommandHandler;
 import net.playlegend.questsystem.database.DatabaseHandler;
@@ -37,7 +39,7 @@ public final class QuestSystem extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new QuestPlayerConnectionListener(this, playerHandler), this);
         pm.registerEvents(new QuestStepListener(playerHandler), this);
-        this.commandHandler.addCommands(new QuestAdminCommand());
+        this.commandHandler.addCommands(new QuestAdminCommand(), new LanguageCommand(), new QuestCommand());
 
         new DefaultGermanMessages();
         new DefaultEnglishMessages();

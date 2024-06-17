@@ -49,12 +49,11 @@ public abstract class APICommand extends Command {
      * @param command String - the command name.
      * @param permission String - the permission to run the command.
      * @param usage String - the correct command usage.
-     * @param description String - the command description.
      * @param aliases List<String> - the aliases for the command.
      * @since 0.0.1
      */
-    public APICommand(String command, String permission, String usage, String description, String... aliases) {
-        super(command, description, usage, Arrays.asList(aliases));
+    public APICommand(String command, String permission, String usage, String... aliases) {
+        super(command, "", usage, Arrays.asList(aliases));
         this.command = command;
         this.permission = permission;
         this.usage = usage;

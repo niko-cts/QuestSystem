@@ -6,7 +6,7 @@ import net.playlegend.questsystem.translation.TranslationKeys;
 
 public class QuestCreateSubCommand extends APISubCommand {
 	public QuestCreateSubCommand() {
-		super("create", "command.quest.admin.create", TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_USAGE, TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_DESCRIPTION);
+		super("create", "command.quest.admin.create", TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_USAGE);
 	}
 
 	@Override
