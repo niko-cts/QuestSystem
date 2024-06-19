@@ -1,8 +1,11 @@
 package net.playlegend.questsystem.quest.steps;
 
+import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
+import chatzis.nikolas.mc.nikoapi.util.MaterialConverterUtil;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -12,10 +15,12 @@ import java.util.List;
 public class CraftQuestStep extends QuestStep {
 
 	private final ItemStack stackToCraft;
+	private final String materialName;
 
 	public CraftQuestStep(int id, int order, int maxAmount, ItemStack stackToCraft) {
 		super(id, order, maxAmount);
 		this.stackToCraft = stackToCraft;
+		this.materialName = MaterialConverterUtil.convertMaterialToName(stackToCraft.getType());
 	}
 
 	/**
@@ -27,21 +32,38 @@ public class CraftQuestStep extends QuestStep {
 	 */
 	@Override
 	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
-		if (event instanceof CraftItemEvent craftItem) {
-			return craftItem.getRecipe().getResult().equals(stackToCraft);
-		}
-		return false;
+		return event instanceof CraftItemEvent craftItem && craftItem.getRecipe().getResult().equals(stackToCraft);
 	}
 
+	/**
+	 * Returns a one-liner that previews the quest step. E.g. "Mine block"
+	 *
+	 * @param language Language - the language to translate in
+	 * @return String - the quest step explanation
+	 */
 	@Override
-	public String getTaskName(Language language) {
-		return language.translateMessage(TranslationKeys.QUESTS_STEP_CRAFT_NAME,
-				List.of("${item}", "${amount}"),
-				List.of(stackToCraft.getType().name().replace("_", "").toLowerCase(), getMaxAmount()));
+	public String getActiveTaskLine(Language language, int currentAmount) {
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_CRAFT_PREVIEW,
+				List.of("${item}", "${amount}", "${maxamount}"),
+				List.of(materialName, currentAmount, getMaxAmount()));
 	}
 
+	/**
+	 * Returns an ItemStack that explains the quest step.
+	 * E.g., new ItemStack(Material.STONE).setLore("Mine this block 10 times")
+	 *
+	 * @param language Language - the language to translate in
+	 * @return ItemStack - the item explaining the step
+	 */
 	@Override
-	public String getTaskDescription(Language language) {
-		return language.translateMessage(TranslationKeys.QUESTS_STEP_CRAFT_LORE);
+	public ItemStack getActiveTask(Language language, int currentAmount) {
+		return new ItemBuilder(stackToCraft)
+				.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_CRAFT_LORE,
+								List.of("${item}", "${amount}", "${maxamount}"),
+								List.of(materialName, currentAmount, getMaxAmount()))
+						.split(";"))
+				.addEnchantment(isStepComplete(currentAmount) ? Enchantment.ARROW_INFINITE : null, 1, true, false)
+				.setAmount(Math.max(1, Math.min(currentAmount, 64)))
+				.craft();
 	}
 }

@@ -95,7 +95,7 @@ public class PlayerInfoDatabase {
                 ActivePlayerQuest quest = activePlayerQuest.get();
                 sql.append(String.format(
                         "INSERT INTO %s VALUES('%s', %s, %s);",
-                        PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST, uuid, quest.getActiveQuest().id(), quest.getSecondsLeft()
+                        PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST, uuid, quest.getQuest().id(), quest.getSecondsLeft()
                 ));
                 for (Map.Entry<QuestStep, Integer> entry : quest.getStepsWithAmounts().entrySet()) {
                     sql.append(String.format(
@@ -109,7 +109,7 @@ public class PlayerInfoDatabase {
                 ActivePlayerQuest quest = activePlayerQuest.get();
                 sql.append(String.format(
                         "UPDATE %s SET quest_id=%s, time_left=%s WHERE uuid='%s' LIMIT 1;",
-                        PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST, quest.getActiveQuest().id(), quest.getSecondsLeft(), uuid
+                        PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST, quest.getQuest().id(), quest.getSecondsLeft(), uuid
                 ));
                 // DELETE STEPS BECAUSE, may be more id's than in new active quest
                 sql.append(String.format("DELETE FROM %s WHERE uuid='%s';",
@@ -139,7 +139,7 @@ public class PlayerInfoDatabase {
         }
 
         sql.append(String.format("UPDATE %s SET last_logout='%s'", TABLE_PLAYER, Timestamp.from(lastLogout)))
-                .append(dbInfo.isMarkLanguageDirty() ? ", language='" + questPlayer.getCurrentLanguage().getLanguageKey() + "'" : "")
+                .append(dbInfo.isMarkLanguageDirty() ? ", language='" + questPlayer.getLanguage().getLanguageKey() + "'" : "")
                 .append(dbInfo.isMarkCoinsDirty() ? ", coins=" + questPlayer.getCoins() : "")
                 .append(" WHERE uuid='").append(uuid).append("' LIMIT 1;");
 

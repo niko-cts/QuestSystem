@@ -209,7 +209,7 @@ public abstract class APISubCommand {
 	 * @since 0.0.1
 	 */
 	public void sendCommandUsage(QuestPlayer player) {
-		String commandUsage = player.getCurrentLanguage().translateMessage(getUsage(), "${command}", getName());
+		String commandUsage = player.getLanguage().translateMessage(getUsage(), "${command}", getName());
 		player.sendMessage(TranslationKeys.SYSTEM_COMMAND_USAGE, "${command}", commandUsage);
 	}
 

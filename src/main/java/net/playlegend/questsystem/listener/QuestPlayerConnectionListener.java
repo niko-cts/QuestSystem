@@ -37,7 +37,7 @@ public class QuestPlayerConnectionListener implements Listener {
 					ActivePlayerQuest activePlayerQuest = activeQuest.get();
 					questPlayer.sendMessage(TranslationKeys.QUESTS_EVENT_JOINED_HAS_ACTIVE,
 							List.of("${name}", "${duration}"),
-							List.of(activePlayerQuest.getActiveQuest().name(), QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getCurrentLanguage(), activePlayerQuest.getSecondsLeft())));
+							List.of(activePlayerQuest.getQuest().name(), QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getLanguage(), activePlayerQuest.getSecondsLeft())));
 				} else {
 					questPlayer.sendMessage(TranslationKeys.QUESTS_EVENT_JOINED_NO_ACTIVE);
 				}

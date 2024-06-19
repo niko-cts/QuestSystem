@@ -37,7 +37,7 @@ public class QuestPlayer {
 	private final Player player;
 	private final Timestamp lastLogout;
 	private final QuestTimerPlayer questTimer;
-	private Language currentLanguage;
+	private Language language;
 	private int coins;
 
 	private final Map<Quest, Timestamp> finishedQuests;
@@ -48,7 +48,7 @@ public class QuestPlayer {
 
 	public QuestPlayer(Player player, Language language, Timestamp lastLogout, int coins) {
 		this.player = player;
-		this.currentLanguage = language;
+		this.language = language;
 		this.lastLogout = lastLogout;
 		this.coins = coins;
 		QuestManager questManager = QuestSystem.getInstance().getQuestManager();
@@ -73,11 +73,11 @@ public class QuestPlayer {
 	 */
 	public void checkAndFinishActiveQuest() {
 		if (activePlayerQuest != null && activePlayerQuest.isQuestFinished()) {
-			activePlayerQuest.getActiveQuest().rewards().forEach(r -> r.rewardPlayer(this));
+			activePlayerQuest.getQuest().rewards().forEach(r -> r.rewardPlayer(this));
 			Timestamp completedAt = Timestamp.from(Instant.now());
-			finishedQuests.put(activePlayerQuest.getActiveQuest(), completedAt);
-			playerDbInformationHolder.addCompletedQuest(activePlayerQuest.getActiveQuest().id(), completedAt);
-			sendMessage(TranslationKeys.QUESTS_EVENT_FINISHED, "${name}", activePlayerQuest.getActiveQuest().name());
+			finishedQuests.put(activePlayerQuest.getQuest(), completedAt);
+			playerDbInformationHolder.addCompletedQuest(activePlayerQuest.getQuest().id(), completedAt);
+			sendMessage(TranslationKeys.QUESTS_EVENT_FINISHED, "${name}", activePlayerQuest.getQuest().name());
 			setActivePlayerQuest(null);
 
 			ScoreboardUtil.updateScoreboard(this);
@@ -93,7 +93,7 @@ public class QuestPlayer {
 
 	public List<Quest> getEveryFoundOrPublicQuest() {
 		return QuestSystem.getInstance().getQuestManager().getQuests().stream()
-				.filter(q -> activePlayerQuest == null || activePlayerQuest.getActiveQuest().id() != q.id())
+				.filter(q -> activePlayerQuest == null || activePlayerQuest.getQuest().id() != q.id())
 				.filter(q -> !finishedQuests.containsKey(q))
 				.filter(q -> q.isPublic() || foundQuests.containsKey(q)).toList();
 	}
@@ -104,7 +104,7 @@ public class QuestPlayer {
 	public void checkIfExpired() {
 		checkAndFinishActiveQuest();
 		if (activePlayerQuest != null && activePlayerQuest.getSecondsLeft() <= 0) {
-			sendMessage(TranslationKeys.QUESTS_EVENT_TIMER_EXPIRED, "${name}", activePlayerQuest.getActiveQuest().name());
+			sendMessage(TranslationKeys.QUESTS_EVENT_TIMER_EXPIRED, "${name}", activePlayerQuest.getQuest().name());
 			setActivePlayerQuest(null);
 			ScoreboardUtil.updateScoreboard(this);
 		}
@@ -176,10 +176,10 @@ public class QuestPlayer {
 	/**
 	 * Changes the language and updates the scoreboard.
 	 *
-	 * @param currentLanguage Language - the new language of the player
+	 * @param language Language - the new language of the player
 	 */
-	public void setCurrentLanguage(Language currentLanguage) {
-		this.currentLanguage = currentLanguage;
+	public void setLanguage(Language language) {
+		this.language = language;
 		this.playerDbInformationHolder.markLanguageDirty();
 		ScoreboardUtil.updateScoreboard(this);
 	}
@@ -201,15 +201,15 @@ public class QuestPlayer {
 	}
 
 	public void sendMessage(String translationKey) {
-		player.sendMessage(currentLanguage.translateMessage(translationKey));
+		player.sendMessage(language.translateMessage(translationKey));
 	}
 
 	public void sendMessage(String translationKey, String placeholder, Object replacement) {
-		player.sendMessage(currentLanguage.translateMessage(translationKey, placeholder, replacement));
+		player.sendMessage(language.translateMessage(translationKey, placeholder, replacement));
 	}
 
 	public void sendMessage(String translationKey, List<String> placeholder, List<Object> replacement) {
-		player.sendMessage(currentLanguage.translateMessage(translationKey, placeholder, replacement));
+		player.sendMessage(language.translateMessage(translationKey, placeholder, replacement));
 	}
 
 	public void playSound(Sound sound) {
@@ -221,7 +221,7 @@ public class QuestPlayer {
 	}
 
 	public void sendClickableMessage(String translationKey, String command) {
-		TextComponent textComponent = new TextComponent(currentLanguage.translateMessage(translationKey));
+		TextComponent textComponent = new TextComponent(language.translateMessage(translationKey));
 		textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
 		player.spigot().sendMessage(textComponent);
 	}

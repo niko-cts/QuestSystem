@@ -64,10 +64,11 @@ public class TranslationKeys {
 	public static final String QUESTS_COMMAND_QUEST_INFO_NOACTIVE = Q_COMMAND + "quest.info.noactive";
 
 
-
 	private static final String GUI = QUEST + "gui";
 	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_NO_ACTIVE_NAME = GUI + "overview.noactive.name";
 	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_NO_ACTIVE_LORE = GUI + "overview.noactive.lore";
+	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_NAME = GUI + "overview.active.name";
+	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_LORE = GUI + "overview.active.lore";
 	public static final String QUESTS_GUI_OVERVIEW_PUBLIC_NAME = GUI + "overview.public.name";
 	public static final String QUESTS_GUI_OVERVIEW_PUBLIC_LORE = GUI + "overview.public.lore";
 	public static final String QUESTS_GUI_OVERVIEW_FOUND_NAME = GUI + "overview.found.name";
@@ -76,24 +77,71 @@ public class TranslationKeys {
 	public static final String QUESTS_GUI_OVERVIEW_COMPLETED_LORE = GUI + "overview.completed.lore";
 
 
-	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_STEP_DETAILS_NAME = GUI + "overview.active.description.name";
-	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_DESCRIPTION_LORE = GUI + "overview.active.description.lore";
-	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_LORE = GUI + "overview.active.lore.overview";
-	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_LORE_STEP_COMPLETED = GUI + "overview.active.lore.step.completed";
-	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_LORE_STEP_TODO = GUI + "overview.active.lore.step.todo";
-	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_CANCEL_NAME = GUI + "overview.active.cancel.name";
-	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_CANCEL_LORE = GUI + "overview.active.cancel.lore";
+	public static final String QUESTS_GUI_ACTIVE_DESCRIPTION_LORE = GUI + "active.description";
+	public static final String QUESTS_GUI_ACTIVE_OVERVIEW = GUI + "active.overview";
+	public static final String QUESTS_GUI_ACTIVE_LORE_STEP_COMPLETED = GUI + "active.step.completed";
+	public static final String QUESTS_GUI_ACTIVE_LORE_STEP_TODO = GUI + "active.step.todo";
+	public static final String QUESTS_GUI_ACTIVE_CANCEL_NAME = GUI + "active.cancel.name";
+	public static final String QUESTS_GUI_ACTIVE_CANCEL_LORE = GUI + "active.cancel.lore";
+	public static final String QUESTS_GUI_ACTIVE_TIME_LEFT_NAME = GUI + "active.time.name";
+	public static final String QUESTS_GUI_ACTIVE_TIME_LEFT_LORE = GUI + "active.time.lore";
+
+	// ACTIVE QUEST STEPS
+	public static final String QUESTS_GUI_ACTIVE_STEPS_PREVIEW_NAME = GUI + "active.steps.preview.name";
+	public static final String QUESTS_GUI_ACTIVE_STEPS_PREVIEW_LORE = GUI + "active.steps.preview.lore";
+	public static final String QUESTS_GUI_ACTIVE_STEPS_TITLE = GUI + "active.steps.title.name";
+	public static final String QUESTS_GUI_ACTIVE_STEPS_UNCOMPLETED = GUI + "active.steps.uncompleted";
+	public static final String QUESTS_GUI_ACTIVE_STEPS_COMPLETED = GUI + "active.steps.completed";
+
+	// DEFAULT QUEST STEPS
+	public static final String QUESTS_GUI_NORMAL_STEPS_TITLE = GUI + "normal.steps.title.name";
+	public static final String QUESTS_GUI_NORMAL_STEPS_INFO = GUI + "normal.steps.title.info";
+
+
+	// FOUND, COMPLETED, PUBLIC QUESTS GUI
+	public static final String QUESTS_GUI_FOUND_INFO = GUI + "found.info";
+	public static final String QUESTS_GUI_COMPLETED_INFO = GUI + "completed.info";
+	public static final String QUESTS_GUI_PUBLIC_INFO = GUI + "public.info";
+	public static final String QUESTS_GUI_PUBLIC_LORE = GUI + "public.lore";
+	public static final String QUESTS_GUI_QUEST_DETAILS_LORE = GUI + "details.lore";
+
+	public static final String QUESTS_GUI_ACCEPT_CONFIRM_NAME = GUI + "accept.confirm.name";
+	public static final String QUESTS_GUI_ACCEPT_CONFIRM_LORE = GUI + "accept.confirm.lore";
+	public static final String QUESTS_GUI_ACCEPT_TITLE = GUI + "accept.title";
+	public static final String QUESTS_GUI_ACCEPT_CONFIRM_NAME = GUI + "accept.confirm.name";
+	public static final String QUESTS_GUI_ACCEPT_CONFIRM_LORE = GUI + "accept.confirm.lore";
+	public static final String QUESTS_GUI_ACCEPT_REWARD = GUI + "accept.reward";
+
+
+
+	public static final String QUESTS_GUI_BACK = GUI + "back";
+
+	// GUI REWARDS
+	public static final String QUESTS_GUI_REWARDS_PREVIEW_NAME = GUI + "rewards.preview.name";
+	public static final String QUESTS_GUI_REWARDS_PREVIEW_LORE = GUI + "rewards.preview.lore";
+	public static final String QUESTS_GUI_REWARDS_TITLE = GUI + "rewards.title";
+
 
 
 	// STEPS
-	public static final String QUESTS_STEP_CRAFT_NAME = QUEST + "step.craft.name";
+	public static final String QUESTS_STEP_CRAFT_PREVIEW = QUEST + "step.craft.preview";
 	public static final String QUESTS_STEP_CRAFT_LORE = QUEST + "step.craft.lore";
-	public static final String QUESTS_STEP_MINE_NAME = QUEST + "step.mine.name";
+	public static final String QUESTS_STEP_MINE_PREVIEW = QUEST + "step.mine.preview";
 	public static final String QUESTS_STEP_MINE_LORE = QUEST + "step.mine.lore";
-	public static final String QUESTS_STEP_KILL_NAME = QUEST + "step.kill.name";
+	public static final String QUESTS_STEP_KILL_PREVIEW = QUEST + "step.kill.preview";
 	public static final String QUESTS_STEP_KILL_LORE = QUEST + "step.kill.lore";
-	public static final String QUESTS_STEP_NPC_NAME = QUEST + "step.npc.name";
+	public static final String QUESTS_STEP_NPC_PREVIEW = QUEST + "step.npc.preview";
 	public static final String QUESTS_STEP_NPC_LORE = QUEST + "step.npc.lore";
+
+	// REWARDS
+	public static final String QUESTS_REWARD_COINS_PREVIEW = QUEST + "reward.coins.preview";
+	public static final String QUESTS_REWARD_COINS_NAME = QUEST + "reward.coins.name";
+	public static final String QUESTS_REWARD_COINS_LORE = QUEST + "reward.coins.lore";
+	public static final String QUESTS_REWARD_LVL_PREVIEW = QUEST + "reward.lvl.preview";
+	public static final String QUESTS_REWARD_LVL_NAME = QUEST + "reward.lvl.name";
+	public static final String QUESTS_REWARD_LVL_LORE = QUEST + "reward.lvl.lore";
+	public static final String QUESTS_REWARD_ITEM_PREVIEW = QUEST + "reward.item.preview";
+	public static final String QUESTS_REWARD_ITEM_LORE = QUEST + "reward.item.lore";
 
 
 }

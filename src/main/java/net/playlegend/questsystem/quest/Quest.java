@@ -25,7 +25,7 @@ public record Quest(int id,
         return null;
     }
 
-    public List<ItemStack> getQuestBundle(Language currentLanguage) {
+    public ItemStack getStepItem(Language language) {
         return null;
     }
 }

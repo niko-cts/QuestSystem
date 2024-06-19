@@ -1,11 +1,14 @@
 package net.playlegend.questsystem.quest.steps;
 
+import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
+import chatzis.nikolas.mc.nikoapi.util.EntityTypeConverterUtil;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -19,10 +22,12 @@ import java.util.List;
 public class KillQuestStep extends QuestStep {
 
 	private final EntityType entityToKill;
+	private final String entityName;
 
 	public KillQuestStep(int id, int order, int maxAmount, EntityType entityType) {
 		super(id, order, maxAmount);
 		this.entityToKill = entityType;
+		this.entityName = EntityTypeConverterUtil.convertEntityToName(entityType);
 	}
 
 	/**
@@ -40,15 +45,35 @@ public class KillQuestStep extends QuestStep {
 		return false;
 	}
 
+
+	/**
+	 * Returns a one-liner that previews the quest step. E.g. "Mine block"
+	 *
+	 * @param language Language - the language to translate in
+	 * @return String - the quest step explanation
+	 */
 	@Override
-	public String getTaskName(Language language) {
-		return language.translateMessage(TranslationKeys.QUESTS_STEP_KILL_NAME,
-				List.of("${item}", "${amount}"),
-				List.of(entityToKill.name().replace("_", "").toLowerCase(), getMaxAmount()));
+	public String getActiveTaskLine(Language language, int currentAmount) {
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_KILL_PREVIEW,
+				List.of("${entity}", "${amount}", "${maxamount}"),
+				List.of(entityName, currentAmount, getMaxAmount()));
 	}
 
+	/**
+	 * Returns an ItemStack that explains the quest step.
+	 * E.g., new ItemStack(Material.STONE).setLore("Mine this block 10 times")
+	 *
+	 * @param language Language - the language to translate in
+	 * @return ItemStack - the item explaining the step
+	 */
 	@Override
-	public String getTaskDescription(Language language) {
-		return language.translateMessage(TranslationKeys.QUESTS_STEP_KILL_LORE);
+	public ItemStack getActiveTask(Language language, int currentAmount) {
+		return new ItemBuilder(entityToKill)
+				.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_KILL_LORE,
+								List.of("${entity}", "${amount}", "${maxamount}"),
+								List.of(entityName, currentAmount, getMaxAmount()))
+						.split(";"))
+				.setAmount(Math.max(1, Math.min(currentAmount, 64)))
+				.craft();
 	}
 }

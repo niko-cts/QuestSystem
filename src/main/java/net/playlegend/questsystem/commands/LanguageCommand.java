@@ -26,7 +26,7 @@ public class LanguageCommand extends APICommand {
 		Set<Language> languages = QuestSystem.getInstance().getLanguageHandler().getSupportedLanguages();
 		Optional<Language> language = languages.stream().filter(s -> s.getName().equalsIgnoreCase(name) || s.getLanguageKey().equalsIgnoreCase(name)).findFirst();
 		if (language.isPresent()) {
-			questPlayer.setCurrentLanguage(language.get());
+			questPlayer.setLanguage(language.get());
 			questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_LANGUAGE_UPDATED);
 		} else {
 			questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_LANGUAGE_ILLEGAL, "${languages}",

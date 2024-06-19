@@ -18,7 +18,7 @@ import java.util.*;
 @Getter
 public class ActivePlayerQuest {
 
-    private final Quest activeQuest;
+    private final Quest quest;
     private final Map<QuestStep, Integer> stepsWithAmounts;
     private final Instant timeLeft;
 
@@ -28,7 +28,7 @@ public class ActivePlayerQuest {
     }
 
     public boolean isQuestFinished() {
-        return getCompletedQuestSteps().size() >= activeQuest.completionSteps().size();
+        return getCompletedSteps().size() >= quest.completionSteps().size();
     }
 
     /**
@@ -47,10 +47,10 @@ public class ActivePlayerQuest {
      *
      * @return Optional<QuestStep> - quest step which needs to be completed next.
      */
-    public Optional<QuestStep> getNextUncompletedStep() {
+    public Optional<Map.Entry<QuestStep, Integer>> getNextUncompletedStep() {
         return stepsWithAmounts.entrySet().stream()
 		        .filter(entry -> !entry.getKey().isStepComplete(entry.getValue()))
-		        .map(Map.Entry::getKey).min(Comparator.comparingInt(QuestStep::getOrder));
+		        .min(Comparator.comparingInt(entry -> entry.getKey().getOrder()));
     }
 
     /**
@@ -80,10 +80,11 @@ public class ActivePlayerQuest {
                 .toList();
     }
 
-    private List<QuestStep> getCompletedQuestSteps() {
+    public List<QuestStep> getCompletedSteps() {
         return stepsWithAmounts.entrySet().stream()
                 .filter(entry -> entry.getKey().isStepComplete(entry.getValue()))
                 .map(Map.Entry::getKey)
+                .sorted(Comparator.comparingInt(QuestStep::getOrder))
                 .toList();
     }
 
@@ -98,6 +99,10 @@ public class ActivePlayerQuest {
      */
     public long getSecondsLeft() {
         return Duration.between(Instant.now(), timeLeft).getSeconds();
+    }
+
+    public int getStepAmount(QuestStep uncompletedStep) {
+        return stepsWithAmounts.getOrDefault(uncompletedStep, -1);
     }
 
 }

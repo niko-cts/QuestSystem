@@ -1,16 +1,13 @@
 package net.playlegend.questsystem.commands.admin;
 
-import chatzis.nikolas.mc.nikoapi.inventory.CustomInventory;
-import chatzis.nikolas.mc.nikoapi.item.UsefulItems;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.commands.handler.APISubCommand;
+import net.playlegend.questsystem.gui.QuestSpecificGUI;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.translation.TranslationKeys;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Iterator;
-import java.util.List;
 
 public class QuestListSubCommand extends APISubCommand {
 
@@ -37,14 +34,7 @@ public class QuestListSubCommand extends APISubCommand {
 			String name = arguments[0];
 			Quest quest = getQuestByNameOrMessageError(questPlayer, name);
 			if (quest != null) {
-				List<ItemStack> questItem = quest.getQuestBundle(questPlayer.getCurrentLanguage());
-				CustomInventory menu = new CustomInventory(27);
-				menu.fill(UsefulItems.BACKGROUND_BLACK);
-				for (int i = 0, j = 10; i < questItem.size(); i++, j++) {
-					menu.setItem(j, questItem.get(i));
-				}
-
-				questPlayer.openCustomInv(menu);
+				QuestSpecificGUI.openQuestGUI(questPlayer, quest);
 			}
 		}
 	}

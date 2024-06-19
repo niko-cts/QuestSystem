@@ -211,7 +211,7 @@ public abstract class APICommand extends Command {
      * @since 0.0.1
      */
     public void sendCommandUsage(QuestPlayer player) {
-        String commandUsage = player.getCurrentLanguage().translateMessage(getUsage(), "${command}", getCommand());
+        String commandUsage = player.getLanguage().translateMessage(getUsage(), "${command}", getCommand());
         player.sendMessage(TranslationKeys.SYSTEM_COMMAND_USAGE, "${command}", commandUsage);
     }
 

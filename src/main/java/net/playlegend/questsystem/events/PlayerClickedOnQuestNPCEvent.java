@@ -15,11 +15,11 @@ public class PlayerClickedOnQuestNPCEvent extends Event {
     private final Player player;
     private final UUID npcUUID;
 
-    /**
-     * @return
-     */
-    @Override
+    @Getter
+    private static final HandlerList handlerList = new HandlerList();
+
     public HandlerList getHandlers() {
-        return null;
+        return handlerList;
     }
+
 }

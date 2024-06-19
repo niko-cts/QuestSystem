@@ -89,7 +89,7 @@ public class PlayerQuestUpdateSQLTests {
 		Map<Integer, Timestamp> map = new HashMap<>();
 		map.put(1, timestamp);
 
-		when(fakePlayer.getCurrentLanguage()).thenReturn(new Language(Locale.ENGLISH));
+		when(fakePlayer.getLanguage()).thenReturn(new Language(Locale.ENGLISH));
 		when(playerDatabaseInformationHolder.isMarkLanguageDirty()).thenReturn(true);
 		when(playerDatabaseInformationHolder.getNewFoundQuests()).thenReturn(map);
 

@@ -18,8 +18,8 @@ public class QuestInfoCommand extends APISubCommand {
 		questPlayer.getActivePlayerQuest().ifPresentOrElse(
 				activePlayerQuest -> questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_QUEST_INFO_DISPLAY,
 						List.of("${name}", "${duration}", "${todo}"),
-						List.of(activePlayerQuest.getActiveQuest().name(),
-								QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getCurrentLanguage(), activePlayerQuest.getSecondsLeft()),
+						List.of(activePlayerQuest.getQuest().name(),
+								QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getLanguage(), activePlayerQuest.getSecondsLeft()),
 								activePlayerQuest.getNextUncompletedSteps())),
 				() -> questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_QUEST_INFO_NOACTIVE)
 		);

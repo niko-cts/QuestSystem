@@ -6,6 +6,7 @@ import net.playlegend.questsystem.translation.TranslationKeys;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 
 public class QuestTimingsUtil {
 
@@ -102,5 +103,11 @@ public class QuestTimingsUtil {
 
         // Calculate the new instant when the quest finishes
         return now.plusSeconds(secondsLeft);
+    }
+
+    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+
+    public static String formatDateTime(Instant time) {
+        return DTF.format(time);
     }
 }
