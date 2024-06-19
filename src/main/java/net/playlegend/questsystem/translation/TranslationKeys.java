@@ -108,8 +108,8 @@ public class TranslationKeys {
 	public static final String QUESTS_GUI_ACCEPT_CONFIRM_NAME = GUI + "accept.confirm.name";
 	public static final String QUESTS_GUI_ACCEPT_CONFIRM_LORE = GUI + "accept.confirm.lore";
 	public static final String QUESTS_GUI_ACCEPT_TITLE = GUI + "accept.title";
-	public static final String QUESTS_GUI_ACCEPT_CONFIRM_NAME = GUI + "accept.confirm.name";
-	public static final String QUESTS_GUI_ACCEPT_CONFIRM_LORE = GUI + "accept.confirm.lore";
+	public static final String QUESTS_GUI_QUEST_TIME_NAME = GUI + "quest.time.name";
+	public static final String QUESTS_GUI_QUEST_TIME_LORE = GUI + "quest.time.lore";
 	public static final String QUESTS_GUI_ACCEPT_REWARD = GUI + "accept.reward";
 
 

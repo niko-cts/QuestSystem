@@ -9,6 +9,7 @@ import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
+import net.playlegend.questsystem.util.QuestTimingsUtil;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
@@ -56,7 +57,8 @@ public class QuestSpecificGUI {
 		Timestamp finishedAt = questPlayer.getFinishedQuests().get(quest);
 		menu.setItem(17, finishedAt != null ?
 						new ItemBuilder(Material.CLOCK)
-								.setName(language.translateMessage())
+								.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_TIME_NAME))
+								.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_TIME_LORE, "${time}", QuestTimingsUtil.formatDateTime(finishedAt.toInstant())).split(";")).craft()
 						: UsefulItems.HEAD_A()
 								.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_CONFIRM_NAME))
 								.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_CONFIRM_LORE).split(";")).craft(),
