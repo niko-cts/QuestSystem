@@ -21,10 +21,34 @@ public class TranslationKeys {
 	public static final String QUESTS_BUILDER_NOT_VALID_NUMBER = BUILDER + "input.invalid.number";
 	public static final String QUESTS_BUILDER_NOT_VALID_UUID = BUILDER + "input.invalid.uuid";
 	public static final String QUESTS_BUILDER_NOT_VALID_MATERIAL = BUILDER + "input.invalid.material";
-
+	public static final String QUESTS_BUILDER_NOT_VALID_ENTITYTYPE = BUILDER + "input.invalid.entitytype";
 	public static final String QUESTS_BUILDER_MODIFY_INTEGER = BUILDER + "input.modify.integer";
+	public static final String QUESTS_BUILDER_MODIFY_ITEM_INSERTION = BUILDER + "modify.item";
 	public static final String QUESTS_BUILDER_MODIFY_REMOVE = BUILDER + "input.modify.remove";
 	public static final String QUESTS_BUILDER_MODIFY_ADD = BUILDER + "input.modify.add";
+	public static final String QUESTS_BUILDER_MODIFY_QUESTNAME = BUILDER + "input.modify.questname";
+	public static final String QUESTS_BUILDER_NAME_LORE = BUILDER + "questname.lore";
+	public static final String QUESTS_BUILDER_DESCRIPTION_NAME = BUILDER + "description.name";
+	public static final String QUESTS_BUILDER_DESCRIPTION_LORE = BUILDER + "description.lore";
+	public static final String QUESTS_BUILDER_REWARDS_LORE = BUILDER + "rewards.lore";
+	public static final String QUESTS_BUILDER_STEPS_LORE = BUILDER + "steps.lore";
+	public static final String QUESTS_BUILDER_TIMER_OFFLINE_NAME = BUILDER + "timer.runsoffline.name";
+	public static final String QUESTS_BUILDER_TIMER_OFFLINE_LORE = BUILDER + "timer.runsoffline.lore";
+	public static final String QUESTS_BUILDER_PUBLIC_NAME = BUILDER + "public.name";
+	public static final String QUESTS_BUILDER_PUBLIC_LORE = BUILDER + "public.lore";
+	public static final String QUESTS_BUILDER_TIMER_NAME = BUILDER + "timer.amount.name";
+	public static final String QUESTS_BUILDER_TIMER_LORE = BUILDER + "timer.amount.lore";
+	public static final String QUESTS_BUILDER_CREATE_NAME = BUILDER + "create.name";
+	public static final String QUESTS_BUILDER_CREATE_LORE = BUILDER + "create.lore";
+	public static final String QUESTS_BUILDER_SUCCESSFUL = BUILDER + "created";
+	public static final String QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME = BUILDER + "steps.creation.order.name";
+	public static final String QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE = BUILDER + "steps.creation.order.lore";
+	public static final String QUESTS_BUILDER_STEPS_CREATION_AMOUNT_NAME = BUILDER + "steps.creation.amount.name";
+	public static final String QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE = BUILDER + "steps.creation.amount.lore";
+	public static final String QUESTS_BUILDER_STEPS_CREATION_PARAMETER_NAME = BUILDER + "steps.creation.parameter.name";
+	public static final String QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE = BUILDER + "steps.creation.parameter.lore";
+	public static final String QUESTS_BUILDER_STEPS_CREATION_ACCEPT = BUILDER + "steps.accept";
+
 
 
 	private static final String Q_COMMAND = QUEST + "command.";

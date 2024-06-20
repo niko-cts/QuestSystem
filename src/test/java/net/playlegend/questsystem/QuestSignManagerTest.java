@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class QuestSignTester {
+public class QuestSignManagerTest {
 
     @Mock
     QuestSystem questSystem;

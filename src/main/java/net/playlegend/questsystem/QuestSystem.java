@@ -43,7 +43,7 @@ public final class QuestSystem extends JavaPlugin {
         pm.registerEvents(new QuestPlayerConnectionListener(this, playerHandler), this);
         pm.registerEvents(new QuestStepListener(playerHandler), this);
         pm.registerEvents(questSign, this);
-        this.commandHandler.addCommands(new QuestAdminCommand(), new LanguageCommand(), new QuestCommand(), questSign);
+        this.commandHandler.addCommands(new QuestAdminCommand(), new LanguageCommand(), new QuestCommand());
 
         new DefaultGermanMessages();
         new DefaultEnglishMessages();

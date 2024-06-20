@@ -95,6 +95,6 @@ public class CraftQuestStep extends QuestStep {
 								List.of(materialName, getMaxAmount()))
 						.split(";"))
 				.setAmount(Math.max(1, Math.min(getMaxAmount(), 64)))
-				.craft();;
+				.craft();
 	}
 }

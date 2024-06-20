@@ -35,7 +35,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         // Commands
         add(SYSTEM_COMMAND_USAGE, "&7Execute the command with &e/${command}");
         add(QUESTS_COMMAND_NOT_FOUND, "&7This quest could &cnot &7be found.");
-        add(QUESTS_COMMAND_ADMIN_USAGE, "questadmin create/list/remove");
+        add(QUESTS_COMMAND_ADMIN_USAGE, "questadmin create/list/remove/sign");
         add(QUESTS_COMMAND_ADMIN_QUEST_USAGE, "questadmin quest create/delete/list");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM, "&7Do you really want to &cdelete &7this Quest? (Click here to confirm)");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL, "&7Quest was successfully deleted.");

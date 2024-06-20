@@ -1,5 +1,6 @@
 package net.playlegend.questsystem.quest;
 
+import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
 import lombok.NonNull;
 import net.playlegend.questsystem.quest.reward.IQuestReward;
 import net.playlegend.questsystem.quest.steps.QuestStep;
@@ -25,9 +26,10 @@ public record Quest(int id,
     public ItemStack getQuestItem(Language language) {
         return new ItemBuilder(Material.WRITABLE_BOOK)
                 .setName(name)
-                .setlore(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_DETAILS_ITEM_LORE,
+                .setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_DETAILS_ITEM_LORE,
                         List.of("${duration}", "${rewards}", "${tasks}"),
-                        List.of(QuestTimingsUtil.calculateNextDuration(finishTimeInSeconds), rewards.size(), completionSteps.size())));
+                        List.of(QuestTimingsUtil.calculateNextDuration(finishTimeInSeconds), rewards.size(), completionSteps.size())))
+                .craft();
     }
 
     public ItemStack getRewardItem(Language language) {
@@ -38,7 +40,7 @@ public record Quest(int id,
     }
 
     public ItemStack getStepItem(Language language) {
-        return new ItemBuilder(Material.IRON_HOE)
+        return new ItemBuilder(Material.IRON_DOOR)
                 .setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_STEPS_NAME))
                 .setLore(completionSteps.stream().map(s -> ChatColor.GRAY + "- " + s.getTaskLine(language)).toList())
                 .craft();

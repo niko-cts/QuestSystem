@@ -1,6 +1,12 @@
 package net.playlegend.questsystem.quest.builder;
 
+import chatzis.nikolas.mc.nikoapi.inventory.ClickAction;
+import chatzis.nikolas.mc.nikoapi.inventory.CustomInventory;
+import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
+import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
+import chatzis.nikolas.mc.nikoapi.util.Utils;
 import net.playlegend.questsystem.QuestSystem;
+import net.playlegend.questsystem.gui.GUIHelper;
 import net.playlegend.questsystem.quest.reward.IQuestReward;
 import net.playlegend.questsystem.quest.reward.RewardType;
 import net.playlegend.questsystem.translation.TranslationKeys;
@@ -11,60 +17,79 @@ import org.bukkit.inventory.ItemStack;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 
+/**
+ * Stores methods to open and modify the rewards of a new quest.
+ *
+ * @author Niko
+ * @see QuestBuilder
+ */
 public class RewardBuildingGUI {
 
-    private RewardBuildingGUI() {
-        throw new UnsupportedOperationException();
-    }
+	private RewardBuildingGUI() {
+		throw new UnsupportedOperationException();
+	}
 
-    protected static void openAllSetRewards(QuestBuilder builder) {
-        for (IQuestReward reward : builder.rewards) {
-            menu.addItem(new ItemBuilder(reward.getRewardDisplayItem(builder.language))
-                    .adLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_REMOVE).split(";"))
-                    .craft(),
-                    new ClickAction() {
+	protected static void openAllSetRewards(QuestBuilder builder) {
+		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(builder.rewards.size() + 1));
+		for (IQuestReward reward : builder.rewards) {
+			menu.addItem(new ItemBuilder(reward.getRewardDisplayItem(builder.language))
+							.addLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_REMOVE).split(";"))
+							.craft(),
+					new ClickAction() {
+						@Override
+						public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
+							builder.rewards.remove(reward);
+							openAllSetRewards(builder);
+						}
+					});
+		}
 
-            builder.rewards.remove(reward);
-                        openAllSetRewards(builder);
-                    });
-        }
-    }
+		GUIHelper.fillInventoryWithBackAndOpen(builder.questPlayer, menu, null, (questPlayer, o) -> builder.openMenu());
+	}
 
-    protected static void addNewRewardSelection(QuestBuilder questBuilder) {
-        for (RewardType type : RewardType.values()) {
-            // on click:
-            menu.addItem(new ItemBuilder(Material.GOLD_INGOT)
-                    .setName(ChatColor.YELLOW + type.name())
-                    .setLore(questBuilder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_ADD).split(";")))
-            if (type.getConstructorParameter() == Integer.class || type.getConstructorParameter() == int.class) {
-                AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.language,
-                        TranslationKeys.QUESTS_BUILDER_MODIFY_INTEGER, type.name(),
-                        amount -> addNewRewardFromType(questBuilder, type, amount));
-            } else if (type.getConstructorParameter() == ItemStack.class) {
-                openItemRewardMenu(questBuilder);
-            } else {
-                QuestSystem.getInstance().getLogger().log(Level.WARNING, "Type not implemented in builder: ", type);
-            }
-        }
-    }
+	protected static void addNewRewardSelection(QuestBuilder builder) {
+		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(RewardType.values().length + 1));
+		for (RewardType type : RewardType.values()) {
+			// on click:
+			menu.addItem(new ItemBuilder(Material.GOLD_INGOT)
+							.setName(ChatColor.YELLOW + type.name())
+							.setLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_ADD).split(";")).craft(),
+					new ClickAction() {
+						@Override
+						public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 
-    private static void openItemRewardMenu(QuestBuilder builder) {
-        builder.questPlayer.getPlayer().closeInventory();
-        builder.addingItemMode = itemStack -> {
-            addNewRewardFromType(builder, RewardType.ITEM, itemStack);
-            builder.openMenu();
-        };
-    }
+							if (type.getConstructorParameter() == Integer.class || type.getConstructorParameter() == int.class) {
+								AnvilInsertionHelper.acceptNumberInAnvilMenu(builder.language,
+										TranslationKeys.QUESTS_BUILDER_MODIFY_INTEGER, type.name(),
+										amount -> addNewRewardFromType(builder, type, amount));
+							} else if (type.getConstructorParameter() == ItemStack.class) {
+								openItemRewardMenu(builder);
+							} else {
+								QuestSystem.getInstance().getLogger().log(Level.WARNING, "Type not implemented in builder: ", type);
+							}
+						}
+					});
+		}
 
-    private static void addNewRewardFromType(QuestBuilder questBuilder, RewardType type, Object parameter) {
-        try {
-            questBuilder.rewards.add(type.getQuestRewardInstance(parameter));
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
-                 IllegalAccessException e) {
-            QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not add quest reward type {0} to QuestBuilder: {1}",
-                    new Object[]{type, e.getMessage()});
-        }
-    }
+		GUIHelper.fillInventoryWithBackAndOpen(builder.questPlayer, menu, null, (questPlayer, o) -> builder.openMenu());
+	}
+
+	private static void openItemRewardMenu(QuestBuilder builder) {
+		builder.openItemInsertion(itemStack -> {
+			addNewRewardFromType(builder, RewardType.ITEM, itemStack);
+			builder.openMenu();
+		});
+	}
+
+	private static void addNewRewardFromType(QuestBuilder questBuilder, RewardType type, Object parameter) {
+		try {
+			questBuilder.rewards.add(type.getQuestRewardInstance(parameter));
+		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+		         IllegalAccessException e) {
+			QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not add quest reward type {0} to QuestBuilder: {1}",
+					new Object[]{type, e.getMessage()});
+		}
+	}
 
 
 }

@@ -2,7 +2,9 @@ package net.playlegend.questsystem.quest.builder;
 
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.util.Consumer;
 
 import java.util.UUID;
@@ -26,7 +28,7 @@ public class AnvilInsertionHelper {
      * @param descriptionTransKey String - description will be shown in the lore.
      * @param stringAcceptable    Function<String, String> - Applies the input. If null is returned insertion was successful, else returned String is error message key.
      */
-    protected static void insertStringInAnvilMenu(Language language,
+    private static void insertStringInAnvilMenu(Language language,
                                                   String descriptionTransKey,
                                                   String replacement,
                                                   Function<String, String> stringAcceptable) {
@@ -62,6 +64,13 @@ public class AnvilInsertionHelper {
         });
     }
 
+    protected static void acceptStringInAnvilMenu(Language language, String descriptionTransKey, String replacement, Consumer<String> input) {
+        insertStringInAnvilMenu(language, descriptionTransKey, replacement, s -> {
+            input.accept(ChatColor.translateAlternateColorCodes('&', s));
+            return null;
+        });
+    }
+
     protected static void acceptUUIDInAnvilMenu(Language language, String descriptionTransKey, String replacement, Consumer<UUID> input) {
         acceptObjectInAnvilMenu(language, descriptionTransKey, replacement,
                 TranslationKeys.QUESTS_BUILDER_NOT_VALID_UUID, UUID::fromString, input);
@@ -75,5 +84,10 @@ public class AnvilInsertionHelper {
     protected static void acceptNumberInAnvilMenu(Language language, String descriptionTransKey, String replacement, Consumer<Integer> input) {
         acceptObjectInAnvilMenu(language, descriptionTransKey, replacement,
                 TranslationKeys.QUESTS_BUILDER_NOT_VALID_NUMBER, Integer::parseInt, input);
+    }
+
+    public static void acceptEntityType(Language language, String descriptionKey, String replacement, Consumer<Object> input) {
+        acceptObjectInAnvilMenu(language, descriptionKey, replacement,
+                TranslationKeys.QUESTS_BUILDER_NOT_VALID_ENTITYTYPE, EntityType::valueOf, input);
     }
 }

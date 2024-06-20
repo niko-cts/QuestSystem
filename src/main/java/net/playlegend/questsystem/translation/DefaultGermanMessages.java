@@ -36,7 +36,7 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
 // Commands
         add(SYSTEM_COMMAND_USAGE, "&7Führe den Befehl mit &e/${command} aus");
         add(QUESTS_COMMAND_NOT_FOUND, "&7Diese Quest konnte &cnicht &7gefunden werden.");
-        add(QUESTS_COMMAND_ADMIN_USAGE, "questadmin create/list/remove");
+        add(QUESTS_COMMAND_ADMIN_USAGE, "questadmin create/list/remove/sign");
         add(QUESTS_COMMAND_ADMIN_QUEST_USAGE, "questadmin quest create/delete/list");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM, "&7Möchtest du diese Quest wirklich &clöschen&7? (Hier klicken, um zu bestätigen)");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL, "&7Quest wurde erfolgreich gelöscht.");

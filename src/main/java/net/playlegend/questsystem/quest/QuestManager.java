@@ -12,6 +12,7 @@ import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.quest.steps.QuestStepType;
 import net.playlegend.questsystem.util.QuestObjectConverterUtil;
 import net.playlegend.questsystem.util.QuestTimingsUtil;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
  */
 public class QuestManager {
 
-	private final List<Quest> quests;
+	private final Vector<Quest> quests;
 	private final PlayerQuestDatabase playerDatabase;
 
 	/**
@@ -39,7 +40,7 @@ public class QuestManager {
 	 * @see QuestDatabase
 	 */
 	public QuestManager() {
-		this.quests = new ArrayList<>();
+		this.quests = new Vector<>();
 		this.playerDatabase = PlayerQuestDatabase.getInstance();
 		QuestDatabase questDatabase = QuestDatabase.getInstance();
 		Logger log = QuestSystem.getInstance().getLogger();
@@ -226,6 +227,7 @@ public class QuestManager {
 	public Optional<Quest> getQuestById(int id) {
 		return getQuests().stream().filter(q -> q.id() == id).findFirst();
 	}
+
 	public Optional<Quest> getQuestByName(String name) {
 		return getQuests().stream().filter(q -> q.name().equals(name)).findFirst();
 	}
@@ -256,5 +258,15 @@ public class QuestManager {
 			quests.remove(quest);
 			QuestDatabase.getInstance().deleteQuest(quest.id());
 		});
+	}
+
+	public void addQuest(String name, String description, List<IQuestReward> rewards, List<QuestStep> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				Optional<Integer> idOptional = QuestDatabase.getInstance().insertNewQuest(name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
+				idOptional.ifPresent(id -> quests.add(new Quest(id, name, description, isPublic, rewards, steps, finishTimeInSeconds, timerRunsOffline)));
+			}
+		}.runTaskAsynchronously(QuestSystem.getInstance());
 	}
 }

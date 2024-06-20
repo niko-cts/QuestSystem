@@ -1,7 +1,11 @@
 package net.playlegend.questsystem.database;
 
+import net.playlegend.questsystem.quest.reward.IQuestReward;
+import net.playlegend.questsystem.quest.steps.QuestStep;
+
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Optional;
 
 public class QuestDatabase {
 
@@ -100,5 +104,9 @@ public class QuestDatabase {
 	public void deleteQuest(int id) {
 		this.dbHandler.delete(List.of(TABLE_QUEST_REWARD_MAP, TABLE_QUEST_STEPS_INFO, TABLE_QUESTS),
 				List.of("WHERE quest_id=" + id, "WHERE quest_id=" + id, "WHERE id=" + id + "LIMIT 1"));
+	}
+
+	public Optional<Integer> insertNewQuest(String name, String description, List<IQuestReward> rewards, List<QuestStep> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
+		return Optional.empty();
 	}
 }
