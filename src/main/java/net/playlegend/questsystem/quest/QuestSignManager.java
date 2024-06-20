@@ -93,7 +93,6 @@ public class QuestSignManager extends APISubCommand implements Listener {
 
     private void deleteSignIfExists(Location location) {
         if (!signs.contains(location)) return;
-        signs.remove(location);
 
         try {
             Files.write(signFile.toPath(), signs.stream().map(this::locationToString).toList(),

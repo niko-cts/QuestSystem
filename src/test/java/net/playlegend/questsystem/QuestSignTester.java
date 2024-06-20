@@ -3,9 +3,12 @@ package net.playlegend.questsystem;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
+import be.seeseemelk.mockbukkit.block.BlockMock;
+import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import net.playlegend.questsystem.quest.QuestSignManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,7 +117,6 @@ public class QuestSignTester {
         method.setAccessible(true);
         method.invoke(questSignManager, location);
 
-        assertFalse(locations.contains(location));
         assertEquals(1, Files.readAllLines(file.toPath()).size());
     }
 
@@ -139,5 +141,30 @@ public class QuestSignTester {
         method.invoke(questSignManager, location);
 
         assertEquals(3, Files.readAllLines(file.toPath()).size());
+    }
+
+    @Test
+    public void fillTxt_instantiate_deleteEvent() throws IOException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InvocationTargetException {
+        Files.write(file.toPath(), List.of("world,0,0,0", "world,0,0,1"));
+        worldMock.getBlockAt(0, 0, 0).setType(Material.ACACIA_SIGN);
+        worldMock.getBlockAt(0, 0, 1).setType(Material.ACACIA_SIGN);
+
+        questSignManager = new QuestSignManager(questSystem);
+
+        Location location = new Location(worldMock, 0, 0, 0);
+
+        Field signs = QuestSignManager.class.getDeclaredField("signs");
+        signs.setAccessible(true);
+        List<Location> locations = (List<Location>) signs.get(questSignManager);
+        assertEquals(2, locations.size());
+
+        assertTrue(locations.contains(location));
+
+        BlockMock blockAt = worldMock.getBlockAt(0, 0, 0);
+        PlayerMock playerMock = server.addPlayer();
+        questSignManager.onBlockBreak(new BlockBreakEvent(blockAt, playerMock));
+
+        assertFalse(locations.contains(location));
+        assertEquals(1, Files.readAllLines(file.toPath()).size());
     }
 }
