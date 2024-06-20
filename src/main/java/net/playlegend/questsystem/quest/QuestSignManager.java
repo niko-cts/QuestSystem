@@ -22,6 +22,12 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+/**
+ * Loads, adds, removes all quest signs.
+ * These are stored in a txt file and will be loaded at initialization.
+ *
+ * @author Niko
+ */
 public class QuestSignManager extends APISubCommand implements Listener {
 
     private static final Set<Material> WHITELISTED_SIGNS = Arrays.stream(Material.values()).filter(m -> m.name().contains("SIGN"))
@@ -58,7 +64,10 @@ public class QuestSignManager extends APISubCommand implements Listener {
                         toDelete.add(location);
                     }
                 }
-                toDelete.forEach(this::deleteSignIfExists);
+                if (!toDelete.isEmpty()) {
+                    questSystem.getLogger().log(Level.INFO, "Deleting illegal sign-positions {0}", toDelete.size());
+                    toDelete.forEach(this::deleteSignIfExists);
+                }
             }
         } catch (IOException exception) {
             questSystem.getLogger().log(Level.SEVERE, "Could not create Sign config", exception);
@@ -67,7 +76,7 @@ public class QuestSignManager extends APISubCommand implements Listener {
 
 
     public void updateSign(QuestPlayer questPlayer) {
-
+        // todo
     }
 
     private void addNewSign(Location location) {
