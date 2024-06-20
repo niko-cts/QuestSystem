@@ -40,8 +40,7 @@ public class FoundAndCompletedQuestsGUI {
 	private static void fillItemsAndOpen(QuestPlayer questPlayer, Map<Quest, Timestamp> questsWithTimestamp, String titleKey,
 	                                     Consumer<QuestPlayer> fromSite) {
 		Language language = questPlayer.getLanguage();
-		CustomInventory menu = new CustomInventory(questsWithTimestamp.size() + 2);
-		menu.addItem(new ItemBuilder(Material.PAPER).setName(language.translateMessage(titleKey)).craft());
+		CustomInventory menu = new CustomInventory(language.translateMessage(titleKey), questsWithTimestamp.size() + 2);
 
 		questsWithTimestamp.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEach(entry -> {
 			menu.addItem(new ItemBuilder(entry.getKey().getQuestItem(language))

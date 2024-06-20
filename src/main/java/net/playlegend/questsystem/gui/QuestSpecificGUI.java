@@ -5,6 +5,7 @@ import chatzis.nikolas.mc.nikoapi.inventory.CustomInventory;
 import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
 import chatzis.nikolas.mc.nikoapi.item.UsefulItems;
 import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
+import lombok.NonNull;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.translation.Language;
@@ -24,7 +25,7 @@ public class QuestSpecificGUI {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void openQuestGUI(QuestPlayer questPlayer, Quest quest, Consumer<QuestPlayer> goBack) {
+	public static void openQuestGUI(@NonNull QuestPlayer questPlayer, @NonNull Quest quest, @NonNull Consumer<QuestPlayer> goBack) {
 		Language language = questPlayer.getLanguage();
 		CustomInventory menu = new CustomInventory(quest.name(), 9 * 3);
 		ItemStack questItem = quest.getQuestItem(language);
@@ -60,8 +61,8 @@ public class QuestSpecificGUI {
 								.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_TIME_NAME))
 								.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_TIME_LORE, "${time}", QuestTimingsUtil.formatDateTime(finishedAt.toInstant())).split(";")).craft()
 						: UsefulItems.HEAD_A()
-								.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_CONFIRM_NAME))
-								.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_CONFIRM_LORE).split(";")).craft(),
+								.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_START_NAME))
+								.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_START_LORE).split(";")).craft(),
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {

@@ -20,7 +20,10 @@ public class QuestInfoCommand extends APISubCommand {
 						List.of("${name}", "${duration}", "${todo}"),
 						List.of(activePlayerQuest.getQuest().name(),
 								QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getLanguage(), activePlayerQuest.getSecondsLeft()),
-								activePlayerQuest.getNextUncompletedSteps())),
+								activePlayerQuest.getNextUncompletedStep()
+										.map(s -> s.getKey().getActiveTaskLine(questPlayer.getLanguage(), s.getValue()))
+										.orElse("unknown")
+						)),
 				() -> questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_QUEST_INFO_NOACTIVE)
 		);
 	}

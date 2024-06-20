@@ -34,7 +34,7 @@ public class QuestListSubCommand extends APISubCommand {
 			String name = arguments[0];
 			Quest quest = getQuestByNameOrMessageError(questPlayer, name);
 			if (quest != null) {
-				QuestSpecificGUI.openQuestGUI(questPlayer, quest);
+				QuestSpecificGUI.openQuestGUI(questPlayer, quest, goBackPlayer -> goBackPlayer.getPlayer().closeInventory());
 			}
 		}
 	}

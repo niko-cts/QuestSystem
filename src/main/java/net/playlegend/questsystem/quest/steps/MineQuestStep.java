@@ -46,9 +46,22 @@ public class MineQuestStep extends QuestStep {
 	 */
 	@Override
 	public String getActiveTaskLine(Language language, int currentAmount) {
-		return language.translateMessage(TranslationKeys.QUESTS_STEP_MINE_PREVIEW,
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_MINE_ACTIVE_LINE,
 				List.of("${item}", "${amount}", "${maxamount}"),
 				List.of(materialName, currentAmount, getMaxAmount()));
+	}
+
+	/**
+	 * Returns a one-liner that explains the quest step. E.g. "Mine 10 blocks"
+	 *
+	 * @param language Language - the language to translate
+	 * @return String - one-liner that explains the step
+	 */
+	@Override
+	public String getTaskLine(Language language) {
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_MINE_NORMAL_LINE,
+				List.of("${item}", "${maxamount}"),
+				List.of(materialName, getMaxAmount()));
 	}
 
 	/**
@@ -61,12 +74,30 @@ public class MineQuestStep extends QuestStep {
 	@Override
 	public ItemStack getActiveTask(Language language, int currentAmount) {
 		return new ItemBuilder(blockToBreak)
-				.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_MINE_LORE,
+				.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_MINE_ACTIVE_LORE,
 								List.of("${item}", "${amount}", "${maxamount}"),
 								List.of(materialName, currentAmount, getMaxAmount()))
 						.split(";"))
 				.setAmount(Math.max(1, Math.min(currentAmount, 64)))
 				.addEnchantment(isStepComplete(currentAmount) ? Enchantment.ARROW_INFINITE : null, 1, true, false)
+				.craft();
+	}
+
+	/**
+	 * Returns an ItemStack that explains the quest step.
+	 * E.g., new ItemStack(Material.STONE).setLore("Mine this block 10 times")
+	 *
+	 * @param language Language - the language to translate in
+	 * @return ItemStack - the item explaining the step
+	 */
+	@Override
+	public ItemStack getTaskItem(Language language) {
+		return new ItemBuilder(blockToBreak)
+				.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_MINE_NORMAL_LORE,
+								List.of("${item}", "${maxamount}"),
+								List.of(materialName, getMaxAmount()))
+						.split(";"))
+				.setAmount(Math.max(1, Math.min(getMaxAmount(), 64)))
 				.craft();
 	}
 }

@@ -63,7 +63,7 @@ public class TranslationKeys {
 	public static final String QUESTS_COMMAND_QUEST_INFO_DISPLAY = Q_COMMAND + "quest.info.display";
 	public static final String QUESTS_COMMAND_QUEST_INFO_NOACTIVE = Q_COMMAND + "quest.info.noactive";
 
-
+	// GUI
 	private static final String GUI = QUEST + "gui";
 	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_NO_ACTIVE_NAME = GUI + "overview.noactive.name";
 	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_NO_ACTIVE_LORE = GUI + "overview.noactive.lore";
@@ -105,13 +105,17 @@ public class TranslationKeys {
 	public static final String QUESTS_GUI_PUBLIC_LORE = GUI + "public.lore";
 	public static final String QUESTS_GUI_QUEST_DETAILS_LORE = GUI + "details.lore";
 
+	public static final String QUESTS_GUI_ACCEPT_START_NAME = GUI + "accept.start.name";
+	public static final String QUESTS_GUI_ACCEPT_START_LORE = GUI + "accept.start.lore";
 	public static final String QUESTS_GUI_ACCEPT_CONFIRM_NAME = GUI + "accept.confirm.name";
 	public static final String QUESTS_GUI_ACCEPT_CONFIRM_LORE = GUI + "accept.confirm.lore";
 	public static final String QUESTS_GUI_ACCEPT_TITLE = GUI + "accept.title";
 	public static final String QUESTS_GUI_QUEST_TIME_NAME = GUI + "quest.time.name";
 	public static final String QUESTS_GUI_QUEST_TIME_LORE = GUI + "quest.time.lore";
+	public static final String QUESTS_GUI_QUEST_STEPS_NAME = GUI + "quest.steps.name";
+	public static final String QUESTS_GUI_QUEST_REWARD_NAME = GUI + "quest.reward.name";
+	public static final String QUESTS_GUI_QUEST_DETAILS_ITEM_LORE = GUI + "quest.details.lore";
 	public static final String QUESTS_GUI_ACCEPT_REWARD = GUI + "accept.reward";
-
 
 
 	public static final String QUESTS_GUI_BACK = GUI + "back";
@@ -124,14 +128,22 @@ public class TranslationKeys {
 
 
 	// STEPS
-	public static final String QUESTS_STEP_CRAFT_PREVIEW = QUEST + "step.craft.preview";
-	public static final String QUESTS_STEP_CRAFT_LORE = QUEST + "step.craft.lore";
-	public static final String QUESTS_STEP_MINE_PREVIEW = QUEST + "step.mine.preview";
-	public static final String QUESTS_STEP_MINE_LORE = QUEST + "step.mine.lore";
-	public static final String QUESTS_STEP_KILL_PREVIEW = QUEST + "step.kill.preview";
-	public static final String QUESTS_STEP_KILL_LORE = QUEST + "step.kill.lore";
-	public static final String QUESTS_STEP_NPC_PREVIEW = QUEST + "step.npc.preview";
-	public static final String QUESTS_STEP_NPC_LORE = QUEST + "step.npc.lore";
+	public static final String QUESTS_STEP_CRAFT_NORMAL_LINE = QUEST + "step.craft.preview.line";
+	public static final String QUESTS_STEP_CRAFT_ACTIVE_LINE = QUEST + "step.craft.active.line";
+	public static final String QUESTS_STEP_CRAFT_NORMAL_LORE = QUEST + "step.craft.normal.lore";
+	public static final String QUESTS_STEP_CRAFT_ACTIVE_LORE = QUEST + "step.craft.active.lore";
+	public static final String QUESTS_STEP_MINE_NORMAL_LINE = QUEST + "step.mine.preview.line";
+	public static final String QUESTS_STEP_MINE_ACTIVE_LINE = QUEST + "step.mine.active.line";
+	public static final String QUESTS_STEP_MINE_NORMAL_LORE = QUEST + "step.mine.preview.lore";
+	public static final String QUESTS_STEP_MINE_ACTIVE_LORE = QUEST + "step.mine.active.lore";
+	public static final String QUESTS_STEP_KILL_NORMAL_LINE = QUEST + "step.kill.preview.line";
+	public static final String QUESTS_STEP_KILL_ACTIVE_LINE = QUEST + "step.kill.active.line";
+	public static final String QUESTS_STEP_KILL_NORMAL_LORE = QUEST + "step.kill.preview.lore";
+	public static final String QUESTS_STEP_KILL_ACTIVE_LORE = QUEST + "step.kill.active.lore";
+	public static final String QUESTS_STEP_NPC_NORMAL_LINE = QUEST + "step.npc.preview.line";
+	public static final String QUESTS_STEP_NPC_ACTIVE_LINE = QUEST + "step.npc.active.line";
+	public static final String QUESTS_STEP_NPC_NORMAL_LORE = QUEST + "step.npc.preview.lore";
+	public static final String QUESTS_STEP_NPC_ACTIVE_LORE = QUEST + "step.npc.active.lore";
 
 	// REWARDS
 	public static final String QUESTS_REWARD_COINS_PREVIEW = QUEST + "reward.coins.preview";
@@ -145,3 +157,4 @@ public class TranslationKeys {
 
 
 }
+

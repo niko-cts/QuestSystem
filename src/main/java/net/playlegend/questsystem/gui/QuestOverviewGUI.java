@@ -38,7 +38,7 @@ public class QuestOverviewGUI {
 		} else {
 			ActivePlayerQuest activeQuest = activeQuestOptional.get();
 			menu.setItem(10, new ItemBuilder(Material.REDSTONE)
-							.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_OVERVIEW_ACTIVE_NAME))
+							.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_OVERVIEW_ACTIVE_NAME, "${name}", activeQuest.getQuest().name()))
 							.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_OVERVIEW_ACTIVE_LORE, "${name}", activeQuest.getQuest().name()).split(";")).craft(),
 					new ClickAction(Sound.BLOCK_CHEST_OPEN) {
 						@Override
