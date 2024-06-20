@@ -47,7 +47,7 @@ public class QuestPlayer {
 
 	private ActivePlayerQuest activePlayerQuest;
 
-	public QuestPlayer(Player player, Language language, Timestamp lastLogout, int coins) {
+	public QuestPlayer(@NonNull Player player, @NonNull Language language, @NonNull Timestamp lastLogout, int coins) {
 		this.player = player;
 		this.language = language;
 		this.lastLogout = lastLogout;

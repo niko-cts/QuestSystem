@@ -2,7 +2,7 @@ package net.playlegend.questsystem.commands.admin;
 
 import net.playlegend.questsystem.commands.handler.APISubCommand;
 import net.playlegend.questsystem.player.QuestPlayer;
-import net.playlegend.questsystem.quest.QuestBuilder;
+import net.playlegend.questsystem.quest.builder.QuestBuilder;
 import net.playlegend.questsystem.translation.TranslationKeys;
 
 public class QuestCreateSubCommand extends APISubCommand {

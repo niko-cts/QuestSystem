@@ -14,6 +14,19 @@ public class TranslationKeys {
 	}
 
 	private static final String QUEST = "quests.";
+
+
+
+	private static final String BUILDER = QUEST + "builder.";
+	public static final String QUESTS_BUILDER_NOT_VALID_NUMBER = BUILDER + "input.invalid.number";
+	public static final String QUESTS_BUILDER_NOT_VALID_UUID = BUILDER + "input.invalid.uuid";
+	public static final String QUESTS_BUILDER_NOT_VALID_MATERIAL = BUILDER + "input.invalid.material";
+
+	public static final String QUESTS_BUILDER_MODIFY_INTEGER = BUILDER + "input.modify.integer";
+	public static final String QUESTS_BUILDER_MODIFY_REMOVE = BUILDER + "input.modify.remove";
+	public static final String QUESTS_BUILDER_MODIFY_ADD = BUILDER + "input.modify.add";
+
+
 	private static final String Q_COMMAND = QUEST + "command.";
 	private static final String QUEST_EVENT = QUEST + "event";
 	public static final String QUESTS_EVENT_TIMER_EXPIRED = QUEST_EVENT + "timer.expired";
