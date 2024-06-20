@@ -8,6 +8,7 @@ package net.playlegend.questsystem.translation;
 public class TranslationKeys {
 
 
+
 	private TranslationKeys() {
 		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
 	}
@@ -46,6 +47,9 @@ public class TranslationKeys {
 	public static final String QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL = Q_COMMAND + "admin.quest.delete.successful";
 	public static final String QUESTS_COMMAND_ADMIN_QUEST_LIST_NO_QUESTS = Q_COMMAND + "admin.quest.list.noquests";
 	public static final String QUESTS_COMMAND_ADMIN_QUEST_LIST = Q_COMMAND + "admin.quest.list.show";
+	public static final String QUESTS_COMMAND_ADMIN_SIGN_USAGE = Q_COMMAND + "admin.sign.usage";
+	public static final String QUESTS_COMMAND_ADMIN_SIGN_NOT_SIGN = Q_COMMAND + "admin.sign.notviewing";
+	public static final String QUESTS_COMMAND_ADMIN_SIGN_ADDED = Q_COMMAND + "admin.sign.added";
 
 	// /language
 	public static final String QUESTS_COMMAND_LANGUAGE_USAGE = Q_COMMAND + "language.usage";

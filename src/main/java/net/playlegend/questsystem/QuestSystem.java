@@ -10,6 +10,7 @@ import net.playlegend.questsystem.listener.QuestPlayerConnectionListener;
 import net.playlegend.questsystem.listener.QuestStepListener;
 import net.playlegend.questsystem.player.PlayerHandler;
 import net.playlegend.questsystem.quest.QuestManager;
+import net.playlegend.questsystem.quest.QuestSignManager;
 import net.playlegend.questsystem.translation.DefaultEnglishMessages;
 import net.playlegend.questsystem.translation.DefaultGermanMessages;
 import net.playlegend.questsystem.translation.LanguageHandler;
@@ -25,6 +26,7 @@ public final class QuestSystem extends JavaPlugin {
     private QuestManager questManager;
     private PlayerHandler playerHandler;
     private CommandHandler commandHandler;
+    private QuestSignManager questSign;
 
 
     @Override
@@ -35,11 +37,13 @@ public final class QuestSystem extends JavaPlugin {
         this.playerHandler = new PlayerHandler();
         this.commandHandler = new CommandHandler();
         this.questManager = new QuestManager();
+        this.questSign = new QuestSignManager(this);
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new QuestPlayerConnectionListener(this, playerHandler), this);
         pm.registerEvents(new QuestStepListener(playerHandler), this);
-        this.commandHandler.addCommands(new QuestAdminCommand(), new LanguageCommand(), new QuestCommand());
+        pm.registerEvents(questSign, this);
+        this.commandHandler.addCommands(new QuestAdminCommand(), new LanguageCommand(), new QuestCommand(), questSign);
 
         new DefaultGermanMessages();
         new DefaultEnglishMessages();

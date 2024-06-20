@@ -8,6 +8,7 @@ import lombok.NonNull;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.playlegend.questsystem.QuestSystem;
+import net.playlegend.questsystem.events.PlayerQuestUpdateEvent;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.quest.QuestManager;
 import net.playlegend.questsystem.quest.exception.QuestNotFoundException;
@@ -80,7 +81,7 @@ public class QuestPlayer {
 			sendMessage(TranslationKeys.QUESTS_EVENT_FINISHED, "${name}", activePlayerQuest.getQuest().name());
 			setActivePlayerQuest(null);
 
-			ScoreboardUtil.updateScoreboard(this);
+			questUpdateEvent();
 		}
 	}
 
@@ -106,7 +107,7 @@ public class QuestPlayer {
 		if (activePlayerQuest != null && activePlayerQuest.getSecondsLeft() <= 0) {
 			sendMessage(TranslationKeys.QUESTS_EVENT_TIMER_EXPIRED, "${name}", activePlayerQuest.getQuest().name());
 			setActivePlayerQuest(null);
-			ScoreboardUtil.updateScoreboard(this);
+			questUpdateEvent();
 		}
 	}
 
@@ -118,18 +119,18 @@ public class QuestPlayer {
 	public void switchActiveQuest(@NonNull Quest quest) {
 		createAndSetPlayerQuest(quest);
 		sendMessage(TranslationKeys.QUESTS_EVENT_SWITCHED, "${name}", quest.name());
-		ScoreboardUtil.updateScoreboard(this);
+		questUpdateEvent();
 	}
 
 	public void startActiveQuest(@NonNull Quest quest) {
 		createAndSetPlayerQuest(quest);
 		sendMessage(TranslationKeys.QUESTS_EVENT_STARTED, "${name}", quest.name());
-		ScoreboardUtil.updateScoreboard(this);
+		questUpdateEvent();
 	}
 
 	public void cancelActiveQuest() {
 		setActivePlayerQuest(null);
-		ScoreboardUtil.updateScoreboard(this);
+		questUpdateEvent();
 	}
 
 	/**
@@ -142,9 +143,16 @@ public class QuestPlayer {
 	public boolean playerDidQuestStep(ActivePlayerQuest quest, QuestStep step) {
 		playerDbInformationHolder.markActiveQuestDirty();
 		boolean isDone = quest.playerDidQuestStep(step);
-		ScoreboardUtil.updateScoreboard(this);
+		questUpdateEvent();
 		return isDone;
 	}
+
+	private void questUpdateEvent() {
+		QuestSystem.getInstance().getServer().getPluginManager().callEvent(new PlayerQuestUpdateEvent(this));
+		ScoreboardUtil.updateScoreboard(this);
+		QuestSystem.getInstance().getQuestSign().updateSign(this);
+	}
+
 
 	/**
 	 * Will create a new ActivePlayerQuest.
@@ -181,7 +189,7 @@ public class QuestPlayer {
 	public void setLanguage(Language language) {
 		this.language = language;
 		this.playerDbInformationHolder.markLanguageDirty();
-		ScoreboardUtil.updateScoreboard(this);
+		questUpdateEvent();
 	}
 
 	/**
@@ -192,7 +200,7 @@ public class QuestPlayer {
 	public void setCoins(int coins) {
 		this.coins = coins;
 		this.playerDbInformationHolder.markCoinsDirty();
-		ScoreboardUtil.updateScoreboard(this);
+		questUpdateEvent();
 	}
 
 

@@ -41,6 +41,10 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL, "&7Quest was successfully deleted.");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST_NO_QUESTS, "&7There are no quests listed.");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST, "&7Every quest: &e${quest}");
+        add(QUESTS_COMMAND_ADMIN_SIGN_USAGE, "/questadmin sign - Adds a sign");
+        add(QUESTS_COMMAND_ADMIN_SIGN_NOT_SIGN, "&7You are &cnot &7looking at a sign.");
+        add(QUESTS_COMMAND_ADMIN_SIGN_ADDED, "&7A new sign has been &aadded");
+
         add(QUESTS_COMMAND_LANGUAGE_USAGE, "language <language>");
         add(QUESTS_COMMAND_LANGUAGE_UPDATED, "&aYour language has been changed.");
         add(QUESTS_COMMAND_LANGUAGE_ILLEGAL, "&7This language is &cnot &7available");
