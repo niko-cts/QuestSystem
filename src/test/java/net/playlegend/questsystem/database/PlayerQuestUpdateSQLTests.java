@@ -1,7 +1,5 @@
-package net.playlegend.questsystem.database.player;
+package net.playlegend.questsystem.database;
 
-import net.playlegend.questsystem.database.DatabaseHandler;
-import net.playlegend.questsystem.database.PlayerInfoDatabase;
 import net.playlegend.questsystem.player.PlayerDatabaseInformationHolder;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
