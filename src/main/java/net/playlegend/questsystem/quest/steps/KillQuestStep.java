@@ -19,14 +19,12 @@ import java.util.List;
  *
  * @author Niko
  */
-public class KillQuestStep extends QuestStep {
+public class KillQuestStep extends QuestStep<EntityType> {
 
-	private final EntityType entityToKill;
 	private final String entityName;
 
 	public KillQuestStep(int id, int order, int maxAmount, EntityType entityType) {
-		super(id, order, maxAmount);
-		this.entityToKill = entityType;
+		super(QuestStepType.KILL, id, order, maxAmount, entityType);
 		this.entityName = EntityTypeConverterUtil.convertEntityToName(entityType);
 	}
 
@@ -40,7 +38,7 @@ public class KillQuestStep extends QuestStep {
 	@Override
 	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof EntityDeathEvent deathEvent) {
-			return deathEvent.getEntityType() == entityToKill;
+			return deathEvent.getEntityType() == getStepObject();
 		}
 		return false;
 	}
@@ -81,7 +79,7 @@ public class KillQuestStep extends QuestStep {
 	 */
 	@Override
 	public ItemStack getActiveTask(Language language, int currentAmount) {
-		return new ItemBuilder(entityToKill)
+		return new ItemBuilder(getStepObject())
 				.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_KILL_ACTIVE_LORE,
 								List.of("${entity}", "${amount}", "${maxamount}"),
 								List.of(entityName, currentAmount, getMaxAmount()))
@@ -99,7 +97,7 @@ public class KillQuestStep extends QuestStep {
 	 */
 	@Override
 	public ItemStack getTaskItem(Language language) {
-		return new ItemBuilder(entityToKill)
+		return new ItemBuilder(getStepObject())
 				.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_KILL_NORMAL_LORE,
 								List.of("${entity}", "${maxamount}"),
 								List.of(entityName, getMaxAmount()))

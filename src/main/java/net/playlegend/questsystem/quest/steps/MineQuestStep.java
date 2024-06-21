@@ -13,14 +13,12 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class MineQuestStep extends QuestStep {
+public class MineQuestStep extends QuestStep<Material> {
 
-	private final Material blockToBreak;
 	private final String materialName;
 
 	public MineQuestStep(int id, int order, int maxAmount, Material blockToBreak) {
-		super(id, order, maxAmount);
-		this.blockToBreak = blockToBreak;
+		super(QuestStepType.MINE, id, order, maxAmount, blockToBreak);
 		this.materialName = MaterialConverterUtil.convertMaterialToName(blockToBreak);
 	}
 
@@ -34,7 +32,7 @@ public class MineQuestStep extends QuestStep {
 	@Override
 	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof BlockBreakEvent blockBreak) {
-			return blockBreak.getBlock().getType() == blockToBreak;
+			return blockBreak.getBlock().getType() == getStepObject();
 		}
 		return false;
 	}
@@ -73,7 +71,7 @@ public class MineQuestStep extends QuestStep {
 	 */
 	@Override
 	public ItemStack getActiveTask(Language language, int currentAmount) {
-		return new ItemBuilder(blockToBreak)
+		return new ItemBuilder(getStepObject())
 				.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_MINE_ACTIVE_LORE,
 								List.of("${item}", "${amount}", "${maxamount}"),
 								List.of(materialName, currentAmount, getMaxAmount()))
@@ -92,7 +90,7 @@ public class MineQuestStep extends QuestStep {
 	 */
 	@Override
 	public ItemStack getTaskItem(Language language) {
-		return new ItemBuilder(blockToBreak)
+		return new ItemBuilder(getStepObject())
 				.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_MINE_NORMAL_LORE,
 								List.of("${item}", "${maxamount}"),
 								List.of(materialName, getMaxAmount()))

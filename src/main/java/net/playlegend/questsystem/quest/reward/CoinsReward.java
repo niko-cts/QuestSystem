@@ -14,7 +14,11 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Niko
  */
-public record CoinsReward(Integer amount) implements IQuestReward {
+public class CoinsReward extends QuestReward<Integer> {
+
+    public CoinsReward(Integer amount) {
+        super(RewardType.COINS, amount);
+    }
 
     /**
      * Will be called, when a player finished the quest.
@@ -24,7 +28,7 @@ public record CoinsReward(Integer amount) implements IQuestReward {
      */
     @Override
     public void rewardPlayer(QuestPlayer player) {
-        player.setCoins(player.getCoins() + amount());
+        player.setCoins(player.getCoins() + getRewardObject());
         player.playSound(Sound.ENTITY_PLAYER_LEVELUP);
     }
 
@@ -36,7 +40,7 @@ public record CoinsReward(Integer amount) implements IQuestReward {
      */
     @Override
     public String getRewardPreview(Language language) {
-        return language.translateMessage(TranslationKeys.QUESTS_REWARD_COINS_PREVIEW, "${amount}", amount);
+        return language.translateMessage(TranslationKeys.QUESTS_REWARD_COINS_PREVIEW, "${amount}", getRewardObject());
     }
 
     /**
@@ -49,7 +53,7 @@ public record CoinsReward(Integer amount) implements IQuestReward {
     @Override
     public ItemStack getRewardDisplayItem(Language language) {
         return new ItemBuilder(Material.GOLD_INGOT)
-                .setName(language.translateMessage(TranslationKeys.QUESTS_REWARD_COINS_NAME, "${amount}", amount))
-                .setLore(language.translateMessage(TranslationKeys.QUESTS_REWARD_COINS_LORE, "${amount}", amount).split(";")).craft();
+                .setName(language.translateMessage(TranslationKeys.QUESTS_REWARD_COINS_NAME, "${amount}", getRewardObject()))
+                .setLore(language.translateMessage(TranslationKeys.QUESTS_REWARD_COINS_LORE, "${amount}", getRewardObject()).split(";")).craft();
     }
 }

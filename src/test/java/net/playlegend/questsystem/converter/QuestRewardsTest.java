@@ -30,28 +30,28 @@ public class QuestRewardsTest {
     public void convertObject_coinReward_createInstance() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         CoinsReward coinsReward = new CoinsReward(42);
 
-        Object coins = QuestObjectConverterUtil.convertDatabaseStringToQuestRewardObject(String.valueOf(coinsReward.amount()), RewardType.COINS);
+        Object coins = QuestObjectConverterUtil.convertDatabaseStringToQuestRewardObject(String.valueOf(coinsReward.getRewardObject()), RewardType.COINS);
         assertNotNull(coins);
-        assertEquals(coinsReward.amount(), coins);
+        assertEquals(coinsReward.getRewardObject(), coins);
 
         assertDoesNotThrow(() -> RewardType.COINS.getQuestRewardInstance(coins), "Probably wrong parameters for reward");
 
-        IQuestReward questRewardInstance = RewardType.COINS.getQuestRewardInstance(coins);
+        QuestReward<?> questRewardInstance = RewardType.COINS.getQuestRewardInstance(coins);
         assertEquals(coinsReward, questRewardInstance);
     }
 
     @Test
     public void convertObject_expReward_createInstance() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        ExpReward expReward = new ExpReward(42);
+        LevelReward levelReward = new LevelReward(42);
 
-        Object lvl = QuestObjectConverterUtil.convertDatabaseStringToQuestRewardObject(String.valueOf(expReward.amount()), RewardType.LVL);
+        Object lvl = QuestObjectConverterUtil.convertDatabaseStringToQuestRewardObject(String.valueOf(levelReward.getRewardObject()), RewardType.LVL);
         assertNotNull(lvl);
-        assertEquals(expReward.amount(), lvl);
+        assertEquals(levelReward.getRewardObject(), lvl);
 
         assertDoesNotThrow(() -> RewardType.LVL.getQuestRewardInstance(lvl), "Probably wrong parameters for reward");
 
-        IQuestReward questRewardInstance = RewardType.LVL.getQuestRewardInstance(lvl);
-        assertEquals(expReward, questRewardInstance);
+        QuestReward<?> questRewardInstance = RewardType.LVL.getQuestRewardInstance(lvl);
+        assertEquals(levelReward, questRewardInstance);
     }
 
 
@@ -59,13 +59,13 @@ public class QuestRewardsTest {
     public void convertObject_itemReward_createInstance() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         ItemReward itemReward = new ItemReward(new ItemStack(Material.IRON_SWORD));
 
-        String base64 = ItemToBase64ConverterUtil.toBase64(itemReward.item());
+        String base64 = ItemToBase64ConverterUtil.toBase64(itemReward.getRewardObject());
 
         Object item = QuestObjectConverterUtil.convertDatabaseStringToQuestRewardObject(base64, RewardType.ITEM);
         assertNotNull(item);
-        assertEquals(itemReward.item(), item);
+        assertEquals(itemReward.getRewardObject(), item);
 
-        IQuestReward questRewardInstance = RewardType.ITEM.getQuestRewardInstance(item);
+        QuestReward<?> questRewardInstance = RewardType.ITEM.getQuestRewardInstance(item);
         assertEquals(itemReward, questRewardInstance);
     }
 

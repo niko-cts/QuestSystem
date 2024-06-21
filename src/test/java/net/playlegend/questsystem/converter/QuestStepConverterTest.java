@@ -33,7 +33,7 @@ public class QuestStepConverterTest {
 	public void stepConverter_TypeKill_thenInstantiate() throws IOException, ClassNotFoundException {
 		KillQuestStep questStep = new KillQuestStep(0, 0, 0, EntityType.BAT);
 
-		QuestStep createdQuestStep =
+		QuestStep<?> createdQuestStep =
 				QuestObjectConverterUtil.instantiateQuestStepFromTypeAndParameter(QuestStepType.KILL, 0,0 ,0, EntityType.BAT.toString());
 		assertEquals(questStep, createdQuestStep);
 	}
@@ -43,7 +43,7 @@ public class QuestStepConverterTest {
 		UUID uuid = UUID.randomUUID();
 		TalkToNPCQuestStep questStep = new TalkToNPCQuestStep(0, 0, 0, uuid);
 
-		QuestStep createdQuestStep =
+		QuestStep<?> createdQuestStep =
 				QuestObjectConverterUtil.instantiateQuestStepFromTypeAndParameter(QuestStepType.SPEAK, 0, 0,0, uuid.toString());
 		assertEquals(questStep, createdQuestStep);
 	}
@@ -53,7 +53,7 @@ public class QuestStepConverterTest {
 	public void stepConverter_TypeMine_thenInstantiate() throws IOException, ClassNotFoundException {
 		MineQuestStep questStep = new MineQuestStep(0, 0, 0, Material.STONE);
 
-		QuestStep createdQuestStep =
+		QuestStep<?> createdQuestStep =
 				QuestObjectConverterUtil.instantiateQuestStepFromTypeAndParameter(QuestStepType.MINE, 0,0, 0, Material.STONE.toString());
 		assertEquals(questStep, createdQuestStep);
 	}
@@ -67,7 +67,7 @@ public class QuestStepConverterTest {
 		String base64FromDatabase = ItemToBase64ConverterUtil.toBase64(itemStack);
 		assertNotNull(base64FromDatabase);
 
-		QuestStep createdQuestStep =
+		QuestStep<?> createdQuestStep =
 				QuestObjectConverterUtil.instantiateQuestStepFromTypeAndParameter(QuestStepType.CRAFT, 0, 0,0, base64FromDatabase);
 		assertEquals(questStep, createdQuestStep);
 	}

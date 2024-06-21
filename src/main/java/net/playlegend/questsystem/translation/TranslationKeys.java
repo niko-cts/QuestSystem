@@ -7,8 +7,6 @@ package net.playlegend.questsystem.translation;
  */
 public class TranslationKeys {
 
-
-
 	private TranslationKeys() {
 		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
 	}

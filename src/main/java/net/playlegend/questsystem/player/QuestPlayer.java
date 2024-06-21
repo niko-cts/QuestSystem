@@ -92,13 +92,6 @@ public class QuestPlayer {
 		sendMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, "${name}", quest.name());
 	}
 
-	public List<Quest> getEveryFoundOrPublicQuest() {
-		return QuestSystem.getInstance().getQuestManager().getQuests().stream()
-				.filter(q -> activePlayerQuest == null || activePlayerQuest.getQuest().id() != q.id())
-				.filter(q -> !finishedQuests.containsKey(q))
-				.filter(q -> q.isPublic() || foundQuests.containsKey(q)).toList();
-	}
-
 	/**
 	 * Check if expired and send every needed update
 	 */
@@ -140,7 +133,7 @@ public class QuestPlayer {
 	 * @param step  QuestStep - the step which was done
 	 * @return boolean - The questStep is finished
 	 */
-	public boolean playerDidQuestStep(ActivePlayerQuest quest, QuestStep step) {
+	public boolean playerDidQuestStep(ActivePlayerQuest quest, QuestStep<?> step) {
 		playerDbInformationHolder.markActiveQuestDirty();
 		boolean isDone = quest.playerDidQuestStep(step);
 		questUpdateEvent();

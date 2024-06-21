@@ -14,8 +14,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
@@ -80,19 +80,22 @@ public class QuestSignManager extends APISubCommand implements Listener {
     }
 
     private void addNewSign(Location location) {
+        signs.add(location);
         try {
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(signFile), StandardCharsets.UTF_8
-            ));
-            writer.write(locationToString(location));
-            writer.close();
+            Files.write(signFile.toPath(), signs.stream().map(this::locationToString).toList(),
+                    StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+//            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+//                    new FileOutputStream(signFile), StandardCharsets.UTF_8
+//            ));
+//            writer.write(locationToString(location));
+//            writer.close();
         } catch (IOException exception) {
             questSystem.getLogger().log(Level.SEVERE, "Could not add sign location", exception);
         }
     }
 
     private void deleteSignIfExists(Location location) {
-        if (!signs.contains(location)) return;
+        signs.remove(location);
 
         try {
             Files.write(signFile.toPath(), signs.stream().map(this::locationToString).toList(),

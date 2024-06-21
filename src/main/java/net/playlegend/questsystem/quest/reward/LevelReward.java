@@ -8,7 +8,11 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 
-public record ExpReward(Integer amount) implements IQuestReward {
+public class LevelReward extends QuestReward<Integer> {
+
+	public LevelReward(Integer level) {
+		super(RewardType.LVL, level);
+	}
 
 	/**
 	 * Will be called, when a player finished the quest.
@@ -18,7 +22,7 @@ public record ExpReward(Integer amount) implements IQuestReward {
 	 */
 	@Override
 	public void rewardPlayer(QuestPlayer player) {
-		player.getPlayer().setLevel(player.getPlayer().getLevel() + amount);
+		player.getPlayer().setLevel(player.getPlayer().getLevel() + getRewardObject());
 		player.playSound(Sound.ENTITY_PLAYER_LEVELUP);
 	}
 
@@ -30,7 +34,7 @@ public record ExpReward(Integer amount) implements IQuestReward {
 	 */
 	@Override
 	public String getRewardPreview(Language language) {
-		return language.translateMessage(TranslationKeys.QUESTS_REWARD_LVL_PREVIEW, "${amount}", amount);
+		return language.translateMessage(TranslationKeys.QUESTS_REWARD_LVL_PREVIEW, "${amount}", getRewardObject());
 	}
 
 	/**
@@ -43,7 +47,7 @@ public record ExpReward(Integer amount) implements IQuestReward {
 	@Override
 	public ItemStack getRewardDisplayItem(Language language) {
 		return new ItemBuilder(Material.EXPERIENCE_BOTTLE)
-				.setName(language.translateMessage(TranslationKeys.QUESTS_REWARD_LVL_NAME, "${amount}", amount))
-				.setLore(language.translateMessage(TranslationKeys.QUESTS_REWARD_LVL_LORE, "${amount}", amount).split(";")).craft();
+				.setName(language.translateMessage(TranslationKeys.QUESTS_REWARD_LVL_NAME, "${amount}", getRewardObject()))
+				.setLore(language.translateMessage(TranslationKeys.QUESTS_REWARD_LVL_LORE, "${amount}", getRewardObject()).split(";")).craft();
 	}
 }

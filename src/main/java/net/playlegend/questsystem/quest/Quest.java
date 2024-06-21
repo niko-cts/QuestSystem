@@ -2,7 +2,7 @@ package net.playlegend.questsystem.quest;
 
 import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
 import lombok.NonNull;
-import net.playlegend.questsystem.quest.reward.IQuestReward;
+import net.playlegend.questsystem.quest.reward.QuestReward;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
@@ -17,8 +17,8 @@ public record Quest(int id,
                     @NonNull String name,
                     @NonNull String description,
                     boolean isPublic,
-                    @NonNull List<IQuestReward> rewards,
-                    @NonNull List<QuestStep> completionSteps,
+                    @NonNull List<QuestReward<?>> rewards,
+                    @NonNull List<QuestStep<?>> completionSteps,
                     long finishTimeInSeconds,
                     boolean timerRunsOffline
                     ) {

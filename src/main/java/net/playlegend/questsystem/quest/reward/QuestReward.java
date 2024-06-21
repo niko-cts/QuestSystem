@@ -1,5 +1,6 @@
 package net.playlegend.questsystem.quest.reward;
 
+import lombok.Data;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +13,12 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Niko
  */
-public interface IQuestReward {
+@Data
+public abstract class QuestReward<T> {
+
+	private final RewardType rewardType;
+	private final T rewardObject;
+
 
 	/**
 	 * Will be called, when a player finished the quest.
@@ -20,7 +26,7 @@ public interface IQuestReward {
 	 *
 	 * @param player {@link QuestPlayer} - the quest player who finished the quest.
 	 */
-	void rewardPlayer(QuestPlayer player);
+	public abstract void rewardPlayer(QuestPlayer player);
 
 	/**
 	 * Returns a one-liner that previews the reward. E.g. "10 level"
@@ -28,7 +34,7 @@ public interface IQuestReward {
 	 * @param language Language - the language to translate in
 	 * @return String - the reward explanation
 	 */
-	String getRewardPreview(Language language);
+	public abstract String getRewardPreview(Language language);
 
 	/**
 	 * Returns an ItemStack that explains the reward.
@@ -37,6 +43,6 @@ public interface IQuestReward {
 	 * @param language Language - the language to translate in
 	 * @return ItemStack - the item explaining the reward
 	 */
-	ItemStack getRewardDisplayItem(Language language);
+	public abstract ItemStack getRewardDisplayItem(Language language);
 
 }

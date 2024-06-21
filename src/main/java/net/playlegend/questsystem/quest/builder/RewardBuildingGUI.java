@@ -7,7 +7,7 @@ import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
 import chatzis.nikolas.mc.nikoapi.util.Utils;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.gui.GUIHelper;
-import net.playlegend.questsystem.quest.reward.IQuestReward;
+import net.playlegend.questsystem.quest.reward.QuestReward;
 import net.playlegend.questsystem.quest.reward.RewardType;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.ChatColor;
@@ -31,7 +31,7 @@ public class RewardBuildingGUI {
 
 	protected static void openAllSetRewards(QuestBuilder builder) {
 		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(builder.rewards.size() + 1));
-		for (IQuestReward reward : builder.rewards) {
+		for (QuestReward reward : builder.rewards) {
 			menu.addItem(new ItemBuilder(reward.getRewardDisplayItem(builder.language))
 							.addLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_REMOVE).split(";"))
 							.craft(),

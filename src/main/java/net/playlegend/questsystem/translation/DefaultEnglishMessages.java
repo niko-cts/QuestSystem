@@ -13,6 +13,40 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
 
     public DefaultEnglishMessages() {
         super(Locale.ENGLISH);
+        // builder
+        add(QUESTS_BUILDER_NOT_VALID_NUMBER, "&cYou inserted a invalid number");
+        add(QUESTS_BUILDER_NOT_VALID_UUID, "&cYou inserted a invalid uuid");
+        add(QUESTS_BUILDER_NOT_VALID_MATERIAL, "&cYou inserted a invalid material");
+        add(QUESTS_BUILDER_NOT_VALID_ENTITYTYPE, "&cYou inserted a invalid entity type");
+        add(QUESTS_BUILDER_MODIFY_INTEGER, "&7Insert a number for: ${input}");
+        add(QUESTS_BUILDER_MODIFY_ITEM_INSERTION, "&7Insert an item;&7next to this one;&7and close the inventory.");
+        add(QUESTS_BUILDER_MODIFY_REMOVE, "&7Click to &cremove &7the entry.");
+        add(QUESTS_BUILDER_MODIFY_ADD, "&7Click to &aadd &an entry");
+        add(QUESTS_BUILDER_MODIFY_QUESTNAME, "&7Insert a name which;&7will be the questname");
+        add(QUESTS_BUILDER_NAME_LORE, "&7This will be the name of the quest;&7Click to change it");
+        add(QUESTS_BUILDER_DESCRIPTION_NAME, "&eQuest description");
+        add(QUESTS_BUILDER_DESCRIPTION_LORE, "&7Click to change the quest description");
+        add(QUESTS_BUILDER_REWARDS_LORE, "&7Left click to add a new quest reward; ;&7Shift-Click to see;&7the current entries");
+        add(QUESTS_BUILDER_STEPS_LORE, "&7Left click to add a new quest step; ;&7Shift-Click to see;&7the current entries");
+        add(QUESTS_BUILDER_TIMER_OFFLINE_NAME, "&eCountdown runs offline: ${active}");
+        add(QUESTS_BUILDER_TIMER_OFFLINE_LORE, "&7Click to toggle;&7if the countdown continues offline");
+        add(QUESTS_BUILDER_PUBLIC_NAME, "&eQuest is public: ${active}");
+        add(QUESTS_BUILDER_PUBLIC_LORE, "&7Click to toggle;&7if the quest is public visible;&7and does not need to be;&7found by the player");
+        add(QUESTS_BUILDER_TIMER_NAME, "&eQuest countdown");
+        add(QUESTS_BUILDER_TIMER_LORE, "&7The seconds the player;&7needs to complete the quest;&7Current duration: &e${duration}");
+        add(QUESTS_BUILDER_CREATE_NAME, "&aCreate the quest");
+        add(QUESTS_BUILDER_CREATE_LORE, "&7Click to create the quest");
+        add(QUESTS_BUILDER_SUCCESSFUL, "&aQuest was created");
+
+        add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Current order: &e${order}");
+        add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Change the order of this task;&7All tasks with the same order;&7can be done at the same time&7Click to change");
+        add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_NAME, "&7Current amount: &e${amount}");
+        add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE, "&7The amount to complete the task;&7This is e.g.;&7'mine amount of blocks'&7Click to change");
+        add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_NAME,"&eCurrent parameter: &6${parameter}");
+        add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, "&7Input the parameter of the step;&7This changes with the step;&7E.g. for Mining requires a material name;&7This step requires: &e${class};&7Click to insert parameter");
+        add(QUESTS_BUILDER_STEPS_CREATION_ACCEPT, "&aClick to add");
+
+
         // events
         add(QUESTS_EVENT_TIMER_EXPIRED, "&e${name} &7has &cexpired&7!");
         add(QUESTS_EVENT_FINISHED, "&aYou finished &e${name}&a!");

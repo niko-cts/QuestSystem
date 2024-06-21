@@ -68,7 +68,7 @@ public class LanguageHandler {
 	 * @param locale   Locale - the language to save the message in.
 	 * @param messages Map<String, String> - every translation key with the translated message to save
 	 */
-	protected void cacheAndSaveMessagesToConfig(Locale locale, Map<String, String> messages) {
+	public void cacheAndSaveMessagesToConfig(Locale locale, Map<String, String> messages) {
 		this.translatedMessages.compute(locale.getLanguage(), (s, translationMap) -> {
 
 			File languageFile = new File(baseFolder, locale.getLanguage() + ".yml");

@@ -4,12 +4,14 @@ import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.block.BlockMock;
+import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.player.ActivePlayerQuest;
 import net.playlegend.questsystem.player.PlayerDatabaseInformationHolder;
 import net.playlegend.questsystem.player.PlayerHandler;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
-import net.playlegend.questsystem.quest.reward.IQuestReward;
+import net.playlegend.questsystem.quest.QuestSignManager;
+import net.playlegend.questsystem.quest.reward.QuestReward;
 import net.playlegend.questsystem.quest.steps.MineQuestStep;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import org.bukkit.Material;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
@@ -34,122 +37,137 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class QuestStepCompletedTest {
 
-	@Mock
-	PlayerHandler playerHandler;
-	@Mock
-	Player player;
+    @Mock
+    PlayerHandler playerHandler;
+    @Mock
+    Player player;
 
-	@Mock
-	QuestPlayer questPlayer;
+    @Mock
+    QuestPlayer questPlayer;
+    @Mock
+    QuestSystem questSystem;
+    @Mock
+    QuestSignManager questSignManager;
 
-	QuestStepListener questStepListener;
-	ServerMock server;
-	WorldMock worldMock;
+    QuestStepListener questStepListener;
+    ServerMock server;
+    WorldMock worldMock;
 
-	ActivePlayerQuest activePlayerQuest;
-	Quest quest;
-	Map<QuestStep, Integer> stepsWithAmount = new HashMap<>();
-	List<QuestStep> completionSteps = new ArrayList<>();
-	List<IQuestReward> rewards = new ArrayList<>();
+    ActivePlayerQuest activePlayerQuest;
+    Map<QuestStep<?>, Integer> stepsWithAmount = new HashMap<>();
+    List<QuestStep<?>> completionSteps = new ArrayList<>();
+    List<QuestReward<?>> rewards = new ArrayList<>();
 
-	@BeforeEach
-	public void setUp() throws NoSuchFieldException, IllegalAccessException {
-		questStepListener = new QuestStepListener(playerHandler);
-		server = MockBukkit.mock();
-		worldMock = server.addSimpleWorld("mocked");
-		UUID uuid = UUID.randomUUID();
-		when(player.getUniqueId()).thenReturn(uuid);
-		when(playerHandler.getPlayer(uuid)).thenReturn(questPlayer);
-		activePlayerQuest = new ActivePlayerQuest(
-				new Quest(
-						0, "", "", true, rewards, completionSteps, 10000, false
-				), stepsWithAmount, Instant.now().plusSeconds(10000));
+    private MockedStatic<QuestSystem> questSystemStatic;
 
-		when(questPlayer.getActivePlayerQuest()).thenReturn(Optional.of(activePlayerQuest));
+    @BeforeEach
+    public void setUp() throws NoSuchFieldException, IllegalAccessException {
+        questSystemStatic = mockStatic(QuestSystem.class);
+        questSystemStatic.when(QuestSystem::getInstance).thenReturn(questSystem);
+        questStepListener = new QuestStepListener(playerHandler);
+        server = MockBukkit.mock();
+        worldMock = server.addSimpleWorld("mocked");
+        UUID uuid = UUID.randomUUID();
+        when(player.getUniqueId()).thenReturn(uuid);
+        when(playerHandler.getPlayer(uuid)).thenReturn(questPlayer);
+        activePlayerQuest = new ActivePlayerQuest(
+                new Quest(
+                        0, "", "", true, rewards, completionSteps, 10000, false
+                ), stepsWithAmount, Instant.now().plusSeconds(10000));
 
-		Field playerDbInformationHolder = QuestPlayer.class.getDeclaredField("playerDbInformationHolder");
-		playerDbInformationHolder.setAccessible(true);
-		playerDbInformationHolder.set(questPlayer, new PlayerDatabaseInformationHolder(false));
-	}
+        when(questPlayer.getActivePlayerQuest()).thenReturn(Optional.of(activePlayerQuest));
 
-	@AfterEach
-	public void tearDown() {
-		MockBukkit.unmock();
-	}
+        Field playerDbInformationHolder = QuestPlayer.class.getDeclaredField("playerDbInformationHolder");
+        playerDbInformationHolder.setAccessible(true);
+        playerDbInformationHolder.set(questPlayer, new PlayerDatabaseInformationHolder(false));
+    }
 
-	@Test
-	public void questCompleted_OnBlockbreak() {
-		when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
-		BlockMock block = worldMock.getBlockAt(0, 0, 0);
-		block.setType(Material.STONE);
-		QuestStep questStep = new MineQuestStep(0, 0, 1, block.getType());
-		stepsWithAmount.put(questStep, 0);
-		completionSteps.add(questStep);
+    @AfterEach
+    public void tearDown() {
+        MockBukkit.unmock();
+        questSystemStatic.close();
+    }
 
-		questStepListener.onMine(new BlockBreakEvent(block, player));
+    @Test
+    public void questCompleted_OnBlockbreak() {
+        when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
+        when(questSystem.getQuestSign()).thenReturn(questSignManager);
+        when(questSystem.getServer()).thenReturn(server);
 
-		verify(questPlayer).checkAndFinishActiveQuest();
-		assertTrue(activePlayerQuest.isQuestFinished());
-	}
+        BlockMock block = worldMock.getBlockAt(0, 0, 0);
+        block.setType(Material.STONE);
+        QuestStep<?> questStep = new MineQuestStep(0, 0, 1, block.getType());
+        stepsWithAmount.put(questStep, 0);
+        completionSteps.add(questStep);
 
+        questStepListener.onMine(new BlockBreakEvent(block, player));
 
-	@Test
-	public void questIncompleted_OnMineWrongBlock() {
-		BlockMock block = worldMock.getBlockAt(0, 0, 0);
-		block.setType(Material.STONE);
-		QuestStep questStep = new MineQuestStep(0, 0, 1, Material.GRASS_BLOCK);
-		stepsWithAmount.put(questStep, 0);
-		completionSteps.add(questStep);
-
-		questStepListener.onMine(new BlockBreakEvent(block, player));
-
-		verify(questPlayer, never()).playerDidQuestStep(any(), any());
-		verify(questPlayer, never()).checkAndFinishActiveQuest();
-		assertFalse(activePlayerQuest.isQuestFinished());
-	}
-
-	@Test
-	public void questStepCompleted_OnMineCorrectBlock_QuestUncompleted() {
-		when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
-		BlockMock block = worldMock.getBlockAt(0, 0, 0);
-		block.setType(Material.STONE);
-		QuestStep questStep = new MineQuestStep(0, 0, 1, block.getType());
-		stepsWithAmount.put(questStep, 0);
-		completionSteps.add(questStep);
-
-		QuestStep questStep2 = new MineQuestStep(0, 1, 1, Material.GLASS);
-		stepsWithAmount.put(questStep2, 0);
-		completionSteps.add(questStep2);
-
-		questStepListener.onMine(new BlockBreakEvent(block, player));
-
-		verify(questPlayer).checkAndFinishActiveQuest();
-		assertFalse(activePlayerQuest.isQuestFinished());
-	}
+        verify(questPlayer).checkAndFinishActiveQuest();
+        assertTrue(activePlayerQuest.isQuestFinished());
+    }
 
 
-	@Test
-	public void questStepCompleted_OnMineCorrectBlock_twoStepsIncreased() {
-		when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
-		BlockMock block = worldMock.getBlockAt(0, 0, 0);
-		block.setType(Material.STONE);
-		QuestStep questStep = new MineQuestStep(0, 0, 1, block.getType());
-		stepsWithAmount.put(questStep, 0);
-		completionSteps.add(questStep);
+    @Test
+    public void questIncompleted_OnMineWrongBlock() {
+        BlockMock block = worldMock.getBlockAt(0, 0, 0);
+        block.setType(Material.STONE);
+        QuestStep<?> questStep = new MineQuestStep(0, 0, 1, Material.GRASS_BLOCK);
+        stepsWithAmount.put(questStep, 0);
+        completionSteps.add(questStep);
 
-		QuestStep questStep2 = new MineQuestStep(0, 0, 2, block.getType());
-		stepsWithAmount.put(questStep2, 0);
-		completionSteps.add(questStep2);
+        questStepListener.onMine(new BlockBreakEvent(block, player));
 
-		questStepListener.onMine(new BlockBreakEvent(block, player));
+        verify(questPlayer, never()).playerDidQuestStep(any(), any());
+        verify(questPlayer, never()).checkAndFinishActiveQuest();
+        assertFalse(activePlayerQuest.isQuestFinished());
+    }
 
-		assertFalse(activePlayerQuest.isQuestFinished());
+    @Test
+    public void questStepCompleted_OnMineCorrectBlock_QuestUncompleted() {
+        when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
+        when(questSystem.getServer()).thenReturn(server);
+        when(questSystem.getQuestSign()).thenReturn(questSignManager);
+        BlockMock block = worldMock.getBlockAt(0, 0, 0);
+        block.setType(Material.STONE);
+        QuestStep<?> questStep = new MineQuestStep(0, 0, 1, block.getType());
+        stepsWithAmount.put(questStep, 0);
+        completionSteps.add(questStep);
 
-		questStepListener.onMine(new BlockBreakEvent(block, player));
+        QuestStep<?> questStep2 = new MineQuestStep(0, 1, 1, Material.GLASS);
+        stepsWithAmount.put(questStep2, 0);
+        completionSteps.add(questStep2);
 
-		verify(questPlayer, times(2)).checkAndFinishActiveQuest();
-		assertTrue(activePlayerQuest.isQuestFinished());
-	}
+        questStepListener.onMine(new BlockBreakEvent(block, player));
+
+        verify(questPlayer).checkAndFinishActiveQuest();
+        assertFalse(activePlayerQuest.isQuestFinished());
+    }
+
+
+    @Test
+    public void questStepCompleted_OnMineCorrectBlock_twoStepsIncreased() {
+        when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
+        when(questSystem.getServer()).thenReturn(server);
+        when(questSystem.getQuestSign()).thenReturn(questSignManager);
+        BlockMock block = worldMock.getBlockAt(0, 0, 0);
+        block.setType(Material.STONE);
+        QuestStep<?> questStep = new MineQuestStep(0, 0, 1, block.getType());
+        stepsWithAmount.put(questStep, 0);
+        completionSteps.add(questStep);
+
+        QuestStep<?> questStep2 = new MineQuestStep(0, 0, 2, block.getType());
+        stepsWithAmount.put(questStep2, 0);
+        completionSteps.add(questStep2);
+
+        questStepListener.onMine(new BlockBreakEvent(block, player));
+
+        assertFalse(activePlayerQuest.isQuestFinished());
+
+        questStepListener.onMine(new BlockBreakEvent(block, player));
+
+        verify(questPlayer, times(2)).checkAndFinishActiveQuest();
+        assertTrue(activePlayerQuest.isQuestFinished());
+    }
 
 
 }

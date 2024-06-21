@@ -6,7 +6,7 @@ import net.playlegend.questsystem.database.QuestDatabase;
 import net.playlegend.questsystem.player.ActivePlayerQuest;
 import net.playlegend.questsystem.quest.exception.QuestNotFoundException;
 import net.playlegend.questsystem.quest.exception.QuestStepNotFoundException;
-import net.playlegend.questsystem.quest.reward.IQuestReward;
+import net.playlegend.questsystem.quest.reward.QuestReward;
 import net.playlegend.questsystem.quest.reward.RewardType;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.quest.steps.QuestStepType;
@@ -47,8 +47,8 @@ public class QuestManager {
 
 		try (ResultSet questResult = questDatabase.getAllQuests()) {
 			while (questResult != null && questResult.next()) {
-				List<IQuestReward> rewards = new ArrayList<>();
-				List<QuestStep> steps = new LinkedList<>();
+				List<QuestReward<?>> rewards = new ArrayList<>();
+				List<QuestStep<?>> steps = new LinkedList<>();
 				int id = questResult.getInt("id");
 				String name = questResult.getString("name");
 				String questIDForLog = id + ":'" + name + "'";
@@ -184,11 +184,11 @@ public class QuestManager {
 			Quest quest = questOptional.get();
 
 
-			Map<QuestStep, Integer> steps = new HashMap<>();
+			Map<QuestStep<?>, Integer> steps = new HashMap<>();
 			try (ResultSet stepResults = playerDatabase.getPlayerActiveQuestSteps(uuid)) {
 				while (stepResults != null && stepResults.next()) {
 					int stepId = stepResults.getInt("step_id");
-					Optional<QuestStep> questStep = getQuestStep(quest, stepId);
+					Optional<QuestStep<?>> questStep = getQuestStep(quest, stepId);
 					if (questStep.isEmpty()) {
 						log.log(Level.WARNING, "Could not find QuestStep object of step id {0} for quest: {1}",
 								new Object[]{stepId, questId});
@@ -220,7 +220,7 @@ public class QuestManager {
 		return getQuests().stream().filter(Quest::isPublic).toList();
 	}
 
-	public Optional<QuestStep> getQuestStep(Quest quest, int stepId) {
+	public Optional<QuestStep<?>> getQuestStep(Quest quest, int stepId) {
 		return quest.completionSteps().stream().filter(s -> s.getId() == stepId).findFirst();
 	}
 
@@ -260,7 +260,7 @@ public class QuestManager {
 		});
 	}
 
-	public void addQuest(String name, String description, List<IQuestReward> rewards, List<QuestStep> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
+	public void addQuest(String name, String description, List<QuestReward<?>> rewards, List<QuestStep<?>> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {

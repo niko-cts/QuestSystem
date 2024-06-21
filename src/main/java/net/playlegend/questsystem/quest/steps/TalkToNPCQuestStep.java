@@ -17,13 +17,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class TalkToNPCQuestStep extends QuestStep {
-
-	private final UUID npcUUID;
+public class TalkToNPCQuestStep extends QuestStep<UUID> {
 
 	public TalkToNPCQuestStep(int id, int order, int maxAmount, UUID npcUUID) {
-		super(id, order, maxAmount);
-		this.npcUUID = npcUUID;
+		super(QuestStepType.SPEAK, id, order, maxAmount, npcUUID);
 	}
 
 	/**
@@ -35,7 +32,7 @@ public class TalkToNPCQuestStep extends QuestStep {
 	 */
 	@Override
 	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
-		return event instanceof PlayerClickedOnQuestNPCEvent npcEvent && npcEvent.getNpcUUID().equals(npcUUID);
+		return event instanceof PlayerClickedOnQuestNPCEvent npcEvent && npcEvent.getNpcUUID().equals(getStepObject());
 	}
 
 
@@ -74,7 +71,7 @@ public class TalkToNPCQuestStep extends QuestStep {
 	 */
 	@Override
 	public ItemStack getActiveTask(Language language, int currentAmount) {
-		Optional<NPC> npcOptional = NPC.getByUUID(npcUUID);
+		Optional<NPC> npcOptional = NPC.getByUUID(getStepObject());
 
 		if (npcOptional.isPresent()) {
 			NPC npc = npcOptional.get();
@@ -112,7 +109,7 @@ public class TalkToNPCQuestStep extends QuestStep {
 	 */
 	@Override
 	public ItemStack getTaskItem(Language language) {
-		Optional<NPC> npcOptional = NPC.getByUUID(npcUUID);
+		Optional<NPC> npcOptional = NPC.getByUUID(getStepObject());
 
 		if (npcOptional.isPresent()) {
 			NPC npc = npcOptional.get();
@@ -140,6 +137,6 @@ public class TalkToNPCQuestStep extends QuestStep {
 	}
 
 	private Optional<String> getNPCName() {
-		return NPC.getByUUID(npcUUID).map(NPC::getName);
+		return NPC.getByUUID(getStepObject()).map(NPC::getName);
 	}
 }

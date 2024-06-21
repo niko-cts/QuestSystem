@@ -5,12 +5,12 @@ import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
+public class ItemReward extends QuestReward<ItemStack> {
 
-public record ItemReward(ItemStack item) implements IQuestReward {
+    public ItemReward(ItemStack item) {
+        super(RewardType.ITEM, item);
+    }
 
     /**
      * Will be called, when a player finished the quest.
@@ -20,7 +20,7 @@ public record ItemReward(ItemStack item) implements IQuestReward {
      */
     @Override
     public void rewardPlayer(QuestPlayer player) {
-        player.addItem(item.clone());
+        player.addItem(getRewardObject().clone());
     }
 
     /**
@@ -43,11 +43,7 @@ public record ItemReward(ItemStack item) implements IQuestReward {
      */
     @Override
     public ItemStack getRewardDisplayItem(Language language) {
-        ItemMeta itemMeta = item.getItemMeta();
-        List<String> lore = new ArrayList<>(itemMeta != null && itemMeta.hasLore() && itemMeta.getLore() != null ?
-                itemMeta.getLore() : List.of());
-        lore.addAll(List.of(language.translateMessage(TranslationKeys.QUESTS_REWARD_ITEM_LORE).split(";")));
-
-        return new ItemBuilder(item).setLore(lore).craft();
+        return new ItemBuilder(getRewardObject())
+                .addLore(language.translateMessage(TranslationKeys.QUESTS_REWARD_ITEM_LORE).split(";")).craft();
     }
 }

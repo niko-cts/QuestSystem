@@ -7,11 +7,13 @@ import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
 @Data
-public abstract class QuestStep {
+public abstract class QuestStep<T> {
 
+    private final QuestStepType type;
     private final int id;
     private final int order;
     private final int maxAmount;
+    private final T stepObject;
 
     public boolean isStepComplete(int currentAmount) {
         return currentAmount >= maxAmount;
@@ -61,5 +63,6 @@ public abstract class QuestStep {
      * @return ItemStack - the item explaining the step
      */
     public abstract ItemStack getTaskItem(Language language);
+
 }
 

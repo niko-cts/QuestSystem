@@ -12,14 +12,12 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class CraftQuestStep extends QuestStep {
+public class CraftQuestStep extends QuestStep<ItemStack> {
 
-	private final ItemStack stackToCraft;
 	private final String materialName;
 
 	public CraftQuestStep(int id, int order, int maxAmount, ItemStack stackToCraft) {
-		super(id, order, maxAmount);
-		this.stackToCraft = stackToCraft;
+		super(QuestStepType.CRAFT, id, order, maxAmount, stackToCraft);
 		this.materialName = MaterialConverterUtil.convertMaterialToName(stackToCraft.getType());
 	}
 
@@ -32,7 +30,7 @@ public class CraftQuestStep extends QuestStep {
 	 */
 	@Override
 	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
-		return event instanceof CraftItemEvent craftItem && craftItem.getRecipe().getResult().equals(stackToCraft);
+		return event instanceof CraftItemEvent craftItem && craftItem.getRecipe().getResult().equals(getStepObject());
 	}
 
 	/**
@@ -70,7 +68,7 @@ public class CraftQuestStep extends QuestStep {
 	 */
 	@Override
 	public ItemStack getActiveTask(Language language, int currentAmount) {
-		return new ItemBuilder(stackToCraft)
+		return new ItemBuilder(getStepObject())
 				.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_CRAFT_ACTIVE_LORE,
 								List.of("${item}", "${amount}", "${maxamount}"),
 								List.of(materialName, currentAmount, getMaxAmount()))
@@ -89,7 +87,7 @@ public class CraftQuestStep extends QuestStep {
 	 */
 	@Override
 	public ItemStack getTaskItem(Language language) {
-		return new ItemBuilder(stackToCraft)
+		return new ItemBuilder(getStepObject())
 				.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_CRAFT_NORMAL_LORE,
 								List.of("${item}", "${maxamount}"),
 								List.of(materialName, getMaxAmount()))

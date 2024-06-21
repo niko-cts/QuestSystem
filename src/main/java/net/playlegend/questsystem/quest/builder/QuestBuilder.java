@@ -8,7 +8,7 @@ import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
 import lombok.NonNull;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.player.QuestPlayer;
-import net.playlegend.questsystem.quest.reward.IQuestReward;
+import net.playlegend.questsystem.quest.reward.QuestReward;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
@@ -63,8 +63,8 @@ public class QuestBuilder implements Listener {
 	final Language language;
 	private String name;
 	private String description;
-	final List<IQuestReward> rewards;
-	final List<QuestStep> steps;
+	final List<QuestReward<?>> rewards;
+	final List<QuestStep<?>> steps;
 	private long finishTimeInSeconds;
 	private boolean timerRunsOffline;
 	private boolean isPublic;
@@ -227,9 +227,9 @@ public class QuestBuilder implements Listener {
 		addingItemMode = itemStackConsumer;
 		Inventory menu = Bukkit.createInventory(questPlayer.getPlayer(), 9);
 		menu.setItem(ITEM_SLOT_INSERT_INDEX - 1, UsefulItems.ARROW_RIGHT()
-				.setName(language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_ITEM_INSERTION)).craft());
+				.setLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_ITEM_INSERTION).split(";")).craft());
 		menu.setItem(ITEM_SLOT_INSERT_INDEX + 1, UsefulItems.ARROW_LEFT()
-				.setName(language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_ITEM_INSERTION)).craft());
+				.setLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_ITEM_INSERTION).split(";")).craft());
 		questPlayer.getPlayer().openInventory(menu);
 	}
 }

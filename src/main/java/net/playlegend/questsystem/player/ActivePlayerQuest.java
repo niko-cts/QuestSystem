@@ -19,7 +19,7 @@ import java.util.*;
 public class ActivePlayerQuest {
 
     private final Quest quest;
-    private final Map<QuestStep, Integer> stepsWithAmounts;
+    private final Map<QuestStep<?>, Integer> stepsWithAmounts;
     private final Instant timeLeft;
 
     protected ActivePlayerQuest(Quest quest, Instant timeLeft) {
@@ -36,7 +36,7 @@ public class ActivePlayerQuest {
      * @param step QuestStep - the quest step to increase
      * @return boolean - quest step is now completed
      */
-    protected boolean playerDidQuestStep(QuestStep step) {
+    protected boolean playerDidQuestStep(QuestStep<?> step) {
         int newAmount = stepsWithAmounts.compute(step, (ignored, current) ->
                 (current != null ? current : 0) + 1);
         return step.isStepComplete(newAmount);
@@ -47,7 +47,7 @@ public class ActivePlayerQuest {
      *
      * @return Optional<QuestStep> - quest step which needs to be completed next.
      */
-    public Optional<Map.Entry<QuestStep, Integer>> getNextUncompletedStep() {
+    public Optional<Map.Entry<QuestStep<?>, Integer>> getNextUncompletedStep() {
         return stepsWithAmounts.entrySet().stream()
 		        .filter(entry -> !entry.getKey().isStepComplete(entry.getValue()))
 		        .min(Comparator.comparingInt(entry -> entry.getKey().getOrder()));
@@ -58,8 +58,8 @@ public class ActivePlayerQuest {
      *
      * @return List<QuestStep> - all quest steps which needs to be completed next.
      */
-    public List<QuestStep> getNextUncompletedSteps() {
-        List<QuestStep> stepsToComplete = getUncompletedSteps();
+    public List<? extends QuestStep<?>> getNextUncompletedSteps() {
+        List<? extends QuestStep<?>> stepsToComplete = getUncompletedSteps();
         if (stepsToComplete.isEmpty())
             return stepsToComplete;
 
@@ -72,7 +72,7 @@ public class ActivePlayerQuest {
      *
      * @return List<QuestStep> - the list of quest steps that are not completed.
      */
-    public List<QuestStep> getUncompletedSteps() {
+    public List<? extends QuestStep<?>> getUncompletedSteps() {
         return stepsWithAmounts.entrySet().stream()
                 .filter(entry -> !entry.getKey().isStepComplete(entry.getValue()))
                 .map(Map.Entry::getKey)
@@ -80,7 +80,7 @@ public class ActivePlayerQuest {
                 .toList();
     }
 
-    public List<QuestStep> getCompletedSteps() {
+    public List<? extends QuestStep<?>> getCompletedSteps() {
         return stepsWithAmounts.entrySet().stream()
                 .filter(entry -> entry.getKey().isStepComplete(entry.getValue()))
                 .map(Map.Entry::getKey)
@@ -88,7 +88,7 @@ public class ActivePlayerQuest {
                 .toList();
     }
 
-    public Map<QuestStep, Integer> getStepsWithAmounts() {
+    public Map<QuestStep<?>, Integer> getStepsWithAmounts() {
         return new HashMap<>(stepsWithAmounts);
     }
 
@@ -101,7 +101,7 @@ public class ActivePlayerQuest {
         return Duration.between(Instant.now(), timeLeft).getSeconds();
     }
 
-    public int getStepAmount(QuestStep uncompletedStep) {
+    public int getStepAmount(QuestStep<?> uncompletedStep) {
         return stepsWithAmounts.getOrDefault(uncompletedStep, -1);
     }
 

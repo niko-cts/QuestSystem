@@ -13,6 +13,38 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
 
     public DefaultGermanMessages() {
         super(Locale.GERMAN);
+// builder
+        add(QUESTS_BUILDER_NOT_VALID_NUMBER, "&cDu hast eine ungültige Zahl eingegeben.");
+        add(QUESTS_BUILDER_NOT_VALID_UUID, "&cDu hast eine ungültige UUID eingegeben.");
+        add(QUESTS_BUILDER_NOT_VALID_MATERIAL, "&cDu hast ein ungültiges Material eingegeben.");
+        add(QUESTS_BUILDER_NOT_VALID_ENTITYTYPE, "&cDu hast einen ungültigen Entitätstyp eingegeben.");
+        add(QUESTS_BUILDER_MODIFY_INTEGER, "&7Gib eine Zahl für: ${input} ein.");
+        add(QUESTS_BUILDER_MODIFY_ITEM_INSERTION, "&7Lege ein Item neben dieses;&7und schließe das Inventar.");
+        add(QUESTS_BUILDER_MODIFY_REMOVE, "&7Klicken, um den Eintrag zu &centfernen&7.");
+        add(QUESTS_BUILDER_MODIFY_ADD, "&7Klicken, um einen Eintrag zu &ahinzufügen&7.");
+        add(QUESTS_BUILDER_MODIFY_QUESTNAME, "&7Gib einen Namen ein, der der Questname sein wird.");
+        add(QUESTS_BUILDER_NAME_LORE, "&7Das wird der Name der Quest;&7Klicken, um ihn zu ändern.");
+        add(QUESTS_BUILDER_DESCRIPTION_NAME, "&eQuestbeschreibung");
+        add(QUESTS_BUILDER_DESCRIPTION_LORE, "&7Klicken, um die Questbeschreibung zu ändern.");
+        add(QUESTS_BUILDER_REWARDS_LORE, "&7Linksklick, um eine neue Questbelohnung hinzuzufügen; ;&7Shift-Klick, um die aktuellen Einträge zu sehen.");
+        add(QUESTS_BUILDER_STEPS_LORE, "&7Linksklick, um einen neuen Questschritt hinzuzufügen; ;&7Shift-Klick, um die aktuellen Einträge zu sehen.");
+        add(QUESTS_BUILDER_TIMER_OFFLINE_NAME, "&eCountdown läuft offline: ${active}");
+        add(QUESTS_BUILDER_TIMER_OFFLINE_LORE, "&7Klicken, um umzuschalten;&7ob der Countdown offline weiterläuft.");
+        add(QUESTS_BUILDER_PUBLIC_NAME, "&eQuest ist öffentlich: ${active}");
+        add(QUESTS_BUILDER_PUBLIC_LORE, "&7Klicken, um umzuschalten;&7ob die Quest öffentlich sichtbar ist;&7und nicht vom Spieler gefunden;&7werden muss.");
+        add(QUESTS_BUILDER_TIMER_NAME, "&eQuest-Countdown");
+        add(QUESTS_BUILDER_TIMER_LORE, "&7Die Sekunden, die der Spieler hat;&7um die Quest abzuschließen;&7Aktuelle Dauer: &e${duration}");
+        add(QUESTS_BUILDER_CREATE_NAME, "&aQuest erstellen");
+        add(QUESTS_BUILDER_CREATE_LORE, "&7Klicken, um die Quest zu erstellen.");
+        add(QUESTS_BUILDER_SUCCESSFUL, "&aQuest wurde erstellt.");
+
+        add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Aktuelle Reihenfolge: &e${order}");
+        add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Ändere die Reihenfolge dieser Aufgabe;&7Alle Aufgaben mit derselben Reihenfolge;&7können gleichzeitig erledigt werden;&7Klicken, um zu ändern.");
+        add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_NAME, "&7Aktuelle Menge: &e${amount}");
+        add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE, "&7Die Menge zum Abschließen der Aufgabe;&7Das ist z.B.;;&7'Baue eine Anzahl von Blöcken ab';&7Klicken, um zu ändern.");
+        add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_NAME, "&eAktueller Parameter: &6${parameter}");
+        add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, "&7Gib den Parameter des Schrittes ein;&7Das ändert sich mit dem Schritt;&7Z.B. erfordert Mining einen Materialnamen;&7Dieser Schritt erfordert: &e${class};&7Klicken, um Parameter einzufügen.");
+        add(QUESTS_BUILDER_STEPS_CREATION_ACCEPT, "&aKlicken, um hinzuzufügen.");
 
         // events
         add(QUESTS_EVENT_TIMER_EXPIRED, "&e${name} &7ist &cabgelaufen&7!");
@@ -42,6 +74,11 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL, "&7Quest wurde erfolgreich gelöscht.");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST_NO_QUESTS, "&7Es sind keine Quests aufgelistet.");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST, "&7Alle Quests: &e${quest}");
+
+        add(QUESTS_COMMAND_ADMIN_SIGN_USAGE, "/questadmin sign - Füge ein Quetschild hinzu");
+        add(QUESTS_COMMAND_ADMIN_SIGN_NOT_SIGN, "&7Du schaust auf &ckein Schild");
+        add(QUESTS_COMMAND_ADMIN_SIGN_ADDED, "&7Ein neues Schild wurde &ahinzugefügt");
+
         add(QUESTS_COMMAND_LANGUAGE_USAGE, "language <language>");
         add(QUESTS_COMMAND_LANGUAGE_UPDATED, "&aDeine Sprache wurde geändert.");
         add(QUESTS_COMMAND_LANGUAGE_ILLEGAL, "&7Diese Sprache ist &cnicht &7verfügbar");

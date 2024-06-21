@@ -3,7 +3,7 @@ package net.playlegend.questsystem.gui;
 import chatzis.nikolas.mc.nikoapi.inventory.CustomInventory;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
-import net.playlegend.questsystem.quest.reward.IQuestReward;
+import net.playlegend.questsystem.quest.reward.QuestReward;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
 
@@ -22,13 +22,13 @@ public class QuestRewardsGUI {
 
 	public static <T> void openRewardsWithBack(QuestPlayer questPlayer, Quest quest, T backQuest, BiConsumer<QuestPlayer, T> goBack) {
 		Language language = questPlayer.getLanguage();
-		List<IQuestReward> rewards = quest.rewards();
+		List<QuestReward<?>> rewards = quest.rewards();
 		CustomInventory menu = new CustomInventory(
 				language.translateMessage(TranslationKeys.QUESTS_GUI_REWARDS_TITLE, "${name}", quest.name()),
 				rewards.size() + 2
 		);
 
-		for (IQuestReward reward : rewards) {
+		for (QuestReward<?> reward : rewards) {
 			menu.addItem(reward.getRewardDisplayItem(language));
 		}
 

@@ -1,17 +1,20 @@
 package net.playlegend.questsystem.database;
 
+import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.player.ActivePlayerQuest;
 import net.playlegend.questsystem.player.PlayerDatabaseInformationHolder;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class PlayerInfoDatabase {
 
@@ -55,7 +58,10 @@ public class PlayerInfoDatabase {
         for (Map.Entry<QuestPlayer, Instant> entry : questPlayersWithLogout.entrySet()) {
             completeSQL.append(getUpdatePlayerSQLStatements(entry.getKey(), entry.getValue()));
         }
-        this.databaseHandler.executeSQL(completeSQL.toString());
+        try (ResultSet ignored = databaseHandler.executeSQL(completeSQL.toString())) {
+        } catch (SQLException exception) {
+            QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not update all player data", exception);
+        }
     }
 
     /**
@@ -65,9 +71,11 @@ public class PlayerInfoDatabase {
      * @param lastLogout  Instant - the lastLogout to set in the database
      */
     public void updateAllPlayerData(QuestPlayer questPlayer, Instant lastLogout) {
-        this.databaseHandler.executeSQL(
-                getUpdatePlayerSQLStatements(questPlayer, lastLogout)
-        );
+        try (ResultSet ignored = this.databaseHandler.executeSQL(
+                getUpdatePlayerSQLStatements(questPlayer, lastLogout))) {
+        } catch (SQLException exception) {
+            QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not update player data", exception);
+        }
     }
 
     /**
@@ -97,7 +105,7 @@ public class PlayerInfoDatabase {
                         "INSERT INTO %s VALUES('%s', %s, %s);",
                         PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST, uuid, quest.getQuest().id(), quest.getSecondsLeft()
                 ));
-                for (Map.Entry<QuestStep, Integer> entry : quest.getStepsWithAmounts().entrySet()) {
+                for (Map.Entry<QuestStep<?>, Integer> entry : quest.getStepsWithAmounts().entrySet()) {
                     sql.append(String.format(
                             "INSERT INTO %s VALUES('%s', %s, %s);",
                             PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST_STEPS,
@@ -115,7 +123,7 @@ public class PlayerInfoDatabase {
                 sql.append(String.format("DELETE FROM %s WHERE uuid='%s';",
                         PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST_STEPS, uuid));
 
-                for (Map.Entry<QuestStep, Integer> entry : quest.getStepsWithAmounts().entrySet()) {
+                for (Map.Entry<QuestStep<?>, Integer> entry : quest.getStepsWithAmounts().entrySet()) {
                     sql.append(String.format(
                             "INSERT INTO %s VALUES('%s', %s, %s);",
                             PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST_STEPS,

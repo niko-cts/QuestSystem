@@ -34,6 +34,7 @@ public class AnvilInsertionHelper {
                                                   Function<String, String> stringAcceptable) {
         String description = language.translateMessage(descriptionTransKey, "${type}", replacement);
         // todo anvil
+        String placeholder = "${input}";
 
     }
 
