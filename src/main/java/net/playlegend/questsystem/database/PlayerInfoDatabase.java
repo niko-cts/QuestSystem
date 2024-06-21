@@ -7,7 +7,6 @@ import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -58,9 +57,8 @@ public class PlayerInfoDatabase {
         for (Map.Entry<QuestPlayer, Instant> entry : questPlayersWithLogout.entrySet()) {
             completeSQL.append(getUpdatePlayerSQLStatements(entry.getKey(), entry.getValue()));
         }
-        try (ResultSet ignored = databaseHandler.executeSQL(completeSQL.toString())) {
-        } catch (SQLException exception) {
-            QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not update all player data", exception);
+        if (!databaseHandler.execute(completeSQL.toString())) {
+            QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not update all player data");
         }
     }
 
@@ -71,11 +69,8 @@ public class PlayerInfoDatabase {
      * @param lastLogout  Instant - the lastLogout to set in the database
      */
     public void updateAllPlayerData(QuestPlayer questPlayer, Instant lastLogout) {
-        try (ResultSet ignored = this.databaseHandler.executeSQL(
-                getUpdatePlayerSQLStatements(questPlayer, lastLogout))) {
-        } catch (SQLException exception) {
-            QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not update player data", exception);
-        }
+        if (!this.databaseHandler.execute(getUpdatePlayerSQLStatements(questPlayer, lastLogout)))
+            QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not update player data");
     }
 
     /**

@@ -69,7 +69,7 @@ public class QuestManager {
 						}
 
 						int amount = stepResult.getInt("amount");
-						int order = stepResult.getInt("order");
+						int order = stepResult.getInt("step_order");
 						try {
 							steps.add(
 									QuestObjectConverterUtil.instantiateQuestStepFromTypeAndParameter(questStepType, stepId, order, amount,

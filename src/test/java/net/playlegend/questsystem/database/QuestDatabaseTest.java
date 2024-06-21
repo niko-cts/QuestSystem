@@ -13,16 +13,18 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
@@ -33,20 +35,25 @@ public class QuestDatabaseTest {
     QuestDatabase db;
 
     @Mock
+    FileConfiguration configuration;
+    @Mock
     QuestSystem questSystem;
     MockedStatic<QuestSystem> questSystemStatic;
-    @Mock
-    FileConfiguration configuration;
+    MockedStatic<DriverManager> questDriverManager;
+    Connection connection;
 
     @BeforeEach
     void setUp() throws SQLException {
-        var dbConnection = DriverManager.getConnection("jdbc:h2:mem:testcase", "sa", null);
-        Statement stmt = dbConnection.createStatement();
-        stmt.execute("create table foo (id integer)");
-        dbConnection.commit();
+        Properties info = new Properties();
+        info.put("user", "sa");
+        info.put("allowMultiQueries", true);
+        connection = DriverManager.getConnection("jdbc:h2:mem:testcase", info);
 
         questSystemStatic = mockStatic(QuestSystem.class);
         questSystemStatic.when(QuestSystem::getInstance).thenReturn(questSystem);
+        questDriverManager = mockStatic(DriverManager.class);
+        questDriverManager.when(() -> DriverManager.getConnection(anyString())).thenReturn(connection);
+
         when(questSystem.getConfig()).thenReturn(configuration);
         when(questSystem.getLogger()).thenReturn(LOG);
         when(configuration.getString("database.host")).thenReturn("localhost");
@@ -58,16 +65,15 @@ public class QuestDatabaseTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         questSystemStatic.close();
+        questDriverManager.close();
+        connection.close();
     }
 
     @Test
     public void addQuest_checkAdded() throws SQLException {
-        Optional<Integer> questId = db.insertNewQuest("test", "test",
-                List.of(new CoinsReward(10)),
-                List.of(new MineQuestStep(1, 1, 1, Material.STONE)),
-                120, true, false);
+        Optional<Integer> questId = db.insertNewQuest("test", "test", List.of(new CoinsReward(10)), List.of(new MineQuestStep(1, 1, 1, Material.STONE)), 120, true, false);
 
         assertTrue(questId.isPresent());
 

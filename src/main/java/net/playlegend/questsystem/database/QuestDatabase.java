@@ -51,7 +51,7 @@ public class QuestDatabase {
                 "quest_id INT NOT NULL",
                 "type VARCHAR(36) NOT NULL",
                 "amount INT NOT NULL DEFAULT 1",
-                "order INT NOT NULL DEFAULT 1",
+                "step_order INT NOT NULL DEFAULT 1",
                 "step_object VARCHAR(1000) NOT NULL",
                 "PRIMARY KEY(id, quest_id)",
                 "CONSTRAINT fk_stepForQuestId FOREIGN KEY(quest_id) REFERENCES " + TABLE_QUESTS + "(id)")
@@ -102,7 +102,7 @@ public class QuestDatabase {
      * @return ResultSet - All quest rewards with the quest_id's
      */
     public ResultSet getAllQuestRewards(int questId) {
-        return this.dbHandler.executeSQL(String.format(
+        return this.dbHandler.executeQuery(String.format(
                 "SELECT type, reward_object FROM %s JOIN %s ON id=reward_id AND quest_id=%s",
                 TABLE_QUEST_REWARD_INFO, TABLE_QUEST_REWARD_MAP, questId));
     }
@@ -110,7 +110,7 @@ public class QuestDatabase {
 
     public void deleteQuest(int id) {
         this.dbHandler.delete(List.of(TABLE_QUEST_REWARD_MAP, TABLE_QUEST_STEPS_INFO, TABLE_QUESTS),
-                List.of("WHERE quest_id=" + id, "WHERE quest_id=" + id, "WHERE id=" + id + "LIMIT 1"));
+                List.of("WHERE quest_id=" + id, "WHERE quest_id=" + id, "WHERE id=" + id + " LIMIT 1"));
     }
 
     /**
@@ -131,26 +131,41 @@ public class QuestDatabase {
         tableNames.add(TABLE_QUESTS);
         allValues.add(List.of("", name, description, isPublic ? 1 : 0, finishTimeInSeconds, timerRunsOffline ? 1 : 0));
 
-        int questId;
         Logger log = QuestSystem.getInstance().getLogger();
-        try (ResultSet questSet = this.dbHandler.executeSQL(new StringBuilder()
-                .append("INSERT INTO ")
-                .append(TABLE_QUESTS).append("(name, description, public, finish_time, timer_runs_offline) VALUES('")
-                .append(name).append("','").append(description).append("',").append(isPublic ? 1 : 0).append(",").append(finishTimeInSeconds).append(",").append(timerRunsOffline ? 1 : 0)
-                .append(";SELECT LAST_INSERT_ID() as 'id';").toString())) {
-            if (questSet != null && questSet.next()) {
-                questId = questSet.getInt("id");
-                log.log(Level.INFO,
-                        "Inserted new quest {0}:{0} in database",
-                        new Object[]{questId, name});
-            } else {
-                log.log(Level.SEVERE, "Could not insert quest in database: {0}", name);
-                return Optional.empty();
-            }
-        } catch (SQLException exception) {
-            log.log(Level.SEVERE, "Could not insert quest in database!", exception);
+
+        Integer questId = this.dbHandler.insertIntoTableAndGetGeneratedKey(TABLE_QUESTS, "id",
+                List.of("name", "description", "public", "finish_time", "timer_runs_offline"),
+                List.of(name, description, isPublic ? 1 : 0, finishTimeInSeconds, timerRunsOffline ? 1 : 0));
+        if (questId == null) {
+            log.severe("Could not insert quest in database");
             return Optional.empty();
         }
+
+//        if (!this.dbHandler.execute(new StringBuilder()
+//                .append("INSERT INTO ")
+//                .append(TABLE_QUESTS).append("(name, description, public, finish_time, timer_runs_offline) VALUES('")
+//                .append(name).append("','").append(description).append("',").append(isPublic ? 1 : 0).append(",").append(finishTimeInSeconds).append(",").append(timerRunsOffline ? 1 : 0)
+//                .append(")").toString())) {
+//            log.warning("Could not insert quest in database");
+//            return Optional.empty();
+//        }
+//        int questId;
+//        try (
+//                ResultSet questSet = this.dbHandler.executeQuery("SELECT LAST_INSERT_ID() as 'id'")) {
+//            if (questSet != null && questSet.next()) {
+//                questId = questSet.getInt("id");
+//                log.log(Level.INFO,
+//                        "Inserted new quest {0}:{0} in database",
+//                        new Object[]{questId, name});
+//            } else {
+//                log.log(Level.SEVERE, "Could not insert quest in database: {0}", name);
+//                return Optional.empty();
+//            }
+//        } catch (
+//                SQLException exception) {
+//            log.log(Level.SEVERE, "Could not insert quest in database!", exception);
+//            return Optional.empty();
+//        }
 
         List<QuestReward<?>> unaddedRewards = new ArrayList<>(rewards);
         Map<Integer, QuestReward<?>> existingRewards = new HashMap<>();
@@ -173,16 +188,16 @@ public class QuestDatabase {
                 }
             }
             insertRewards.append(";");
-            try (ResultSet ignored = dbHandler.executeSQL(insertRewards.toString())) {
-                log.log(Level.INFO,
-                        "Inserted {0} new rewards", unaddedRewards.size());
-            } catch (SQLException exception) {
-                log.log(Level.SEVERE,
-                        "Could not insert new rewards in database", exception);
+            if (!dbHandler.execute(insertRewards.toString())) {
+                log.log(Level.SEVERE, "Could not insert new rewards in database");
+                deleteQuest(questId);
+                return Optional.empty();
             }
         }
 
-        success = insertRewardObjectsAndPutExistingAndRemoveFromRewardObjects(unaddedRewards, existingRewards);
+        success =
+
+                insertRewardObjectsAndPutExistingAndRemoveFromRewardObjects(unaddedRewards, existingRewards);
         if (!success) {
             log.log(Level.SEVERE, "A quest reward could not be retrieved by the database! Will not add quest! Remaining rewards: {0}",
                     unaddedRewards.stream().map(r -> r.getRewardType().name()).collect(Collectors.joining(",")));
@@ -248,8 +263,8 @@ public class QuestDatabase {
      */
     private boolean insertRewardObjectsAndPutExistingAndRemoveFromRewardObjects(List<QuestReward<?>> currentRewards, Map<Integer, QuestReward<?>> existingRewards) {
         try (ResultSet rewardSet = this.dbHandler.select(TABLE_QUEST_REWARD_INFO, List.of("*"),
-                "WHERE type IN (" + currentRewards.stream().map(t -> t.getRewardType().name()).collect(Collectors.joining(","))
-                        + ") AND reward_object IN(" + currentRewards.stream().map(t -> t.getRewardObject().toString()).collect(Collectors.joining(","))
+                "WHERE type IN (" + currentRewards.stream().map(t -> "'" + t.getRewardType().name() + "'").collect(Collectors.joining(","))
+                        + ") AND reward_object IN(" + currentRewards.stream().map(t -> "'" + t.getRewardObject().toString() + "'").collect(Collectors.joining(","))
                         + ")")) {
             while (rewardSet != null && rewardSet.next()) {
                 String type = rewardSet.getString("type");
