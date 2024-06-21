@@ -35,200 +35,203 @@ import java.util.UUID;
 @Getter
 public class QuestPlayer {
 
-	private final Player player;
-	private final Timestamp lastLogout;
-	private final QuestTimerPlayer questTimer;
-	private Language language;
-	private int coins;
+    private final Player player;
+    private final Timestamp lastLogout;
+    private final QuestTimerPlayer questTimer;
+    private Language language;
+    private int coins;
 
-	private final Map<Quest, Timestamp> finishedQuests;
-	private final Map<Quest, Timestamp> foundQuests;
-	private final PlayerDatabaseInformationHolder playerDbInformationHolder;
+    private final Map<Quest, Timestamp> finishedQuests;
+    private final Map<Quest, Timestamp> foundQuests;
+    private final PlayerDatabaseInformationHolder playerDbInformationHolder;
 
-	private ActivePlayerQuest activePlayerQuest;
+    private ActivePlayerQuest activePlayerQuest;
 
-	public QuestPlayer(@NonNull Player player, @NonNull Language language, @NonNull Timestamp lastLogout, int coins) {
-		this.player = player;
-		this.language = language;
-		this.lastLogout = lastLogout;
-		this.coins = coins;
-		QuestManager questManager = QuestSystem.getInstance().getQuestManager();
-		this.finishedQuests = questManager.loadCompletedQuestIdsByPlayer(player.getUniqueId());
-		this.foundQuests = questManager.loadFoundQuestIdsByPlayer(player.getUniqueId());
-		this.playerDbInformationHolder = new PlayerDatabaseInformationHolder(activePlayerQuest == null);
-		try {
-			this.activePlayerQuest = questManager.loadActiveQuestIdByPlayer(player.getUniqueId(), lastLogout).orElse(null);
-		} catch (QuestNotFoundException exception) {
-			QuestSystem.getInstance().getLogger().info("Player had active quest which could not be found: " + exception.getMessage());
-			this.playerDbInformationHolder.markActiveQuestDirty();
-			this.activePlayerQuest = null;
-		}
+    public QuestPlayer(@NonNull Player player, @NonNull Language language, @NonNull Timestamp lastLogout, int coins) {
+        this.player = player;
+        this.language = language;
+        this.lastLogout = lastLogout;
+        this.coins = coins;
+        QuestManager questManager = QuestSystem.getInstance().getQuestManager();
+        this.finishedQuests = questManager.loadCompletedQuestIdsByPlayer(player.getUniqueId());
+        this.foundQuests = questManager.loadFoundQuestIdsByPlayer(player.getUniqueId());
+        this.playerDbInformationHolder = new PlayerDatabaseInformationHolder(activePlayerQuest == null);
+        try {
+            this.activePlayerQuest = questManager.loadActiveQuestIdByPlayer(player.getUniqueId(), lastLogout).orElse(null);
+        } catch (QuestNotFoundException exception) {
+            QuestSystem.getInstance().getLogger().info("Player had active quest which could not be found: " + exception.getMessage());
+            this.playerDbInformationHolder.markActiveQuestDirty();
+            this.activePlayerQuest = null;
+        }
 
-		checkAndFinishActiveQuest();
-		this.questTimer = new QuestTimerPlayer(this);
-	}
+        checkAndFinishActiveQuest();
+        this.questTimer = new QuestTimerPlayer(this);
+    }
 
-	/**
-	 * Will check and finish the active quest if done.
-	 * Rewards the player and updates the scoreboard.
-	 */
-	public void checkAndFinishActiveQuest() {
-		if (activePlayerQuest != null && activePlayerQuest.isQuestFinished()) {
-			activePlayerQuest.getQuest().rewards().forEach(r -> r.rewardPlayer(this));
-			Timestamp completedAt = Timestamp.from(Instant.now());
-			finishedQuests.put(activePlayerQuest.getQuest(), completedAt);
-			playerDbInformationHolder.addCompletedQuest(activePlayerQuest.getQuest().id(), completedAt);
-			sendMessage(TranslationKeys.QUESTS_EVENT_FINISHED, "${name}", activePlayerQuest.getQuest().name());
-			setActivePlayerQuest(null);
+    /**
+     * Will check and finish the active quest if done.
+     * Rewards the player and updates the scoreboard.
+     */
+    public void checkAndFinishActiveQuest() {
+        if (activePlayerQuest != null && activePlayerQuest.isQuestFinished()) {
+            activePlayerQuest.getQuest().rewards().forEach(r -> r.rewardPlayer(this));
+            Timestamp completedAt = Timestamp.from(Instant.now());
+            finishedQuests.put(activePlayerQuest.getQuest(), completedAt);
+            playerDbInformationHolder.addCompletedQuest(activePlayerQuest.getQuest().id(), completedAt);
+            sendMessage(TranslationKeys.QUESTS_EVENT_FINISHED, "${name}", activePlayerQuest.getQuest().name());
+            setActivePlayerQuest(null);
 
-			questUpdateEvent();
-		}
-	}
+            questUpdateEvent();
+        }
+    }
 
-	public void foundQuest(Quest quest) {
-		Timestamp foundAt = Timestamp.from(Instant.now());
-		foundQuests.put(quest, foundAt);
-		playerDbInformationHolder.addFoundQuest(quest.id(), foundAt);
-		sendMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, "${name}", quest.name());
-	}
+    public void foundQuest(Quest quest) {
+        if (quest.isPublic()) return;
+        foundQuests.computeIfAbsent(quest, q -> {
+            Timestamp foundAt = Timestamp.from(Instant.now());
+            playerDbInformationHolder.addFoundQuest(q.id(), foundAt);
+            sendMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, "${name}", q.name());
+            return foundAt;
+        });
+    }
 
-	/**
-	 * Check if expired and send every needed update
-	 */
-	public void checkIfExpired() {
-		checkAndFinishActiveQuest();
-		if (activePlayerQuest != null && activePlayerQuest.getSecondsLeft() <= 0) {
-			sendMessage(TranslationKeys.QUESTS_EVENT_TIMER_EXPIRED, "${name}", activePlayerQuest.getQuest().name());
-			setActivePlayerQuest(null);
-			questUpdateEvent();
-		}
-	}
+    /**
+     * Check if expired and send every needed update
+     */
+    public void checkIfExpired() {
+        checkAndFinishActiveQuest();
+        if (activePlayerQuest != null && activePlayerQuest.getSecondsLeft() <= 0) {
+            sendMessage(TranslationKeys.QUESTS_EVENT_TIMER_EXPIRED, "${name}", activePlayerQuest.getQuest().name());
+            setActivePlayerQuest(null);
+            questUpdateEvent();
+        }
+    }
 
-	/**
-	 * Changes the active quest
-	 *
-	 * @param quest Quest - the quest to switch to
-	 */
-	public void switchActiveQuest(@NonNull Quest quest) {
-		createAndSetPlayerQuest(quest);
-		sendMessage(TranslationKeys.QUESTS_EVENT_SWITCHED, "${name}", quest.name());
-		questUpdateEvent();
-	}
+    /**
+     * Changes the active quest
+     *
+     * @param quest Quest - the quest to switch to
+     */
+    public void switchActiveQuest(@NonNull Quest quest) {
+        createAndSetPlayerQuest(quest);
+        sendMessage(TranslationKeys.QUESTS_EVENT_SWITCHED, "${name}", quest.name());
+        questUpdateEvent();
+    }
 
-	public void startActiveQuest(@NonNull Quest quest) {
-		createAndSetPlayerQuest(quest);
-		sendMessage(TranslationKeys.QUESTS_EVENT_STARTED, "${name}", quest.name());
-		questUpdateEvent();
-	}
+    public void startActiveQuest(@NonNull Quest quest) {
+        createAndSetPlayerQuest(quest);
+        sendMessage(TranslationKeys.QUESTS_EVENT_STARTED, "${name}", quest.name());
+        questUpdateEvent();
+    }
 
-	public void cancelActiveQuest() {
-		setActivePlayerQuest(null);
-		questUpdateEvent();
-	}
+    public void cancelActiveQuest() {
+        setActivePlayerQuest(null);
+        questUpdateEvent();
+    }
 
-	/**
-	 * Adds one to the current step. Marks the active quest as dirty.
-	 *
-	 * @param quest ActivePlayerQuest - the quest the player did the step in.
-	 * @param step  QuestStep - the step which was done
-	 * @return boolean - The questStep is finished
-	 */
-	public boolean playerDidQuestStep(ActivePlayerQuest quest, QuestStep<?> step) {
-		playerDbInformationHolder.markActiveQuestDirty();
-		boolean isDone = quest.playerDidQuestStep(step);
-		questUpdateEvent();
-		return isDone;
-	}
+    /**
+     * Adds one to the current step. Marks the active quest as dirty.
+     *
+     * @param quest ActivePlayerQuest - the quest the player did the step in.
+     * @param step  QuestStep - the step which was done
+     * @return boolean - The questStep is finished
+     */
+    public boolean playerDidQuestStep(ActivePlayerQuest quest, QuestStep<?> step) {
+        playerDbInformationHolder.markActiveQuestDirty();
+        boolean isDone = quest.playerDidQuestStep(step);
+        questUpdateEvent();
+        return isDone;
+    }
 
-	private void questUpdateEvent() {
-		QuestSystem.getInstance().getServer().getPluginManager().callEvent(new PlayerQuestUpdateEvent(this));
-		ScoreboardUtil.updateScoreboard(this);
-		QuestSystem.getInstance().getQuestSign().updateSign(this);
-	}
-
-
-	/**
-	 * Will create a new ActivePlayerQuest.
-	 *
-	 * @param quest Quest - the quest to create from
-	 */
-	private void createAndSetPlayerQuest(@NonNull Quest quest) {
-		setActivePlayerQuest(new ActivePlayerQuest(quest, Instant.now().plusSeconds(quest.finishTimeInSeconds())));
-	}
-
-	/**
-	 * Sets a new active player quest, restarts the countdown.
-	 *
-	 * @param activePlayerQuest ActivePlayerQuest - the active player quest (nullable)
-	 */
-	private void setActivePlayerQuest(ActivePlayerQuest activePlayerQuest) {
-		if (this.activePlayerQuest == activePlayerQuest)
-			return;
-		this.questTimer.cancelTask();
-		this.activePlayerQuest = activePlayerQuest;
-		this.playerDbInformationHolder.markActiveQuestDirty();
-		this.questTimer.startTimerIfActiveQuestPresent();
-	}
-
-	public UUID getUniqueId() {
-		return player.getUniqueId();
-	}
-
-	/**
-	 * Changes the language and updates the scoreboard.
-	 *
-	 * @param language Language - the new language of the player
-	 */
-	public void setLanguage(Language language) {
-		this.language = language;
-		this.playerDbInformationHolder.markLanguageDirty();
-		questUpdateEvent();
-	}
-
-	/**
-	 * Changes the number of coins and updates the scoreboard.
-	 *
-	 * @param coins int - the new coins of the player
-	 */
-	public void setCoins(int coins) {
-		this.coins = coins;
-		this.playerDbInformationHolder.markCoinsDirty();
-		questUpdateEvent();
-	}
+    private void questUpdateEvent() {
+        QuestSystem.getInstance().getServer().getPluginManager().callEvent(new PlayerQuestUpdateEvent(this));
+        ScoreboardUtil.updateScoreboard(this);
+        QuestSystem.getInstance().getQuestSign().updateSign(this);
+    }
 
 
-	public Optional<ActivePlayerQuest> getActivePlayerQuest() {
-		return Optional.ofNullable(activePlayerQuest);
-	}
+    /**
+     * Will create a new ActivePlayerQuest.
+     *
+     * @param quest Quest - the quest to create from
+     */
+    private void createAndSetPlayerQuest(@NonNull Quest quest) {
+        setActivePlayerQuest(new ActivePlayerQuest(quest, Instant.now().plusSeconds(quest.finishTimeInSeconds())));
+    }
 
-	public void sendMessage(String translationKey) {
-		player.sendMessage(language.translateMessage(translationKey));
-	}
+    /**
+     * Sets a new active player quest, restarts the countdown.
+     *
+     * @param activePlayerQuest ActivePlayerQuest - the active player quest (nullable)
+     */
+    private void setActivePlayerQuest(ActivePlayerQuest activePlayerQuest) {
+        if (this.activePlayerQuest == activePlayerQuest)
+            return;
+        this.questTimer.cancelTask();
+        this.activePlayerQuest = activePlayerQuest;
+        this.playerDbInformationHolder.markActiveQuestDirty();
+        this.questTimer.startTimerIfActiveQuestPresent();
+    }
 
-	public void sendMessage(String translationKey, String placeholder, Object replacement) {
-		player.sendMessage(language.translateMessage(translationKey, placeholder, replacement));
-	}
+    public UUID getUniqueId() {
+        return player.getUniqueId();
+    }
 
-	public void sendMessage(String translationKey, List<String> placeholder, List<Object> replacement) {
-		player.sendMessage(language.translateMessage(translationKey, placeholder, replacement));
-	}
+    /**
+     * Changes the language and updates the scoreboard.
+     *
+     * @param language Language - the new language of the player
+     */
+    public void setLanguage(Language language) {
+        this.language = language;
+        this.playerDbInformationHolder.markLanguageDirty();
+        questUpdateEvent();
+    }
 
-	public void playSound(Sound sound) {
-		player.playSound(player, sound, 1, 1);
-	}
+    /**
+     * Changes the number of coins and updates the scoreboard.
+     *
+     * @param coins int - the new coins of the player
+     */
+    public void setCoins(int coins) {
+        this.coins = coins;
+        this.playerDbInformationHolder.markCoinsDirty();
+        questUpdateEvent();
+    }
 
-	public void addItem(ItemStack... item) {
-		player.getInventory().addItem(item);
-	}
 
-	public void sendClickableMessage(String translationKey, String command) {
-		TextComponent textComponent = new TextComponent(language.translateMessage(translationKey));
-		textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
-		player.spigot().sendMessage(textComponent);
-	}
+    public Optional<ActivePlayerQuest> getActivePlayerQuest() {
+        return Optional.ofNullable(activePlayerQuest);
+    }
 
-	public void openCustomInv(CustomInventory menu) {
-		APIPlayer apiPlayer = NikoAPI.getInstance().getPlayerHandler().getPlayer(getPlayer());
-		if (apiPlayer != null) menu.open(apiPlayer);
-	}
+    public void sendMessage(String translationKey) {
+        player.sendMessage(language.translateMessage(translationKey));
+    }
+
+    public void sendMessage(String translationKey, String placeholder, Object replacement) {
+        player.sendMessage(language.translateMessage(translationKey, placeholder, replacement));
+    }
+
+    public void sendMessage(String translationKey, List<String> placeholder, List<Object> replacement) {
+        player.sendMessage(language.translateMessage(translationKey, placeholder, replacement));
+    }
+
+    public void playSound(Sound sound) {
+        player.playSound(player, sound, 1, 1);
+    }
+
+    public void addItem(ItemStack... item) {
+        player.getInventory().addItem(item);
+    }
+
+    public void sendClickableMessage(String translationKey, String command) {
+        TextComponent textComponent = new TextComponent(language.translateMessage(translationKey));
+        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+        player.spigot().sendMessage(textComponent);
+    }
+
+    public void openCustomInv(CustomInventory menu) {
+        APIPlayer apiPlayer = NikoAPI.getInstance().getPlayerHandler().getPlayer(getPlayer());
+        if (apiPlayer != null) menu.open(apiPlayer);
+    }
 }

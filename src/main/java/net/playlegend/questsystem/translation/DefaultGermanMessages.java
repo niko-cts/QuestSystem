@@ -90,6 +90,10 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_QUEST_INFO_DISPLAY, "&7Die Quest &e${name} &7läuft noch &e${duration}&7. Deine aktuelle Aufgabe ist: &e${todo}");
         add(QUESTS_COMMAND_QUEST_INFO_NOACTIVE, "&7Es gibt &ckeine aktive Quest&7. &aStarte &7eine mit der GUI über /quest");
 
+        add(QUESTS_COMMAND_QUEST_FIND_USAGE, "quest find <name> - Entdecke die Quest");
+        add(QUESTS_COMMAND_QUEST_FIND_ALREADY_FOUND, "&cDu hast die Quest bereits gefunden");
+        add(QUESTS_COMMAND_QUEST_FIND_ISPUBLIC, "&cDiese Quest ist öffentlich und kann nicht gefunden werden");
+
 // GUI overview
         add(QUESTS_GUI_OVERVIEW_ACTIVE_NO_ACTIVE_NAME, "&7Keine aktive Quest");
         add(QUESTS_GUI_OVERVIEW_ACTIVE_NO_ACTIVE_LORE, "&7Starte eine Quest über;&7das Menü '&egefundene&7' oder '&eöffentliche Quests&7'");

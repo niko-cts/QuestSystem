@@ -11,6 +11,7 @@ public class QuestCommand extends APICommand {
 		super("quest", "", TranslationKeys.QUESTS_COMMAND_QUEST_USAGE, "aufgaben", "aufgabe", "quests", "task", "tasks");
 		addSubCommand(new QuestCancelCommand());
 		addSubCommand(new QuestInfoCommand());
+		addSubCommand(new QuestFindCommand());
 	}
 
 	@Override

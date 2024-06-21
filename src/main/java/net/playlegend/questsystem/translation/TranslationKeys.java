@@ -102,6 +102,14 @@ public class TranslationKeys {
 	public static final String QUESTS_COMMAND_QUEST_INFO_DISPLAY = Q_COMMAND + "quest.info.display";
 	public static final String QUESTS_COMMAND_QUEST_INFO_NOACTIVE = Q_COMMAND + "quest.info.noactive";
 
+	// quest find
+	public static final String QUESTS_COMMAND_QUEST_FIND_USAGE = Q_COMMAND + "quest.find.usage";
+	public static final String QUESTS_COMMAND_QUEST_FIND_ALREADY_FOUND = Q_COMMAND + "quest.find.alreadyfound";
+	public static final String QUESTS_COMMAND_QUEST_FIND_ISPUBLIC = Q_COMMAND + "quest.find.ispublic";
+
+
+
+
 	// GUI
 	private static final String GUI = QUEST + "gui";
 	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_NO_ACTIVE_NAME = GUI + "overview.noactive.name";

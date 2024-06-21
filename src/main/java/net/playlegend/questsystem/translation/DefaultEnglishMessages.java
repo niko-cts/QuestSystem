@@ -90,6 +90,10 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_QUEST_INFO_DISPLAY, "&7Quest &e${name} &7will exceed in &e${duration}&7. Your current task is: &e${todo}");
         add(QUESTS_COMMAND_QUEST_INFO_NOACTIVE, "&7There is &cno active quest&7. &aStart &7one using the GUI with /quest");
 
+        add(QUESTS_COMMAND_QUEST_FIND_USAGE, "quest find <name> - Discovers a quest");
+        add(QUESTS_COMMAND_QUEST_FIND_ALREADY_FOUND, "&cYou already found this quest");
+        add(QUESTS_COMMAND_QUEST_FIND_ISPUBLIC, "&cThis quest is public and cannot be found");
+
         // GUI overview
         add(QUESTS_GUI_OVERVIEW_ACTIVE_NO_ACTIVE_NAME, "&7No active quest");
         add(QUESTS_GUI_OVERVIEW_ACTIVE_NO_ACTIVE_LORE, "&7Start a quest using;&7the '&efound&7' or '&epublic Quests&7' menu");

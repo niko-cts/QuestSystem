@@ -84,11 +84,6 @@ public class QuestSignManager extends APISubCommand implements Listener {
         try {
             Files.write(signFile.toPath(), signs.stream().map(this::locationToString).toList(),
                     StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-//            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-//                    new FileOutputStream(signFile), StandardCharsets.UTF_8
-//            ));
-//            writer.write(locationToString(location));
-//            writer.close();
         } catch (IOException exception) {
             questSystem.getLogger().log(Level.SEVERE, "Could not add sign location", exception);
         }
