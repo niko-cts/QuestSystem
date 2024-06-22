@@ -26,9 +26,10 @@ public record Quest(int id,
     public ItemStack getQuestItem(Language language) {
         return new ItemBuilder(Material.WRITABLE_BOOK)
                 .setName(name)
-                .setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_DETAILS_ITEM_LORE,
+                .setLore(description.split(";"))
+                .addLore(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_DETAILS_ITEM_LORE,
                         List.of("${duration}", "${rewards}", "${tasks}"),
-                        List.of(QuestTimingsUtil.calculateNextDuration(finishTimeInSeconds), rewards.size(), completionSteps.size())))
+                        List.of(QuestTimingsUtil.convertSecondsToDHMS(language, finishTimeInSeconds), rewards.size(), completionSteps.size())).split(";"))
                 .craft();
     }
 

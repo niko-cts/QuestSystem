@@ -13,6 +13,11 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
 
     public DefaultEnglishMessages() {
         super(Locale.ENGLISH);
+
+        add(QUESTS_SIGN_NO_ACTIVE_LINE_1, "No active quest");
+        add(QUESTS_SIGN_NO_ACTIVE_LINE_2, "Execute /quest");
+        add(QUESTS_SIGN_ACTIVE_LINE_1, "Quest &6${name}");
+        add(QUESTS_SIGN_ACTIVE_LINE_2, "Next task: &e${task}");
         // builder
         add(QUESTS_BUILDER_NOT_VALID_NUMBER, "&cYou inserted a invalid number");
         add(QUESTS_BUILDER_NOT_VALID_UUID, "&cYou inserted a invalid uuid");
@@ -26,6 +31,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_NAME_LORE, "&7This will be the name of the quest;&7Click to change it");
         add(QUESTS_BUILDER_DESCRIPTION_NAME, "&eQuest description");
         add(QUESTS_BUILDER_DESCRIPTION_LORE, "&7Click to change the quest description");
+        add(QUESTS_BUILDER_DESCRIPTION_CLICK, "&7Click here and insert a description in the chat. ';' Is a line break.");
         add(QUESTS_BUILDER_REWARDS_LORE, "&7Left click to add a new quest reward; ;&7Shift-Click to see;&7the current entries");
         add(QUESTS_BUILDER_STEPS_LORE, "&7Left click to add a new quest step; ;&7Shift-Click to see;&7the current entries");
         add(QUESTS_BUILDER_TIMER_OFFLINE_NAME, "&eCountdown runs offline: ${active}");
@@ -36,14 +42,14 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_TIMER_LORE, "&7The seconds the player;&7needs to complete the quest;&7Current duration: &e${duration}");
         add(QUESTS_BUILDER_CREATE_NAME, "&aCreate the quest");
         add(QUESTS_BUILDER_CREATE_LORE, "&7Click to create the quest;&7You have to set the following:;&7- Set a name;&7- Set a description;&7- Set at least one task");
-        add(QUESTS_BUILDER_SUCCESSFUL, "&aQuest was created");
+        add(QUESTS_BUILDER_SUCCESSFUL, "&aQuest ${name} was created");
 
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Current order: &e${order}");
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Change the order of this task;&7All tasks with the same order;&7can be done at the same time;&7Click to change");
         add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_NAME, "&7Current amount: &e${amount}");
         add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE, "&7The amount to complete the task;&7This is e.g.:;&7'mine <amount> of blocks';&7Click to change");
         add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_NAME,"&eCurrent parameter: &6${parameter}");
-        add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, "&7Input the parameter of the step;&7This changes with the step;&7E.g. for Mining requires a material name;&7This step requires: &e${class};&7Click to insert parameter");
+        add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, "&7Input the parameter of the step;&7This depends on the step;&7E.g. for Mining requires a material name;&7This step requires: &e${input};&7Click to insert parameter");
         add(QUESTS_BUILDER_STEPS_CREATION_ACCEPT, "&aClick to add");
 
 
@@ -53,8 +59,8 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_EVENT_SWITCHED, "&7You &aswitched &7your active quest to &e${name}&7.");
         add(QUESTS_EVENT_STARTED, "&7The Quest &e${name}&7 has been started!");
         add(QUESTS_EVENT_COUNTDOWN, "&7You have &e${duration} &7left for the Quest &e${name}");
-        add(QUESTS_EVENT_FOUND_NEW, "%7You found a &enew quest&7: &e${name}");
-        add(QUESTS_EVENT_JOINED_HAS_ACTIVE, "&7You have an &aactive quest '&e${name}' &7running! Time left: &e${duration}");
+        add(QUESTS_EVENT_FOUND_NEW, "&7You found a &enew quest&7: &e${name}");
+        add(QUESTS_EVENT_JOINED_HAS_ACTIVE, "&7You have an active quest &e'${name}' &7running! Time left: &e${duration}");
         add(QUESTS_EVENT_JOINED_NO_ACTIVE, "&7You have no active quest running. Begin a new quest with &e/quest");
 
         add(QUESTS_DISPLAY_DAYS, "days");
@@ -70,7 +76,10 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(SYSTEM_COMMAND_USAGE, "&7Execute the command with &e/${command}");
         add(QUESTS_COMMAND_NOT_FOUND, "&7This quest could &cnot &7be found.");
         add(QUESTS_COMMAND_ADMIN_USAGE, "questadmin create/list/remove/sign");
-        add(QUESTS_COMMAND_ADMIN_QUEST_USAGE, "questadmin quest create/delete/list");
+        add(QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE, "questadmin list (<questname>) - Shows all or a specific quest");
+        add(QUESTS_COMMAND_ADMIN_QUEST_CREATE_USAGE, "questadmin create (description <description>)");
+        add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_USAGE, "questadmin delete <name>");
+
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM, "&7Do you really want to &cdelete &7this Quest? (Click here to confirm)");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL, "&7Quest was successfully deleted.");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST_NO_QUESTS, "&7There are no quests listed.");
@@ -107,14 +116,12 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_OVERVIEW_COMPLETED_LORE, "&7Click to see all quests;&7you have already completed.;&7These quests can not be redone.");
 
         // GUI active
-        add(QUESTS_GUI_ACTIVE_DESCRIPTION_LORE, "&7Click to open the quest description");
         add(QUESTS_GUI_ACTIVE_OVERVIEW, "&7Quest will exceed in: &e${duration};&7You completed &e${done} &7tasks;&7You need to complete &e${todo} &7more tasks");
         add(QUESTS_GUI_ACTIVE_LORE_STEP_COMPLETED, "&7%m${order}. ${task}");
         add(QUESTS_GUI_ACTIVE_LORE_STEP_TODO, "&e${order}. ${task}");
         add(QUESTS_GUI_ACTIVE_CANCEL_NAME, "&cCancel the quest");
         add(QUESTS_GUI_ACTIVE_CANCEL_LORE, "&7Click to cancel the quest.;&7All progress will be lost!;&7You will be able to restart the quest.;&cThis can not be undo");
-        add(QUESTS_GUI_ACTIVE_TIME_LEFT_NAME, "&eTime left");
-        add(QUESTS_GUI_ACTIVE_TIME_LEFT_LORE, "&7You have &e${duration} &7left;&7to complete this task.");
+        add(QUESTS_GUI_ACTIVE_TIME_LEFT_NAME, "&eTime left: ${duration}");
         add(QUESTS_GUI_ACTIVE_STEPS_PREVIEW_NAME, "&eQuest tasks");
         add(QUESTS_GUI_ACTIVE_STEPS_PREVIEW_LORE, "&7Click to see all tasks to complete the quest");
         add(QUESTS_GUI_ACTIVE_STEPS_TITLE, "&6Active quest tasks");
@@ -127,7 +134,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_FOUND_INFO, "&6found quests");
         add(QUESTS_GUI_COMPLETED_INFO, "&6Completed quests");
         add(QUESTS_GUI_PUBLIC_INFO, "&ePublic quests");
-        add(QUESTS_GUI_PUBLIC_LORE, " ;&7This quest is public.;&7It may exceed.&eClick to see details.");
+        add(QUESTS_GUI_PUBLIC_LORE, " ;&7This quest is public.;&7It may exceed.;&eClick to see details.");
         add(QUESTS_GUI_QUEST_DETAILS_LORE, " ;&7At &e${time};&eClick to see details.");
         add(QUESTS_GUI_ACCEPT_START_NAME, "&eStart the quest");
         add(QUESTS_GUI_ACCEPT_START_LORE, "&7Click to open the confirmation menu");
@@ -150,19 +157,19 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_STEP_CRAFT_NORMAL_LINE, "&7Craft &e${item} &a${maxamount} &7time(s)");
         add(QUESTS_STEP_CRAFT_ACTIVE_LINE, "&7Craft &e${item} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_CRAFT_NORMAL_LORE, "&7You need to craft;&7this item &e${maxamount} &7times.");
-        add(QUESTS_STEP_CRAFT_ACTIVE_LORE, "&7You need to craft;&7this item &e${amount} &7more times;&7(&e${amount}&7/&e${maxamount})");
+        add(QUESTS_STEP_CRAFT_ACTIVE_LORE, "&7You need to craft;&7this item &e${amount}&7/&e${maxamount} &7more times");
         add(QUESTS_STEP_MINE_NORMAL_LINE, "&7Mine &e${item} &a${maxamount} &7time(s)");
         add(QUESTS_STEP_MINE_ACTIVE_LINE, "&7Mine &e${item} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_MINE_NORMAL_LORE, "&7You need to mine;&7this block &e${maxamount} &7times.");
-        add(QUESTS_STEP_MINE_ACTIVE_LORE, "&7You need to mine;&7this block &e${amount} &7more times;&7(&e${amount}&7/&e${maxamount})");
+        add(QUESTS_STEP_MINE_ACTIVE_LORE, "&7You need to mine;&7this block &e&e${amount}&7/&e${maxamount} &7more times");
         add(QUESTS_STEP_KILL_NORMAL_LINE, "&7Kill &e${entity} &a${maxamount} &7time(s)");
         add(QUESTS_STEP_KILL_ACTIVE_LINE, "&7Kill &e${entity} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_KILL_NORMAL_LORE, "&7Kill &e${entity} &a${maxamount} &7time(s)");
-        add(QUESTS_STEP_KILL_ACTIVE_LORE, "&7You need to kill;&7this entity &e${amount} &7more time(s);&7(&e${amount}&7/&e${maxamount})");
+        add(QUESTS_STEP_KILL_ACTIVE_LORE, "&7You need to kill;&7this entity &e&e${amount}&7/&e${maxamount} &7more time(s)");
         add(QUESTS_STEP_NPC_NORMAL_LINE, "&7Speak to &e${name} &a${maxamount} &7time(s)");
         add(QUESTS_STEP_NPC_ACTIVE_LINE, "&7Speak to &e${name} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_NPC_NORMAL_LORE, "&7Speak to &e${name} &a${maxamount} &7time(s);&7${name} is at &e${location}");
-        add(QUESTS_STEP_NPC_ACTIVE_LORE, "&7You need to speak;&7to ${name} &e${amount} &7more time(s);&7${name} is at &e${location};&7(&e${amount}&7/&e${maxamount})");
+        add(QUESTS_STEP_NPC_ACTIVE_LORE, "&7You need to speak;&7to ${name} &e${amount}&7/&e${maxamount} &7more time(s);&7${name} is at &e${location}");
 
         // REWARDS
         add(QUESTS_REWARD_COINS_PREVIEW, "&e${amount} coins");

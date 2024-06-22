@@ -25,7 +25,6 @@ public class AnvilInsertionHelper {
     private AnvilInsertionHelper() {
         throw new UnsupportedOperationException();
     }
-
     /**
      * Opens an anvil and waits for insertion (rename).
      * Then call acceptable function.
@@ -46,7 +45,7 @@ public class AnvilInsertionHelper {
                     ItemStack clickedItem = event.getClickedItem();
                     ItemMeta itemMeta = clickedItem.getItemMeta();
                     if (itemMeta != null)
-                        itemMeta.setDisplayName(errorMsg);
+                        itemMeta.setDisplayName(questPlayer.getLanguage().translateMessage(errorMsg));
                     clickedItem.setItemMeta(itemMeta);
                 } else {
                     event.setWillClose(true);

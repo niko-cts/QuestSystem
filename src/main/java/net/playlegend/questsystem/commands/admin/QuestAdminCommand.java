@@ -29,5 +29,6 @@ public class QuestAdminCommand extends APICommand {
 	@Override
 	public void onCommand(QuestPlayer questPlayer, String[] args) {
 		sendCommandUsage(questPlayer);
+		QuestSystem.getInstance().getQuestSign().updateSign(questPlayer);
 	}
 }

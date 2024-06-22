@@ -1,6 +1,7 @@
 package net.playlegend.questsystem.gui;
 
 import chatzis.nikolas.mc.nikoapi.inventory.CustomInventory;
+import chatzis.nikolas.mc.nikoapi.util.Utils;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.quest.reward.QuestReward;
@@ -25,7 +26,7 @@ public class QuestRewardsGUI {
 		List<QuestReward<?>> rewards = quest.rewards();
 		CustomInventory menu = new CustomInventory(
 				language.translateMessage(TranslationKeys.QUESTS_GUI_REWARDS_TITLE, "${name}", quest.name()),
-				rewards.size() + 2
+				Utils.getPerfectInventorySize( rewards.size() + 2)
 		);
 
 		for (QuestReward<?> reward : rewards) {

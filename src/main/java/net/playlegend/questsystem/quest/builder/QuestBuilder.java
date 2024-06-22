@@ -6,6 +6,9 @@ import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
 import chatzis.nikolas.mc.nikoapi.item.UsefulItems;
 import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
 import lombok.NonNull;
+import lombok.Setter;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.reward.QuestReward;
@@ -50,6 +53,10 @@ public class QuestBuilder implements Listener {
 		});
 	}
 
+	public static QuestBuilder getBuilder(UUID uuid) {
+		return EDITING_PLAYERS.get(uuid);
+	}
+
 	private static void removePlayer(UUID uuid) {
 		EDITING_PLAYERS.computeIfPresent(uuid, (uuid1, questBuilder) -> {
 			HandlerList.unregisterAll(questBuilder);
@@ -62,6 +69,7 @@ public class QuestBuilder implements Listener {
 	@NonNull
 	final Language language;
 	private String name;
+	@Setter
 	private String description;
 	final List<QuestReward<?>> rewards;
 	final List<QuestStep<?>> steps;
@@ -86,7 +94,7 @@ public class QuestBuilder implements Listener {
 	}
 
 	public void openMenu() {
-		CustomInventory menu = new CustomInventory(9 * 3);
+		CustomInventory menu = new CustomInventory(27);
 
 		menu.setItem(10, new ItemBuilder(Material.PAPER)
 						.setName(name == null ? ChatColor.YELLOW + "?" : name)
@@ -102,13 +110,14 @@ public class QuestBuilder implements Listener {
 				});
 		menu.setItem(11, new ItemBuilder(Material.WRITABLE_BOOK)
 						.setName(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_NAME))
-						.setLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_LORE).split(";")).craft(),
+						.setLore(description != null ? description.split(";") : new String[0])
+						.addLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_LORE).split(";")).craft(),
 				new ClickAction(true) {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						Bukkit.getScheduler().runTask(QuestSystem.getInstance(), () ->
-								apiPlayer.openBook(new ItemBuilder(Material.WRITABLE_BOOK).addPage(description != null ? description.replace("§", "&").split(";") : new String[]{""}).craft())
-						);
+						TextComponent textComponent = new TextComponent(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_CLICK));
+						textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/questadmin create description " + (description != null ? description.replace("§", "&") : "")));
+						apiPlayer.getPlayer().spigot().sendMessage(textComponent);
 					}
 				});
 
@@ -130,7 +139,7 @@ public class QuestBuilder implements Listener {
 
 		menu.setItem(13, new ItemBuilder(Material.IRON_DOOR)
 				.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_STEPS_NAME))
-				.setLore(steps.stream().map(s -> ChatColor.GRAY + "- " + s.getTaskLine(language)).toList())
+				.setLore(steps.stream().sorted(Comparator.comparingInt(QuestStep::getOrder)).map(s -> ChatColor.YELLOW + "" + s.getOrder() + ChatColor.GRAY + ". " + s.getTaskLine(language)).toList())
 				.addLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_LORE).split(";"))
 				.craft(), new ClickAction() {
 			@Override
@@ -191,7 +200,7 @@ public class QuestBuilder implements Listener {
 						if (name != null && description != null && !steps.isEmpty()) {
 							QuestSystem.getInstance().getQuestManager().addQuest(
 									name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
-							questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL);
+							questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL, "${name}", name);
 							setCloseInventory(true);
 							removePlayer(apiPlayer.getUniqueId());
 						}

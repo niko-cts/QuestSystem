@@ -13,6 +13,12 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
 
     public DefaultGermanMessages() {
         super(Locale.GERMAN);
+        // sign
+        add(QUESTS_SIGN_NO_ACTIVE_LINE_1, "Keine aktive Quest");
+        add(QUESTS_SIGN_NO_ACTIVE_LINE_2, "Schreibe /quest");
+        add(QUESTS_SIGN_ACTIVE_LINE_1, "Quest &6${name}");
+        add(QUESTS_SIGN_ACTIVE_LINE_2, "Nächste Aufgabe &e${task}");
+
 // builder
         add(QUESTS_BUILDER_NOT_VALID_NUMBER, "&cDu hast eine ungültige Zahl eingegeben.");
         add(QUESTS_BUILDER_NOT_VALID_UUID, "&cDu hast eine ungültige UUID eingegeben.");
@@ -26,6 +32,7 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_NAME_LORE, "&7Das wird der Name der Quest;&7Klicken, um ihn zu ändern.");
         add(QUESTS_BUILDER_DESCRIPTION_NAME, "&eQuestbeschreibung");
         add(QUESTS_BUILDER_DESCRIPTION_LORE, "&7Klicken, um die Questbeschreibung zu ändern.");
+        add(QUESTS_BUILDER_DESCRIPTION_CLICK, "&7Klicken und Questbeschreibung eingeben. Ein ';' ist ein line-break.");
         add(QUESTS_BUILDER_REWARDS_LORE, "&7Linksklick, um eine neue Questbelohnung hinzuzufügen; ;&7Shift-Klick, um die aktuellen Einträge zu sehen.");
         add(QUESTS_BUILDER_STEPS_LORE, "&7Linksklick, um einen neuen Questschritt hinzuzufügen; ;&7Shift-Klick, um die aktuellen Einträge zu sehen.");
         add(QUESTS_BUILDER_TIMER_OFFLINE_NAME, "&eCountdown läuft offline: ${active}");
@@ -36,14 +43,14 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_TIMER_LORE, "&7Die Sekunden, die der Spieler hat;&7um die Quest abzuschließen;&7Aktuelle Dauer: &e${duration}");
         add(QUESTS_BUILDER_CREATE_NAME, "&aQuest erstellen");
         add(QUESTS_BUILDER_CREATE_LORE, "&7Klicken, um die Quest zu erstellen.;&7Um die Quest zu erstellen,;&7musst du folgendes gesetzt habeN:;&7- Einen Namen;&7- Eine Beschreibung;&7- Mindestens eine Aufgabe");
-        add(QUESTS_BUILDER_SUCCESSFUL, "&aQuest wurde erstellt.");
+        add(QUESTS_BUILDER_SUCCESSFUL, "&aQuest ${name} wurde erstellt.");
 
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Aktuelle Reihenfolge: &e${order}");
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Ändere die Reihenfolge dieser Aufgabe;&7Alle Aufgaben mit derselben Reihenfolge;&7können gleichzeitig erledigt werden;&7Klicken, um zu ändern.");
         add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_NAME, "&7Aktuelle Menge: &e${amount}");
         add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE, "&7Die Menge zum Abschließen der Aufgabe;&7Das ist z.B.:;&7'Baue <anzahl> von Blöcken ab';&7Klicken, um zu ändern.");
         add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_NAME, "&eAktueller Parameter: &6${parameter}");
-        add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, "&7Gib den Parameter des Schrittes ein;&7Das ändert sich mit dem Schritt;&7Z.B. erfordert Mining einen Materialnamen;&7Dieser Schritt erfordert: &e${class};&7Klicken, um Parameter einzufügen.");
+        add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, "&7Gib den Parameter des Tasks ein;&7Das kommt auf den Tasktyp an;&7Z.B. erfordert Mining einen Materialnamen;&7Dieser Schritt erfordert: &e${input};&7Klicken, um Parameter einzufügen.");
         add(QUESTS_BUILDER_STEPS_CREATION_ACCEPT, "&aKlicken, um hinzuzufügen.");
 
         // events
@@ -69,7 +76,7 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(SYSTEM_COMMAND_USAGE, "&7Führe den Befehl mit &e/${command} aus");
         add(QUESTS_COMMAND_NOT_FOUND, "&7Diese Quest konnte &cnicht &7gefunden werden.");
         add(QUESTS_COMMAND_ADMIN_USAGE, "questadmin create/list/remove/sign");
-        add(QUESTS_COMMAND_ADMIN_QUEST_USAGE, "questadmin quest create/delete/list");
+        add(QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE, "questadmin quest create/delete/list");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM, "&7Möchtest du diese Quest wirklich &clöschen&7? (Hier klicken, um zu bestätigen)");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL, "&7Quest wurde erfolgreich gelöscht.");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST_NO_QUESTS, "&7Es sind keine Quests aufgelistet.");
@@ -107,14 +114,12 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_OVERVIEW_COMPLETED_LORE, "&7Klicken, um alle Quests zu sehen;&7die du bereits abgeschlossen hast.;&7Diese Quests können nicht erneut gemacht werden.");
 
 // GUI active
-        add(QUESTS_GUI_ACTIVE_DESCRIPTION_LORE, "&7Klicken, um die Questbeschreibung zu öffnen");
         add(QUESTS_GUI_ACTIVE_OVERVIEW, "&7Die Quest läuft noch: &e${duration};&7Du hast &e${done} &7Aufgaben abgeschlossen;&7Du musst noch &e${todo} &7weitere Aufgaben erledigen");
         add(QUESTS_GUI_ACTIVE_LORE_STEP_COMPLETED, "&7&m${order}. ${task}");
         add(QUESTS_GUI_ACTIVE_LORE_STEP_TODO, "&e${order}. ${task}");
         add(QUESTS_GUI_ACTIVE_CANCEL_NAME, "&cQuest abbrechen");
         add(QUESTS_GUI_ACTIVE_CANCEL_LORE, "&7Klicken, um die Quest abzubrechen.;&7Alle Fortschritte gehen verloren!;&7Du wirst die Quest neu starten können.;&cDies kann nicht rückgängig gemacht werden");
-        add(QUESTS_GUI_ACTIVE_TIME_LEFT_NAME, "&eVerbleibende Zeit");
-        add(QUESTS_GUI_ACTIVE_TIME_LEFT_LORE, "&7Du hast noch &e${duration} &7;&7um diese Aufgabe zu erledigen.");
+        add(QUESTS_GUI_ACTIVE_TIME_LEFT_NAME, "&eVerbleibende Zeit: ${duration}");
         add(QUESTS_GUI_ACTIVE_STEPS_PREVIEW_NAME, "&eQuest Aufgaben");
         add(QUESTS_GUI_ACTIVE_STEPS_PREVIEW_LORE, "&7Klicken, um alle Aufgaben der Quest zu sehen");
         add(QUESTS_GUI_ACTIVE_STEPS_TITLE, "&6Aktive Quest Aufgaben");
@@ -127,7 +132,7 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_FOUND_INFO, "&6Gefundene Quests");
         add(QUESTS_GUI_COMPLETED_INFO, "&6Abgeschlossene Quests");
         add(QUESTS_GUI_PUBLIC_INFO, "&eÖffentliche Quests");
-        add(QUESTS_GUI_PUBLIC_LORE, " ;&7Diese Quest ist öffentlich.;&7Sie kann ablaufen.&eKlicken, um Details zu sehen.");
+        add(QUESTS_GUI_PUBLIC_LORE, " ;&7Diese Quest ist öffentlich.;&7Sie kann ablaufen.;&eKlicken, um Details zu sehen.");
         add(QUESTS_GUI_QUEST_DETAILS_LORE, " ;&7Um &e${time};&eKlicken, um Details zu sehen.");
         add(QUESTS_GUI_ACCEPT_START_NAME, "&eQuest starten");
         add(QUESTS_GUI_ACCEPT_START_LORE, "&7Klicken, um das Bestätigungsmenü zu öffnen");
@@ -151,19 +156,19 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_STEP_CRAFT_NORMAL_LINE, "&7Stelle &e${item} &a${maxamount} &7Mal her");
         add(QUESTS_STEP_CRAFT_ACTIVE_LINE, "&7Stelle &e${item} &7her - &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_CRAFT_NORMAL_LORE, "&7Du musst;&7dieses Item &e${maxamount} &7Mal herstellen.");
-        add(QUESTS_STEP_CRAFT_ACTIVE_LORE, "&7Du musst;&7dieses Item noch &e${amount} &7Mal herstellen;&7(&e${amount}&7/&e${maxamount})");
+        add(QUESTS_STEP_CRAFT_ACTIVE_LORE, "&7Du musst;&7dieses Item noch &e${amount}&7/&e${maxamount} &7mal herstellen");
         add(QUESTS_STEP_MINE_NORMAL_LINE, "&7Baue &e${item} &a${maxamount} &7Mal ab");
         add(QUESTS_STEP_MINE_ACTIVE_LINE, "&7Baue &e${item} &7ab - &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_MINE_NORMAL_LORE, "&7Du musst;&7diesen Block &e${maxamount} &7Mal abbauen.");
-        add(QUESTS_STEP_MINE_ACTIVE_LORE, "&7Du musst;&7diesen Block noch &e${amount} &7Mal abbauen;&7(&e${amount}&7/&e${maxamount})");
+        add(QUESTS_STEP_MINE_ACTIVE_LORE, "&7Du musst;&7diesen Block noch &e${amount}&7/&e${maxamount} &7mal abbauen");
         add(QUESTS_STEP_KILL_NORMAL_LINE, "&7Töte &e${entity} &a${maxamount} &7Mal");
         add(QUESTS_STEP_KILL_ACTIVE_LINE, "&7Töte &e${entity} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_KILL_NORMAL_LORE, "&7Töte &e${entity} &a${maxamount} &7Mal");
-        add(QUESTS_STEP_KILL_ACTIVE_LORE, "&7Du musst;&7diese Entität noch &e${amount} &7Mal töten;&7(&e${amount}&7/&e${maxamount})");
+        add(QUESTS_STEP_KILL_ACTIVE_LORE, "&7Du musst;&7diese Entität noch &e${amount}&7/&e${maxamount} &7mal töten");
         add(QUESTS_STEP_NPC_NORMAL_LINE, "&7Sprich mit &e${name} &a${maxamount} &7Mal");
         add(QUESTS_STEP_NPC_ACTIVE_LINE, "&7Sprich mit &e${name} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_NPC_NORMAL_LORE, "&7Sprich mit &e${name} &a${maxamount} &7Mal;&7${name} ist bei &e${location}");
-        add(QUESTS_STEP_NPC_ACTIVE_LORE, "&7Du musst;&7mit ${name} noch &e${amount} &7Mal sprechen;&7${name} ist bei &e${location};&7(&e${amount}&7/&e${maxamount})");
+        add(QUESTS_STEP_NPC_ACTIVE_LORE, "&7Du musst;&7mit ${name} noch &e${amount}&7/&e${maxamount} &7mal sprechen;&7${name} ist bei &e${location}");
 
 // REWARDS
         add(QUESTS_REWARD_COINS_PREVIEW, "&e${amount} Münzen");

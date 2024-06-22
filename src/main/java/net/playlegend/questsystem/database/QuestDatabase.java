@@ -91,7 +91,7 @@ public class QuestDatabase {
      * @return ResultSet - All quest steps for the quest
      */
     public ResultSet getAllQuestSteps(int questId) {
-        return this.dbHandler.select(TABLE_QUEST_STEPS_INFO, List.of("*"), "quest_id=" + questId + " ORDER BY id");
+        return this.dbHandler.select(TABLE_QUEST_STEPS_INFO, List.of("*"), "WHERE quest_id=" + questId);
     }
 
     /**
@@ -144,12 +144,12 @@ public class QuestDatabase {
 
         if (!unaddedRewards.isEmpty()) {
             StringBuilder insertRewards = new StringBuilder()
-                    .append("INSERT INTO ").append(TABLE_QUEST_REWARD_INFO).append(" (type,reward_object) ");
+                    .append("INSERT INTO ").append(TABLE_QUEST_REWARD_INFO).append(" (type,reward_object) VALUES");
             Iterator<QuestReward<?>> notInDBRewardsIterator = unaddedRewards.iterator();
             while (notInDBRewardsIterator.hasNext()) {
                 QuestReward<?> notInDBRewards = notInDBRewardsIterator.next();
                 try {
-                    insertRewards.append("VALUES('").append(notInDBRewards.getRewardType().name()).append("','")
+                    insertRewards.append("('").append(notInDBRewards.getRewardType().name()).append("','")
                             .append(QuestObjectConverterUtil.convertObjectToDatabaseString(notInDBRewards.getRewardObject())).append("')");
                     if (notInDBRewardsIterator.hasNext())
                         insertRewards.append(",");

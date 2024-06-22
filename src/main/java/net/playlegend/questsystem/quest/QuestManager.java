@@ -59,7 +59,7 @@ public class QuestManager {
 						QuestStepType questStepType;
 						int stepId = stepResult.getInt("id");
 						try {
-							questStepType = QuestStepType.valueOf(stepResult.getString("step_type").toUpperCase());
+							questStepType = QuestStepType.valueOf(stepResult.getString("type").toUpperCase());
 						} catch (IllegalArgumentException exception) {
 							log.log(Level.SEVERE, "Invalid step type for quest {0} at quest step '{1}'! " +
 							                      "Tried to insert {2}, but [{3}] is accepted only.",

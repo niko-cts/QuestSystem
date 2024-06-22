@@ -67,6 +67,7 @@ public class QuestPlayer {
 
 		checkAndFinishActiveQuest();
 		this.questTimer = new QuestTimerPlayer(this);
+		Bukkit.getScheduler().runTaskLater(QuestSystem.getInstance(), this::questUpdateEvent, 10L);
 	}
 
 	/**
@@ -145,9 +146,9 @@ public class QuestPlayer {
 	}
 
 	private void questUpdateEvent() {
-		QuestSystem.getInstance().getServer().getPluginManager().callEvent(new PlayerQuestUpdateEvent(this));
 		ScoreboardUtil.updateScoreboard(this);
 		QuestSystem.getInstance().getQuestSign().updateSign(this);
+		QuestSystem.getInstance().getServer().getPluginManager().callEvent(new PlayerQuestUpdateEvent(this));
 	}
 
 

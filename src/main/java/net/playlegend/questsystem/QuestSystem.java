@@ -5,7 +5,7 @@ import net.playlegend.questsystem.commands.LanguageCommand;
 import net.playlegend.questsystem.commands.QuestCommand;
 import net.playlegend.questsystem.commands.admin.QuestAdminCommand;
 import net.playlegend.questsystem.commands.handler.CommandHandler;
-import net.playlegend.questsystem.database.DatabaseHandler;
+import net.playlegend.questsystem.database.*;
 import net.playlegend.questsystem.listener.QuestPlayerConnectionListener;
 import net.playlegend.questsystem.listener.QuestStepListener;
 import net.playlegend.questsystem.player.PlayerHandler;
@@ -38,6 +38,10 @@ public final class QuestSystem extends JavaPlugin {
         this.commandHandler = new CommandHandler();
         this.questManager = new QuestManager();
         this.questSign = new QuestSignManager(this);
+        QuestDatabase.getInstance();
+        PlayerQuestDatabase.getInstance();
+        PlayerInfoDatabase.getInstance();
+        NPCDatabase.getInstance();
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new QuestPlayerConnectionListener(this, playerHandler), this);

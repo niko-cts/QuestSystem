@@ -13,7 +13,10 @@ public class TranslationKeys {
 
 	private static final String QUEST = "quests.";
 
-
+	public static final String QUESTS_SIGN_NO_ACTIVE_LINE_1 = QUEST + "sign.noactive.1";
+	public static final String QUESTS_SIGN_NO_ACTIVE_LINE_2 = QUEST + "sign.noactive.2";
+	public static final String QUESTS_SIGN_ACTIVE_LINE_1 = QUEST + "sign.active.1";
+	public static final String QUESTS_SIGN_ACTIVE_LINE_2 = QUEST + "sign.active.2";
 
 	private static final String BUILDER = QUEST + "builder.";
 	public static final String QUESTS_BUILDER_NOT_VALID_NUMBER = BUILDER + "input.invalid.number";
@@ -28,6 +31,7 @@ public class TranslationKeys {
 	public static final String QUESTS_BUILDER_NAME_LORE = BUILDER + "questname.lore";
 	public static final String QUESTS_BUILDER_DESCRIPTION_NAME = BUILDER + "description.name";
 	public static final String QUESTS_BUILDER_DESCRIPTION_LORE = BUILDER + "description.lore";
+	public static final String QUESTS_BUILDER_DESCRIPTION_CLICK = BUILDER + "description.click";
 	public static final String QUESTS_BUILDER_REWARDS_LORE = BUILDER + "rewards.lore";
 	public static final String QUESTS_BUILDER_STEPS_LORE = BUILDER + "steps.lore";
 	public static final String QUESTS_BUILDER_TIMER_OFFLINE_NAME = BUILDER + "timer.runsoffline.name";
@@ -77,7 +81,9 @@ public class TranslationKeys {
 	public static final String QUESTS_COMMAND_ADMIN_USAGE = Q_COMMAND + "admin.usage";
 
 	// /questadmin ...
-	public static final String QUESTS_COMMAND_ADMIN_QUEST_USAGE = Q_COMMAND + "admin.quest.usage";
+	public static final String QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE = Q_COMMAND + "admin.quest.list.usage";
+	public static final String QUESTS_COMMAND_ADMIN_QUEST_CREATE_USAGE = Q_COMMAND + "admin.quest.create.usage";
+	public static final String QUESTS_COMMAND_ADMIN_QUEST_DELETE_USAGE = Q_COMMAND + "admin.quest.delete.usage";
 	public static final String QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM = Q_COMMAND + "admin.quest.delete.confirmation";
 	public static final String QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL = Q_COMMAND + "admin.quest.delete.successful";
 	public static final String QUESTS_COMMAND_ADMIN_QUEST_LIST_NO_QUESTS = Q_COMMAND + "admin.quest.list.noquests";
@@ -124,14 +130,12 @@ public class TranslationKeys {
 	public static final String QUESTS_GUI_OVERVIEW_COMPLETED_LORE = GUI + "overview.completed.lore";
 
 
-	public static final String QUESTS_GUI_ACTIVE_DESCRIPTION_LORE = GUI + "active.description";
 	public static final String QUESTS_GUI_ACTIVE_OVERVIEW = GUI + "active.overview";
 	public static final String QUESTS_GUI_ACTIVE_LORE_STEP_COMPLETED = GUI + "active.step.completed";
 	public static final String QUESTS_GUI_ACTIVE_LORE_STEP_TODO = GUI + "active.step.todo";
 	public static final String QUESTS_GUI_ACTIVE_CANCEL_NAME = GUI + "active.cancel.name";
 	public static final String QUESTS_GUI_ACTIVE_CANCEL_LORE = GUI + "active.cancel.lore";
 	public static final String QUESTS_GUI_ACTIVE_TIME_LEFT_NAME = GUI + "active.time.name";
-	public static final String QUESTS_GUI_ACTIVE_TIME_LEFT_LORE = GUI + "active.time.lore";
 
 	// ACTIVE QUEST STEPS
 	public static final String QUESTS_GUI_ACTIVE_STEPS_PREVIEW_NAME = GUI + "active.steps.preview.name";

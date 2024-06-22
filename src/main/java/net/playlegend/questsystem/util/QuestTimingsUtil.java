@@ -6,6 +6,7 @@ import net.playlegend.questsystem.translation.TranslationKeys;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class QuestTimingsUtil {
@@ -31,7 +32,6 @@ public class QuestTimingsUtil {
             return 600; // every 10 min
         if (secondsLeft > 600)
             return secondsLeft % 600; // every 10 min
-
         if (secondsLeft > 300)
             return secondsLeft % 300; // 5 minutes left
 
@@ -105,9 +105,9 @@ public class QuestTimingsUtil {
         return now.plusSeconds(secondsLeft);
     }
 
-    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.systemDefault());
 
     public static String formatDateTime(Instant time) {
-        return DTF.format(time);
+        return time.toString(); // DTF.format(time);
     }
 }

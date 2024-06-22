@@ -12,7 +12,7 @@ import java.util.Iterator;
 public class QuestListSubCommand extends APISubCommand {
 
 	public QuestListSubCommand() {
-		super("list", "command.quest.admin.list", TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_USAGE);
+		super("list", "command.quest.admin.list", TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE);
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class QuestListSubCommand extends APISubCommand {
 					if (questIterator.hasNext())
 						quests.append(", ");
 				}
-				questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_LIST, "${quests}", quests.toString());
+				questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_LIST, "${quest}", quests.toString());
 			}
 		} else {
 			String name = arguments[0];

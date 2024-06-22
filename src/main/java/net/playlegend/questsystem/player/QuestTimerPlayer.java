@@ -46,7 +46,7 @@ public class QuestTimerPlayer {
                         List.of(activePlayerQuest.getQuest().name(), QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getLanguage(), currentSeconds)));
                 startTimerIfActiveQuestPresent();
             }
-        }.runTaskLater(QuestSystem.getInstance(), 20L * delay + 20);
+        }.runTaskLater(QuestSystem.getInstance(), 20L * delay);
     }
 
     public void cancelTask() {

@@ -34,27 +34,10 @@ public class ActiveQuestGUI {
 
 		menu.setItem(10, new ItemBuilder(Material.BOOK)
 						.setName(activeQuest.getQuest().name())
-						.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_DESCRIPTION_LORE))
-						.craft(),
-				new ClickAction() {
-					@Override
-					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						apiPlayer.openBook(new ItemBuilder(Material.WRITTEN_BOOK).addPage(
-								language.translateMessage(activeQuest.getQuest().description()).replace("/n", "\n").split(";")
-						).craft());
-					}
-				});
+						.setLore(activeQuest.getQuest().description().split(";"))
+						.craft());
 
-		long secondsLeft = activeQuest.getSecondsLeft();
-		String timeLeftName = language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_TIME_LEFT_NAME, "${left}",
-				QuestTimingsUtil.convertSecondsToDHMS(language, secondsLeft));
-
-		menu.setItem(11, new ItemBuilder(Material.CLOCK)
-				.setName(timeLeftName)
-				.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_TIME_LEFT_LORE, "${time}",
-						QuestTimingsUtil.formatDateTime(activeQuest.getTimeLeft())).split(";")).craft());
-
-		menu.setItem(12, getActivePlayerQuestItem(activeQuest, language));
+		menu.setItem(11, getActivePlayerQuestItem(activeQuest, language));
 
 		menu.setItem(13, new ItemBuilder(Material.CHEST)
 						.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_STEPS_PREVIEW_NAME))
@@ -88,10 +71,14 @@ public class ActiveQuestGUI {
 					}
 				});
 
+
+		long secondsLeft = activeQuest.getSecondsLeft();
+		String timeLeftName = language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_TIME_LEFT_NAME, "${duration}",
+				QuestTimingsUtil.convertSecondsToDHMS(language, secondsLeft));
 		long completeSeconds = activeQuest.getQuest().finishTimeInSeconds();
 		double timeFraction = (double) secondsLeft / completeSeconds;
 
-		for (double i = 1, j = 18; i > 0 && j < 27; i -= 0.1, j++) {
+		for (double i = 0, j = 18; i < 1 && j < 27; i += 0.1, j++) {
 			boolean isInTime = timeFraction >= i;
 			menu.setItem((int) j, new ItemBuilder(
 					isInTime ? UsefulItems.BACKGROUND_GREEN : UsefulItems.BACKGROUND_GRAY

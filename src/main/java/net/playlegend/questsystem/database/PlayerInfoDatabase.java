@@ -84,9 +84,8 @@ public class PlayerInfoDatabase {
         UUID uuid = questPlayer.getUniqueId();
         PlayerDatabaseInformationHolder dbInfo = questPlayer.getPlayerDbInformationHolder();
         StringBuilder sql = new StringBuilder();
+        Optional<ActivePlayerQuest> activePlayerQuest = questPlayer.getActivePlayerQuest();
         if (dbInfo.isMarkActiveQuestDirty()) {
-            Optional<ActivePlayerQuest> activePlayerQuest = questPlayer.getActivePlayerQuest();
-
             if (activePlayerQuest.isEmpty()) {
                 // DELETE ACTIVE PLAYER QUEST
                 sql.append(String.format("DELETE FROM %s WHERE uuid='%s' LIMIT 1;",
@@ -126,7 +125,15 @@ public class PlayerInfoDatabase {
                     ));
                 }
             }
+        } else if (activePlayerQuest.isPresent()) {
+            // UPDATE ACTIVE PLAYER QUEST
+            ActivePlayerQuest quest = activePlayerQuest.get();
+            sql.append(String.format(
+                    "UPDATE %s SET quest_id=%s, time_left=%s WHERE uuid='%s' LIMIT 1;",
+                    PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST, quest.getQuest().id(), quest.getSecondsLeft(), uuid
+            ));
         }
+
         for (Map.Entry<Integer, Timestamp> newFoundQuest : dbInfo.getNewFoundQuests().entrySet()) {
             sql.append(String.format(
                     "INSERT INTO %s VALUES('%s', %s, '%s');",

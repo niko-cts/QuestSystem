@@ -29,9 +29,9 @@ public class QuestSpecificGUI {
 		Language language = questPlayer.getLanguage();
 		CustomInventory menu = new CustomInventory(quest.name(), 9 * 3);
 		ItemStack questItem = quest.getQuestItem(language);
-		menu.setItem(11, questItem);
+		menu.setItem(10, questItem);
 
-		menu.setItem(13, quest.rewards().size() == 1 ?
+		menu.setItem(12, quest.rewards().size() == 1 ?
 						quest.rewards().get(0).getRewardDisplayItem(language)
 						: quest.getRewardItem(language),
 				new ClickAction() {
@@ -43,7 +43,7 @@ public class QuestSpecificGUI {
 					}
 				});
 
-		menu.setItem(15, quest.completionSteps().size() == 1 ?
+		menu.setItem(14, quest.completionSteps().size() == 1 ?
 						quest.completionSteps().get(0).getTaskItem(language) :
 						quest.getStepItem(language),
 				new ClickAction() {
@@ -56,7 +56,7 @@ public class QuestSpecificGUI {
 				});
 
 		Timestamp finishedAt = questPlayer.getFinishedQuests().get(quest);
-		menu.setItem(17, finishedAt != null ?
+		menu.setItem(16, finishedAt != null ?
 						new ItemBuilder(Material.CLOCK)
 								.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_TIME_NAME))
 								.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_TIME_LORE, "${time}", QuestTimingsUtil.formatDateTime(finishedAt.toInstant())).split(";")).craft()
@@ -66,7 +66,7 @@ public class QuestSpecificGUI {
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						if (finishedAt != null)
+						if (finishedAt == null)
 							openConfirmationQuestGUI(questPlayer, quest, questItem,
 									(backPlayer, q) -> openQuestGUI(backPlayer, q, goBack));
 					}
