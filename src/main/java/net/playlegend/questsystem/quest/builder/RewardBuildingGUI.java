@@ -56,11 +56,12 @@ public class RewardBuildingGUI {
 					new ClickAction() {
 						@Override
 						public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-
 							if (type.getConstructorParameter() == Integer.class || type.getConstructorParameter() == int.class) {
 								AnvilInsertionHelper.acceptNumberInAnvilMenu(builder.questPlayer,
-										TranslationKeys.QUESTS_BUILDER_MODIFY_INTEGER, type.name(),
-										amount -> addNewRewardFromType(builder, type, amount));
+										TranslationKeys.QUESTS_BUILDER_MODIFY_INTEGER, type.name(), amount -> {
+											addNewRewardFromType(builder, type, amount);
+											openAllSetRewards(builder);
+										});
 							} else if (type.getConstructorParameter() == ItemStack.class) {
 								openItemRewardMenu(builder);
 							} else {
@@ -75,8 +76,9 @@ public class RewardBuildingGUI {
 
 	private static void openItemRewardMenu(QuestBuilder builder) {
 		builder.openItemInsertion(itemStack -> {
-			addNewRewardFromType(builder, RewardType.ITEM, itemStack);
-			builder.openMenu();
+			if (itemStack != null && itemStack.getType() != Material.AIR)
+				addNewRewardFromType(builder, RewardType.ITEM, itemStack);
+			openAllSetRewards(builder);
 		});
 	}
 

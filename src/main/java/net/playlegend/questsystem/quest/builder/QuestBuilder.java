@@ -83,7 +83,6 @@ public class QuestBuilder implements Listener {
 		this.timerRunsOffline = false;
 		this.isPublic = true;
 		QuestSystem.getInstance().getServer().getPluginManager().registerEvents(this, QuestSystem.getInstance());
-		EDITING_PLAYERS.put(questPlayer.getUniqueId(), this);
 	}
 
 	public void openMenu() {
@@ -104,11 +103,12 @@ public class QuestBuilder implements Listener {
 		menu.setItem(11, new ItemBuilder(Material.WRITABLE_BOOK)
 						.setName(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_NAME))
 						.setLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_LORE).split(";")).craft(),
-				new ClickAction() {
+				new ClickAction(true) {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						apiPlayer.openBook(new ItemBuilder(Material.WRITABLE_BOOK)
-								.addPage(description != null ? description.replace("§", "&").split(";") : new String[0]).craft());
+						Bukkit.getScheduler().runTask(QuestSystem.getInstance(), () ->
+								apiPlayer.openBook(new ItemBuilder(Material.WRITABLE_BOOK).addPage(description != null ? description.replace("§", "&").split(";") : new String[]{""}).craft())
+						);
 					}
 				});
 
@@ -145,8 +145,8 @@ public class QuestBuilder implements Listener {
 		});
 
 		menu.setItem(14, new ItemBuilder(Material.REDSTONE)
-						.setName(language.translateMessage(TranslationKeys.QUESTS_BUILDER_TIMER_OFFLINE_NAME))
-						.setLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_TIMER_OFFLINE_LORE, "${active}", timerRunsOffline).split(";"))
+						.setName(language.translateMessage(TranslationKeys.QUESTS_BUILDER_TIMER_OFFLINE_NAME, "${active}", timerRunsOffline))
+						.setLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_TIMER_OFFLINE_LORE).split(";"))
 						.addEnchantment(timerRunsOffline ? Enchantment.ARROW_INFINITE : null, 1, true, false).craft(),
 				new ClickAction() {
 					@Override
@@ -157,8 +157,8 @@ public class QuestBuilder implements Listener {
 				});
 
 		menu.setItem(15, new ItemBuilder(Material.NETHER_STAR)
-						.setName(language.translateMessage(TranslationKeys.QUESTS_BUILDER_PUBLIC_NAME))
-						.setLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_PUBLIC_LORE, "${active}", isPublic).split(";"))
+						.setName(language.translateMessage(TranslationKeys.QUESTS_BUILDER_PUBLIC_NAME, "${active}", isPublic))
+						.setLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_PUBLIC_LORE).split(";"))
 						.addEnchantment(isPublic ? Enchantment.ARROW_INFINITE : null, 1, true, false).craft(),
 				new ClickAction() {
 					@Override
@@ -175,8 +175,8 @@ public class QuestBuilder implements Listener {
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						AnvilInsertionHelper.acceptNumberInAnvilMenu(questPlayer, TranslationKeys.QUESTS_BUILDER_MODIFY_INTEGER, "Countdown in seconds", seconds -> {
-							finishTimeInSeconds = seconds;
+						AnvilInsertionHelper.acceptNumberInAnvilMenu(questPlayer, TranslationKeys.QUESTS_BUILDER_MODIFY_INTEGER, finishTimeInSeconds + "", seconds -> {
+							finishTimeInSeconds = Math.max(1, seconds);
 							openMenu();
 						});
 					}
@@ -185,13 +185,15 @@ public class QuestBuilder implements Listener {
 		menu.setItem(26, UsefulItems.HEAD_A()
 						.setName(language.translateMessage(TranslationKeys.QUESTS_BUILDER_CREATE_NAME))
 						.setLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_CREATE_LORE).split(";")).craft(),
-				new ClickAction(true) {
+				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 						if (name != null && description != null && !steps.isEmpty()) {
 							QuestSystem.getInstance().getQuestManager().addQuest(
 									name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
 							questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL);
+							setCloseInventory(true);
+							removePlayer(apiPlayer.getUniqueId());
 						}
 					}
 				});
@@ -212,7 +214,10 @@ public class QuestBuilder implements Listener {
 	public void onInventoryClose(InventoryCloseEvent event) {
 		if (!event.getPlayer().getUniqueId().equals(questPlayer.getUniqueId())) return;
 		if (addingItemMode != null) {
-			addingItemMode.accept(event.getInventory().getItem(ITEM_SLOT_INSERT_INDEX));
+			ItemStack item = event.getInventory().getItem(ITEM_SLOT_INSERT_INDEX);
+			addingItemMode.accept(item);
+			if (item != null)
+				event.getPlayer().getInventory().addItem(item);
 			addingItemMode = null;
 		}
 	}
@@ -226,9 +231,9 @@ public class QuestBuilder implements Listener {
 		questPlayer.getPlayer().closeInventory();
 		addingItemMode = itemStackConsumer;
 		Inventory menu = Bukkit.createInventory(questPlayer.getPlayer(), 9);
-		menu.setItem(ITEM_SLOT_INSERT_INDEX - 1, UsefulItems.ARROW_RIGHT()
+		menu.setItem(ITEM_SLOT_INSERT_INDEX - 1, UsefulItems.ARROW_RIGHT().setName(" ")
 				.setLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_ITEM_INSERTION).split(";")).craft());
-		menu.setItem(ITEM_SLOT_INSERT_INDEX + 1, UsefulItems.ARROW_LEFT()
+		menu.setItem(ITEM_SLOT_INSERT_INDEX + 1, UsefulItems.ARROW_LEFT().setName(" ")
 				.setLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_ITEM_INSERTION).split(";")).craft());
 		questPlayer.getPlayer().openInventory(menu);
 	}

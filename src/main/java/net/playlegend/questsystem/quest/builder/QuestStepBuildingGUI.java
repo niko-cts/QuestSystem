@@ -17,6 +17,7 @@ import net.playlegend.questsystem.util.QuestObjectConverterUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
@@ -69,7 +70,7 @@ public class QuestStepBuildingGUI {
 	private static void openAddNewQuestStepForType(QuestBuilder questBuilder, QuestStepType type,
 	                                               int order, int amount, Object parameter) {
 		CustomInventory menu = new CustomInventory(9 * 3);
-		menu.setItem(12, new ItemBuilder(Material.WHITE_BANNER)
+		menu.setItem(10, new ItemBuilder(Material.WHITE_BANNER)
 						.setName(questBuilder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "${order}", order))
 						.setLore(questBuilder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE).split(";"))
 						.setAmount(Math.min(64, Math.max(1, order)))
@@ -77,25 +78,26 @@ public class QuestStepBuildingGUI {
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "",
+						AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, order + "",
 								newOrder -> openAddNewQuestStepForType(questBuilder, type, Math.max(1, newOrder), amount, parameter));
 					}
 				});
 
-		menu.setItem(14, new ItemBuilder(Material.SPLASH_POTION)
+		menu.setItem(12, new ItemBuilder(Material.SPLASH_POTION)
 						.setName(questBuilder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_AMOUNT_NAME, "${amount}", amount))
 						.setLore(questBuilder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE).split(";"))
 						.setAmount(Math.min(64, Math.max(1, amount)))
+						.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
 						.craft(),
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "",
+						AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, amount + "",
 								newOrder -> openAddNewQuestStepForType(questBuilder, type, order, Math.max(1, amount), parameter));
 					}
 				});
 
-		menu.setItem(16, new ItemBuilder(Material.ITEM_FRAME)
+		menu.setItem(14, new ItemBuilder(Material.ITEM_FRAME)
 						.setName(questBuilder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_NAME, "${parameter}", parameter))
 						.setLore(questBuilder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, "${class}", type.getConstructorParameter()).split(";"))
 						.setAmount(Math.min(64, Math.max(1, amount)))
@@ -105,11 +107,12 @@ public class QuestStepBuildingGUI {
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 						Class<?> constructorParameter = type.getConstructorParameter();
 						if (constructorParameter == int.class || constructorParameter == Integer.class) {
-							AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.toString(),
+							AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.getSimpleName(),
 									newParameter -> openAddNewQuestStepForType(questBuilder, type, order, amount, newParameter));
 						} else if (constructorParameter == Material.class) {
-							questBuilder.openItemInsertion(newItem -> openAddNewQuestStepForType(questBuilder, type, order, amount, newItem.getType()));
-						} else if(constructorParameter == ItemStack.class) {
+							questBuilder.openItemInsertion(newItem ->
+									openAddNewQuestStepForType(questBuilder, type, order, amount, newItem != null ? newItem.getType() : null));
+						} else if (constructorParameter == ItemStack.class) {
 							questBuilder.openItemInsertion(newItem -> openAddNewQuestStepForType(questBuilder, type, order, amount, newItem));
 						} else if (constructorParameter == UUID.class) {
 							AnvilInsertionHelper.acceptUUIDInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.toString(),
@@ -123,7 +126,7 @@ public class QuestStepBuildingGUI {
 					}
 				});
 
-		menu.setItem(17, UsefulItems.HEAD_A()
+		menu.setItem(16, UsefulItems.HEAD_A()
 						.setName(questBuilder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ACCEPT)).craft(),
 				new ClickAction() {
 					@Override

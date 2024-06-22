@@ -19,7 +19,7 @@ public class GUIHelper {
 
 	public static <T> void fillInventoryWithBackAndOpen(QuestPlayer questPlayer, CustomInventory menu, T backQuest, BiConsumer<QuestPlayer, T> goBack) {
 		menu.setItem(menu.getInventory().getSize() - 1, UsefulItems.ARROW_LEFT()
-						.setName(TranslationKeys.QUESTS_GUI_BACK).craft(),
+						.setName(questPlayer.getLanguage().translateMessage(TranslationKeys.QUESTS_GUI_BACK)).craft(),
 				new ClickAction(Sound.BLOCK_CHEST_OPEN) {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
@@ -28,6 +28,7 @@ public class GUIHelper {
 				});
 
 		menu.fill(UsefulItems.BACKGROUND_BLACK);
+
 		questPlayer.openCustomInv(menu);
 	}
 }

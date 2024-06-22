@@ -21,7 +21,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_MODIFY_INTEGER, "&7Insert a number for: ${input}");
         add(QUESTS_BUILDER_MODIFY_ITEM_INSERTION, "&7Insert an item;&7next to this one;&7and close the inventory.");
         add(QUESTS_BUILDER_MODIFY_REMOVE, "&7Click to &cremove &7the entry.");
-        add(QUESTS_BUILDER_MODIFY_ADD, "&7Click to &aadd &an entry");
+        add(QUESTS_BUILDER_MODIFY_ADD, "&7Click to &aadd an entry");
         add(QUESTS_BUILDER_MODIFY_QUESTNAME, "&7Insert a name which;&7will be the questname");
         add(QUESTS_BUILDER_NAME_LORE, "&7This will be the name of the quest;&7Click to change it");
         add(QUESTS_BUILDER_DESCRIPTION_NAME, "&eQuest description");
@@ -35,13 +35,13 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_TIMER_NAME, "&eQuest countdown");
         add(QUESTS_BUILDER_TIMER_LORE, "&7The seconds the player;&7needs to complete the quest;&7Current duration: &e${duration}");
         add(QUESTS_BUILDER_CREATE_NAME, "&aCreate the quest");
-        add(QUESTS_BUILDER_CREATE_LORE, "&7Click to create the quest");
+        add(QUESTS_BUILDER_CREATE_LORE, "&7Click to create the quest;&7You have to set the following:;&7- Set a name;&7- Set a description;&7- Set at least one task");
         add(QUESTS_BUILDER_SUCCESSFUL, "&aQuest was created");
 
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Current order: &e${order}");
-        add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Change the order of this task;&7All tasks with the same order;&7can be done at the same time&7Click to change");
+        add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Change the order of this task;&7All tasks with the same order;&7can be done at the same time;&7Click to change");
         add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_NAME, "&7Current amount: &e${amount}");
-        add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE, "&7The amount to complete the task;&7This is e.g.;&7'mine amount of blocks'&7Click to change");
+        add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE, "&7The amount to complete the task;&7This is e.g.:;&7'mine <amount> of blocks';&7Click to change");
         add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_NAME,"&eCurrent parameter: &6${parameter}");
         add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, "&7Input the parameter of the step;&7This changes with the step;&7E.g. for Mining requires a material name;&7This step requires: &e${class};&7Click to insert parameter");
         add(QUESTS_BUILDER_STEPS_CREATION_ACCEPT, "&aClick to add");
@@ -102,9 +102,9 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_OVERVIEW_PUBLIC_NAME, "&ePublic quests");
         add(QUESTS_GUI_OVERVIEW_PUBLIC_LORE, "&7Click to see all public quests.;&7These are temporary quest;&7which may exceed");
         add(QUESTS_GUI_OVERVIEW_FOUND_NAME, "&eFound quests");
-        add(QUESTS_GUI_OVERVIEW_FOUND_LORE, "&7Click to see all quests you found.:&7You can find quests in the world");
+        add(QUESTS_GUI_OVERVIEW_FOUND_LORE, "&7Click to see all quests you found.;&7You can find quests in the world");
         add(QUESTS_GUI_OVERVIEW_COMPLETED_NAME, "&eCompleted quests");
-        add(QUESTS_GUI_OVERVIEW_COMPLETED_LORE, "&7Click to see all quests;you have already completed.;&7These quests can not be redone.");
+        add(QUESTS_GUI_OVERVIEW_COMPLETED_LORE, "&7Click to see all quests;&7you have already completed.;&7These quests can not be redone.");
 
         // GUI active
         add(QUESTS_GUI_ACTIVE_DESCRIPTION_LORE, "&7Click to open the quest description");

@@ -4,6 +4,7 @@ import chatzis.nikolas.mc.nikoapi.inventory.ClickAction;
 import chatzis.nikolas.mc.nikoapi.inventory.CustomInventory;
 import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
 import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
+import chatzis.nikolas.mc.nikoapi.util.Utils;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
@@ -40,7 +41,7 @@ public class FoundAndCompletedQuestsGUI {
 	private static void fillItemsAndOpen(QuestPlayer questPlayer, Map<Quest, Timestamp> questsWithTimestamp, String titleKey,
 	                                     Consumer<QuestPlayer> fromSite) {
 		Language language = questPlayer.getLanguage();
-		CustomInventory menu = new CustomInventory(language.translateMessage(titleKey), questsWithTimestamp.size() + 2);
+		CustomInventory menu = new CustomInventory(language.translateMessage(titleKey), Utils.getPerfectInventorySize(questsWithTimestamp.size() + 2));
 
 		questsWithTimestamp.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEach(entry -> {
 			menu.addItem(new ItemBuilder(entry.getKey().getQuestItem(language))
@@ -63,7 +64,7 @@ public class FoundAndCompletedQuestsGUI {
 		List<Quest> publicQuests = QuestSystem.getInstance().getQuestManager().getPublicQuests();
 
 		Language language = questPlayer.getLanguage();
-		CustomInventory menu = new CustomInventory(publicQuests.size() + 2);
+		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(publicQuests.size() + 2));
 		menu.addItem(new ItemBuilder(Material.PAPER).setName(language.translateMessage(TranslationKeys.QUESTS_GUI_PUBLIC_INFO)).craft());
 		for (Quest publicQuest : publicQuests) {
 			if (questPlayer.getFinishedQuests().containsKey(publicQuest)) continue;

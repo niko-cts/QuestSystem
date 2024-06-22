@@ -35,13 +35,13 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_TIMER_NAME, "&eQuest-Countdown");
         add(QUESTS_BUILDER_TIMER_LORE, "&7Die Sekunden, die der Spieler hat;&7um die Quest abzuschließen;&7Aktuelle Dauer: &e${duration}");
         add(QUESTS_BUILDER_CREATE_NAME, "&aQuest erstellen");
-        add(QUESTS_BUILDER_CREATE_LORE, "&7Klicken, um die Quest zu erstellen.");
+        add(QUESTS_BUILDER_CREATE_LORE, "&7Klicken, um die Quest zu erstellen.;&7Um die Quest zu erstellen,;&7musst du folgendes gesetzt habeN:;&7- Einen Namen;&7- Eine Beschreibung;&7- Mindestens eine Aufgabe");
         add(QUESTS_BUILDER_SUCCESSFUL, "&aQuest wurde erstellt.");
 
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Aktuelle Reihenfolge: &e${order}");
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Ändere die Reihenfolge dieser Aufgabe;&7Alle Aufgaben mit derselben Reihenfolge;&7können gleichzeitig erledigt werden;&7Klicken, um zu ändern.");
         add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_NAME, "&7Aktuelle Menge: &e${amount}");
-        add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE, "&7Die Menge zum Abschließen der Aufgabe;&7Das ist z.B.;;&7'Baue eine Anzahl von Blöcken ab';&7Klicken, um zu ändern.");
+        add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE, "&7Die Menge zum Abschließen der Aufgabe;&7Das ist z.B.:;&7'Baue <anzahl> von Blöcken ab';&7Klicken, um zu ändern.");
         add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_NAME, "&eAktueller Parameter: &6${parameter}");
         add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, "&7Gib den Parameter des Schrittes ein;&7Das ändert sich mit dem Schritt;&7Z.B. erfordert Mining einen Materialnamen;&7Dieser Schritt erfordert: &e${class};&7Klicken, um Parameter einzufügen.");
         add(QUESTS_BUILDER_STEPS_CREATION_ACCEPT, "&aKlicken, um hinzuzufügen.");
@@ -102,9 +102,9 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_OVERVIEW_PUBLIC_NAME, "&eÖffentliche Quests");
         add(QUESTS_GUI_OVERVIEW_PUBLIC_LORE, "&7Klicken, um alle öffentlichen Quests zu sehen.;&7Diese sind temporäre Quests;&7die ablaufen können");
         add(QUESTS_GUI_OVERVIEW_FOUND_NAME, "&eGefundene Quests");
-        add(QUESTS_GUI_OVERVIEW_FOUND_LORE, "&7Klicken, um alle gefundenen Quests zu sehen.:&7Du kannst Quests in der Welt finden");
+        add(QUESTS_GUI_OVERVIEW_FOUND_LORE, "&7Klicken, um alle gefundenen Quests zu sehen.;&7Du kannst Quests in der Welt finden");
         add(QUESTS_GUI_OVERVIEW_COMPLETED_NAME, "&eAbgeschlossene Quests");
-        add(QUESTS_GUI_OVERVIEW_COMPLETED_LORE, "&7Klicken, um alle Quests zu sehen;die du bereits abgeschlossen hast.;&7Diese Quests können nicht erneut gemacht werden.");
+        add(QUESTS_GUI_OVERVIEW_COMPLETED_LORE, "&7Klicken, um alle Quests zu sehen;&7die du bereits abgeschlossen hast.;&7Diese Quests können nicht erneut gemacht werden.");
 
 // GUI active
         add(QUESTS_GUI_ACTIVE_DESCRIPTION_LORE, "&7Klicken, um die Questbeschreibung zu öffnen");

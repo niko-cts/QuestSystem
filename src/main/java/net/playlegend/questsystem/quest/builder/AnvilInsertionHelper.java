@@ -39,10 +39,8 @@ public class AnvilInsertionHelper {
                                                 String descriptionTransKey,
                                                 String replacement,
                                                 Function<String, String> stringAcceptable) {
-        String description = questPlayer.getLanguage().translateMessage(descriptionTransKey, "${input}", replacement);
-
         AnvilGUI anvilGUI = new AnvilGUI(questPlayer.getPlayer(), event -> {
-            if (event.getSlot() == AnvilSlot.INPUT_RIGHT && !event.getName().isEmpty()) {
+            if (event.getSlot() == AnvilSlot.OUTPUT && !event.getName().isEmpty()) {
                 String errorMsg = stringAcceptable.apply(event.getName());
                 if (errorMsg != null) {
                     ItemStack clickedItem = event.getClickedItem();
@@ -56,8 +54,9 @@ public class AnvilInsertionHelper {
             }
         });
         anvilGUI.setSlot(AnvilSlot.INPUT_LEFT, new ItemBuilder(Material.PAPER)
-                .setName(replacement != null ? replacement : "...")
-                .setLore(description).craft());
+                .setName(replacement != null && !replacement.isEmpty() ? replacement : "...")
+                .setLore(questPlayer.getLanguage().translateMessage(descriptionTransKey, "${input}", replacement)
+                        .split(";")).craft());
         anvilGUI.open();
     }
 

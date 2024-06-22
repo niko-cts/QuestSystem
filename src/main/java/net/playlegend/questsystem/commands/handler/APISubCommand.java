@@ -108,7 +108,7 @@ public abstract class APISubCommand {
 
 		if (commandSender instanceof Player p) {
 			QuestPlayer player = QuestSystem.getInstance().getPlayerHandler().getPlayer(p);
-			executePlayer(player, Arrays.copyOfRange(arguments, 1, arguments.length));
+			executePlayer(player, arguments.length > 0 ? Arrays.copyOfRange(arguments, 1, arguments.length) : arguments);
 			return;
 		}
 
@@ -132,7 +132,7 @@ public abstract class APISubCommand {
 			return;
 		}
 
-		if (arguments.length <= minimumArguments) {
+		if (arguments.length < minimumArguments) {
 			sendCommandUsage(questPlayer);
 			return;
 		}

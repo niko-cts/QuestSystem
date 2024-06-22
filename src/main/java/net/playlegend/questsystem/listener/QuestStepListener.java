@@ -49,11 +49,11 @@ public class QuestStepListener implements Listener {
         QuestPlayer questPlayer = playerHandler.getPlayer(player.getUniqueId());
         if (questPlayer == null) return;
         questPlayer.getActivePlayerQuest()
-                .flatMap(quest ->
-                        quest.getNextUncompletedSteps().stream()
-                                .filter(step -> step.checkIfEventExecutesQuestStep(questPlayer, event))
-                                // adds one to the current amount and returns true if a step is now completed
-                                .filter(step -> questPlayer.playerDidQuestStep(quest, step)).findAny())
+                .flatMap(quest -> quest.getNextUncompletedSteps().stream()
+                        .filter(step -> step.checkIfEventExecutesQuestStep(questPlayer, event))
+                        // adds one to the current amount and returns true if a step is now completed
+                        .filter(step -> questPlayer.playerDidQuestStep(quest, step))
+                        .reduce((first, second) -> second))
                 // CHECK QUEST FINISHED
                 .ifPresent(step -> questPlayer.checkAndFinishActiveQuest());
     }

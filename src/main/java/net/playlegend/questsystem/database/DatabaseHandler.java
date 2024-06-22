@@ -74,7 +74,6 @@ public final class DatabaseHandler {
 		connectionString.append(this.dbName).append("?user=").append(this.username).append("&password=").append(this.password).append("&useUnicode=true&passwordCharacterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&SslMode=Required");
 		try {
 			this.dbConnection = DriverManager.getConnection(connectionString.toString());
-			System.out.println(this.dbConnection);
 			logger.info("Connected to database!");
 			return true;
 		} catch (SQLException e) {
