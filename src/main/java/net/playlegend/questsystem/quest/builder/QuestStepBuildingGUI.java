@@ -32,14 +32,14 @@ public class QuestStepBuildingGUI {
 
 	protected static void openAllSetSteps(QuestBuilder builder) {
 		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(builder.steps.size() + 1));
-		for (QuestStep step : builder.steps) {
+		for (QuestStep<?> step : builder.steps) {
 			menu.addItem(new ItemBuilder(step.getTaskItem(builder.language))
 							.addLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_REMOVE).split(";"))
 							.craft(),
 					new ClickAction() {
 						@Override
 						public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-							builder.rewards.remove(step);
+							builder.steps.remove(step);
 							openAllSetSteps(builder);
 						}
 					});
@@ -77,7 +77,7 @@ public class QuestStepBuildingGUI {
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.language, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "",
+						AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "",
 								newOrder -> openAddNewQuestStepForType(questBuilder, type, Math.max(1, newOrder), amount, parameter));
 					}
 				});
@@ -90,7 +90,7 @@ public class QuestStepBuildingGUI {
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.language, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "",
+						AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "",
 								newOrder -> openAddNewQuestStepForType(questBuilder, type, order, Math.max(1, amount), parameter));
 					}
 				});
@@ -105,17 +105,17 @@ public class QuestStepBuildingGUI {
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 						Class<?> constructorParameter = type.getConstructorParameter();
 						if (constructorParameter == int.class || constructorParameter == Integer.class) {
-							AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.language, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.toString(),
+							AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.toString(),
 									newParameter -> openAddNewQuestStepForType(questBuilder, type, order, amount, newParameter));
 						} else if (constructorParameter == Material.class) {
 							questBuilder.openItemInsertion(newItem -> openAddNewQuestStepForType(questBuilder, type, order, amount, newItem.getType()));
 						} else if(constructorParameter == ItemStack.class) {
 							questBuilder.openItemInsertion(newItem -> openAddNewQuestStepForType(questBuilder, type, order, amount, newItem));
 						} else if (constructorParameter == UUID.class) {
-							AnvilInsertionHelper.acceptUUIDInAnvilMenu(questBuilder.language, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.toString(),
+							AnvilInsertionHelper.acceptUUIDInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.toString(),
 									newParameter -> openAddNewQuestStepForType(questBuilder, type, order, amount, newParameter));
 						} else if (constructorParameter == EntityType.class) {
-							AnvilInsertionHelper.acceptEntityType(questBuilder.language, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.toString(),
+							AnvilInsertionHelper.acceptEntityType(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.toString(),
 									newParameter -> openAddNewQuestStepForType(questBuilder, type, order, amount, newParameter));
 						} else {
 							QuestSystem.getInstance().getLogger().log(Level.WARNING, "QuestStepType is not implemented in creation: ", type);

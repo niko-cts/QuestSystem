@@ -126,46 +126,16 @@ public class QuestDatabase {
      * @return Optional<Integer> - the id of the created quest
      */
     public Optional<Integer> insertNewQuest(String name, String description, List<QuestReward<?>> rewards, List<QuestStep<?>> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
-        List<String> tableNames = new ArrayList<>();
-        List<List<Object>> allValues = new ArrayList<>();
-        tableNames.add(TABLE_QUESTS);
-        allValues.add(List.of("", name, description, isPublic ? 1 : 0, finishTimeInSeconds, timerRunsOffline ? 1 : 0));
 
         Logger log = QuestSystem.getInstance().getLogger();
 
-        Integer questId = this.dbHandler.insertIntoTableAndGetGeneratedKey(TABLE_QUESTS, "id",
+        Integer questId = this.dbHandler.insertIntoTableAndGetGeneratedKey(TABLE_QUESTS,
                 List.of("name", "description", "public", "finish_time", "timer_runs_offline"),
                 List.of(name, description, isPublic ? 1 : 0, finishTimeInSeconds, timerRunsOffline ? 1 : 0));
         if (questId == null) {
             log.severe("Could not insert quest in database");
             return Optional.empty();
         }
-
-//        if (!this.dbHandler.execute(new StringBuilder()
-//                .append("INSERT INTO ")
-//                .append(TABLE_QUESTS).append("(name, description, public, finish_time, timer_runs_offline) VALUES('")
-//                .append(name).append("','").append(description).append("',").append(isPublic ? 1 : 0).append(",").append(finishTimeInSeconds).append(",").append(timerRunsOffline ? 1 : 0)
-//                .append(")").toString())) {
-//            log.warning("Could not insert quest in database");
-//            return Optional.empty();
-//        }
-//        int questId;
-//        try (
-//                ResultSet questSet = this.dbHandler.executeQuery("SELECT LAST_INSERT_ID() as 'id'")) {
-//            if (questSet != null && questSet.next()) {
-//                questId = questSet.getInt("id");
-//                log.log(Level.INFO,
-//                        "Inserted new quest {0}:{0} in database",
-//                        new Object[]{questId, name});
-//            } else {
-//                log.log(Level.SEVERE, "Could not insert quest in database: {0}", name);
-//                return Optional.empty();
-//            }
-//        } catch (
-//                SQLException exception) {
-//            log.log(Level.SEVERE, "Could not insert quest in database!", exception);
-//            return Optional.empty();
-//        }
 
         List<QuestReward<?>> unaddedRewards = new ArrayList<>(rewards);
         Map<Integer, QuestReward<?>> existingRewards = new HashMap<>();
@@ -174,7 +144,7 @@ public class QuestDatabase {
 
         if (!unaddedRewards.isEmpty()) {
             StringBuilder insertRewards = new StringBuilder()
-                    .append("INSERT INTO ").append(TABLE_QUEST_REWARD_INFO).append("(type,reward_object) ");
+                    .append("INSERT INTO ").append(TABLE_QUEST_REWARD_INFO).append(" (type,reward_object) ");
             Iterator<QuestReward<?>> notInDBRewardsIterator = unaddedRewards.iterator();
             while (notInDBRewardsIterator.hasNext()) {
                 QuestReward<?> notInDBRewards = notInDBRewardsIterator.next();
@@ -195,9 +165,7 @@ public class QuestDatabase {
             }
         }
 
-        success =
-
-                insertRewardObjectsAndPutExistingAndRemoveFromRewardObjects(unaddedRewards, existingRewards);
+        success = insertRewardObjectsAndPutExistingAndRemoveFromRewardObjects(unaddedRewards, existingRewards);
         if (!success) {
             log.log(Level.SEVERE, "A quest reward could not be retrieved by the database! Will not add quest! Remaining rewards: {0}",
                     unaddedRewards.stream().map(r -> r.getRewardType().name()).collect(Collectors.joining(",")));
@@ -233,6 +201,8 @@ public class QuestDatabase {
             return Optional.empty();
         }
 
+        List<String> tableNames = new ArrayList<>();
+        List<List<Object>> allValues = new ArrayList<>();
         tableNames.add(TABLE_QUEST_STEPS_INFO);
         allValues.add(allSteps);
 

@@ -71,7 +71,7 @@ public class QuestBuilder implements Listener {
 
 	private Consumer<ItemStack> addingItemMode;
 
-	public QuestBuilder(@NonNull QuestPlayer questPlayer) {
+	private QuestBuilder(@NonNull QuestPlayer questPlayer) {
 		this.questPlayer = questPlayer;
 		this.language = questPlayer.getLanguage();
 		this.name = null;
@@ -95,7 +95,7 @@ public class QuestBuilder implements Listener {
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						AnvilInsertionHelper.acceptStringInAnvilMenu(language, TranslationKeys.QUESTS_BUILDER_MODIFY_QUESTNAME, "", s -> {
+						AnvilInsertionHelper.acceptStringInAnvilMenu(questPlayer, TranslationKeys.QUESTS_BUILDER_MODIFY_QUESTNAME, "", s -> {
 							name = s;
 							openMenu();
 						});
@@ -163,8 +163,8 @@ public class QuestBuilder implements Listener {
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-//						isPublic = !isPublic;
-//						openMenu();
+						isPublic = !isPublic;
+						openMenu();
 					}
 				});
 
@@ -175,7 +175,7 @@ public class QuestBuilder implements Listener {
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						AnvilInsertionHelper.acceptNumberInAnvilMenu(language, TranslationKeys.QUESTS_BUILDER_MODIFY_INTEGER, "Countdown in seconds", seconds -> {
+						AnvilInsertionHelper.acceptNumberInAnvilMenu(questPlayer, TranslationKeys.QUESTS_BUILDER_MODIFY_INTEGER, "Countdown in seconds", seconds -> {
 							finishTimeInSeconds = seconds;
 							openMenu();
 						});

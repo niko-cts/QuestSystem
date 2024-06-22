@@ -1,10 +1,15 @@
 package net.playlegend.questsystem.quest.builder;
 
-import net.playlegend.questsystem.translation.Language;
+import chatzis.nikolas.mc.nikoapi.inventory.anvilGUI.AnvilGUI;
+import chatzis.nikolas.mc.nikoapi.inventory.anvilGUI.AnvilSlot;
+import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
+import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Consumer;
 
 import java.util.UUID;
@@ -22,40 +27,58 @@ public class AnvilInsertionHelper {
     }
 
     /**
-     * Opens an anvil and waits for insertion (rename). Then calls acceptable function. If a String is returned, will translate it to the error message.
+     * Opens an anvil and waits for insertion (rename).
+     * Then call acceptable function.
+     * If a String is returned, it will translate it to the error message.
      *
-     * @param language            Language - to translate the messages in
+     * @param questPlayer            QuestPlayer - to open the anvilgui to
      * @param descriptionTransKey String - description will be shown in the lore.
      * @param stringAcceptable    Function<String, String> - Applies the input. If null is returned insertion was successful, else returned String is error message key.
      */
-    private static void insertStringInAnvilMenu(Language language,
-                                                  String descriptionTransKey,
-                                                  String replacement,
-                                                  Function<String, String> stringAcceptable) {
-        String description = language.translateMessage(descriptionTransKey, "${type}", replacement);
-        // todo anvil
-        String placeholder = "${input}";
+    private static void insertStringInAnvilMenu(QuestPlayer questPlayer,
+                                                String descriptionTransKey,
+                                                String replacement,
+                                                Function<String, String> stringAcceptable) {
+        String description = questPlayer.getLanguage().translateMessage(descriptionTransKey, "${input}", replacement);
 
+        AnvilGUI anvilGUI = new AnvilGUI(questPlayer.getPlayer(), event -> {
+            if (event.getSlot() == AnvilSlot.INPUT_RIGHT && !event.getName().isEmpty()) {
+                String errorMsg = stringAcceptable.apply(event.getName());
+                if (errorMsg != null) {
+                    ItemStack clickedItem = event.getClickedItem();
+                    ItemMeta itemMeta = clickedItem.getItemMeta();
+                    if (itemMeta != null)
+                        itemMeta.setDisplayName(errorMsg);
+                    clickedItem.setItemMeta(itemMeta);
+                } else {
+                    event.setWillClose(true);
+                }
+            }
+        });
+        anvilGUI.setSlot(AnvilSlot.INPUT_LEFT, new ItemBuilder(Material.PAPER)
+                .setName(replacement != null ? replacement : "...")
+                .setLore(description).craft());
+        anvilGUI.open();
     }
 
     /**
      * Opens an insertStringInAnvilMenu and tries to parse given string with the function parser.
      * If this succeeds, calls the input consumer, else returns the error msg key.
      *
-     * @param language            Language - to translate the messages
+     * @param questPlayer            QuestPlayer - to open the gui
      * @param descriptionTransKey String - description which will be shown in the left right anvil corner
      * @param errorMsgKey         String - the error message if string could not be parsed
      * @param parser              Function<String, T> - tries to parse the anvil string to the object
      * @param input               Consumer<T> - will be called, when the input was successful
-     * @param <T>                 - A Integer, Material or UUID - The object what needs to be inserted
+     * @param <T>                 - An Integer, Material or UUID - The object what needs to be inserted
      */
-    private static <T> void acceptObjectInAnvilMenu(Language language,
+    private static <T> void acceptObjectInAnvilMenu(QuestPlayer questPlayer,
                                                     String descriptionTransKey,
                                                     String replacement,
                                                     String errorMsgKey,
                                                     Function<String, T> parser,
                                                     Consumer<T> input) {
-        insertStringInAnvilMenu(language, descriptionTransKey, replacement, s -> {
+        insertStringInAnvilMenu(questPlayer, descriptionTransKey, replacement, s -> {
             try {
                 input.accept(parser.apply(s));
                 return null;
@@ -65,30 +88,30 @@ public class AnvilInsertionHelper {
         });
     }
 
-    protected static void acceptStringInAnvilMenu(Language language, String descriptionTransKey, String replacement, Consumer<String> input) {
-        insertStringInAnvilMenu(language, descriptionTransKey, replacement, s -> {
+    protected static void acceptStringInAnvilMenu(QuestPlayer questPlayer, String descriptionTransKey, String replacement, Consumer<String> input) {
+        insertStringInAnvilMenu(questPlayer, descriptionTransKey, replacement, s -> {
             input.accept(ChatColor.translateAlternateColorCodes('&', s));
             return null;
         });
     }
 
-    protected static void acceptUUIDInAnvilMenu(Language language, String descriptionTransKey, String replacement, Consumer<UUID> input) {
-        acceptObjectInAnvilMenu(language, descriptionTransKey, replacement,
+    protected static void acceptUUIDInAnvilMenu(QuestPlayer questPlayer, String descriptionTransKey, String replacement, Consumer<UUID> input) {
+        acceptObjectInAnvilMenu(questPlayer, descriptionTransKey, replacement,
                 TranslationKeys.QUESTS_BUILDER_NOT_VALID_UUID, UUID::fromString, input);
     }
 
-    protected static void acceptMaterialInAnvilMenu(Language language, String descriptionTransKey, String replacement, Consumer<Material> input) {
-        acceptObjectInAnvilMenu(language, descriptionTransKey, replacement,
+    protected static void acceptMaterialInAnvilMenu(QuestPlayer questPlayer, String descriptionTransKey, String replacement, Consumer<Material> input) {
+        acceptObjectInAnvilMenu(questPlayer, descriptionTransKey, replacement,
                 TranslationKeys.QUESTS_BUILDER_NOT_VALID_MATERIAL, s -> Material.valueOf(s.toUpperCase()), input);
     }
 
-    protected static void acceptNumberInAnvilMenu(Language language, String descriptionTransKey, String replacement, Consumer<Integer> input) {
-        acceptObjectInAnvilMenu(language, descriptionTransKey, replacement,
+    protected static void acceptNumberInAnvilMenu(QuestPlayer questPlayer, String descriptionTransKey, String replacement, Consumer<Integer> input) {
+        acceptObjectInAnvilMenu(questPlayer, descriptionTransKey, replacement,
                 TranslationKeys.QUESTS_BUILDER_NOT_VALID_NUMBER, Integer::parseInt, input);
     }
 
-    public static void acceptEntityType(Language language, String descriptionKey, String replacement, Consumer<Object> input) {
-        acceptObjectInAnvilMenu(language, descriptionKey, replacement,
+    public static void acceptEntityType(QuestPlayer questPlayer, String descriptionKey, String replacement, Consumer<Object> input) {
+        acceptObjectInAnvilMenu(questPlayer, descriptionKey, replacement,
                 TranslationKeys.QUESTS_BUILDER_NOT_VALID_ENTITYTYPE, EntityType::valueOf, input);
     }
 }

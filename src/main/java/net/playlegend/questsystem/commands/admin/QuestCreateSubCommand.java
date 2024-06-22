@@ -12,7 +12,6 @@ public class QuestCreateSubCommand extends APISubCommand {
 
 	@Override
 	public void onCommand(QuestPlayer questPlayer, String[] arguments) {
-		questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_USAGE);
-		new QuestBuilder(questPlayer);
+		QuestBuilder.addPlayer(questPlayer);
 	}
 }

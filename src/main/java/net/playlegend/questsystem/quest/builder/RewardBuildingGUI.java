@@ -31,7 +31,7 @@ public class RewardBuildingGUI {
 
 	protected static void openAllSetRewards(QuestBuilder builder) {
 		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(builder.rewards.size() + 1));
-		for (QuestReward reward : builder.rewards) {
+		for (QuestReward<?> reward : builder.rewards) {
 			menu.addItem(new ItemBuilder(reward.getRewardDisplayItem(builder.language))
 							.addLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_REMOVE).split(";"))
 							.craft(),
@@ -50,7 +50,6 @@ public class RewardBuildingGUI {
 	protected static void addNewRewardSelection(QuestBuilder builder) {
 		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(RewardType.values().length + 1));
 		for (RewardType type : RewardType.values()) {
-			// on click:
 			menu.addItem(new ItemBuilder(Material.GOLD_INGOT)
 							.setName(ChatColor.YELLOW + type.name())
 							.setLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_ADD).split(";")).craft(),
@@ -59,7 +58,7 @@ public class RewardBuildingGUI {
 						public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 
 							if (type.getConstructorParameter() == Integer.class || type.getConstructorParameter() == int.class) {
-								AnvilInsertionHelper.acceptNumberInAnvilMenu(builder.language,
+								AnvilInsertionHelper.acceptNumberInAnvilMenu(builder.questPlayer,
 										TranslationKeys.QUESTS_BUILDER_MODIFY_INTEGER, type.name(),
 										amount -> addNewRewardFromType(builder, type, amount));
 							} else if (type.getConstructorParameter() == ItemStack.class) {
