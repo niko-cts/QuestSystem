@@ -29,7 +29,7 @@ public class QuestObjectConverterUtil {
      * @return QuestStep - the created step object
      * @throws IllegalArgumentException, IllegalStateException, IOException, ClassNotFoundException, ClassCastException - If the given object is wrong, multiple exception could be thrown.
      */
-    public static QuestStep instantiateQuestStepFromTypeAndParameter(
+    public static QuestStep<?> instantiateQuestStepFromTypeAndParameter(
             final QuestStepType type,
             final int stepId,
             final int order,

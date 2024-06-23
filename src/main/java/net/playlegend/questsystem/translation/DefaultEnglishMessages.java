@@ -14,6 +14,17 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
     public DefaultEnglishMessages() {
         super(Locale.ENGLISH);
 
+        add(QUESTS_NPC_FOUNDBOOK, "&6You found/n&l${name}&6!/n&0${description}");
+
+        // Scoreboard
+        add(QUESTS_SCOREBOARD_DISPLAYNAME, "&6QuestSystem");
+        add(QUESTS_SCOREBOARD_ACTIVE_QUESTNAME, "&aActive quest");
+        add(QUESTS_SCOREBOARD_ACTIVE_CURRENT_STEP, "&aCurrent task");
+        add(QUESTS_SCOREBOARD_ACTIVE_FINISH_AT, "&eQuest ends on");
+        add(QUESTS_SCOREBOARD_NO_ACTIVE_1, "&7No active quest");
+        add(QUESTS_SCOREBOARD_NO_ACTIVE_2, "&7/quest - Start one");
+        add(QUESTS_SCOREBOARD_COINS, "&eCoins");
+
         add(QUESTS_SIGN_NO_ACTIVE_LINE_1, "No active quest");
         add(QUESTS_SIGN_NO_ACTIVE_LINE_2, "Execute /quest");
         add(QUESTS_SIGN_ACTIVE_LINE_1, "Quest &6${name}");
@@ -25,7 +36,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_NOT_VALID_ENTITYTYPE, "&cYou inserted a invalid entity type");
         add(QUESTS_BUILDER_MODIFY_INTEGER, "&7Insert a number for: ${input}");
         add(QUESTS_BUILDER_MODIFY_ITEM_INSERTION, "&7Insert an item;&7next to this one;&7and close the inventory.");
-        add(QUESTS_BUILDER_MODIFY_REMOVE, "&7Click to &cremove &7the entry.");
+        add(QUESTS_BUILDER_MODIFY_REMOVE, "&7Step-id is: ${id};&7Click to &cremove &7the entry.");
         add(QUESTS_BUILDER_MODIFY_ADD, "&7Click to &aadd an entry");
         add(QUESTS_BUILDER_MODIFY_QUESTNAME, "&7Insert a name which;&7will be the questname");
         add(QUESTS_BUILDER_NAME_LORE, "&7This will be the name of the quest;&7Click to change it");
@@ -42,7 +53,9 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_TIMER_LORE, "&7The seconds the player;&7needs to complete the quest;&7Current duration: &e${duration}");
         add(QUESTS_BUILDER_CREATE_NAME, "&aCreate the quest");
         add(QUESTS_BUILDER_CREATE_LORE, "&7Click to create the quest;&7You have to set the following:;&7- Set a name;&7- Set a description;&7- Set at least one task");
-        add(QUESTS_BUILDER_SUCCESSFUL, "&aQuest ${name} was created");
+        add(QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS, "&cThis quest name already exists!");
+
+        add(QUESTS_BUILDER_SUCCESSFUL_CREATED, "&aQuest ${name} was created");
 
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Current order: &e${order}");
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Change the order of this task;&7All tasks with the same order;&7can be done at the same time;&7Click to change");
@@ -137,9 +150,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_PUBLIC_LORE, " ;&7This quest is public.;&7It may exceed.;&eClick to see details.");
         add(QUESTS_GUI_QUEST_DETAILS_LORE, " ;&7At &e${time};&eClick to see details.");
         add(QUESTS_GUI_ACCEPT_START_NAME, "&eStart the quest");
-        add(QUESTS_GUI_ACCEPT_START_LORE, "&7Click to open the confirmation menu");
-        add(QUESTS_GUI_ACCEPT_CONFIRM_NAME, "&eStart the quest");
-        add(QUESTS_GUI_ACCEPT_CONFIRM_LORE, "&7Click to start the quest");
+        add(QUESTS_GUI_ACCEPT_START_LORE, "&7Click to start this quest;&7An active quest will be &ccanceled;&7You can restart it later on");
         add(QUESTS_GUI_ACCEPT_TITLE, "&6Start the quest");
         add(QUESTS_GUI_QUEST_TIME_NAME, "&eCompleted at");
         add(QUESTS_GUI_QUEST_TIME_LORE, "&7You completed this quest;&7on &e${time}");

@@ -13,20 +13,33 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
 
     public DefaultGermanMessages() {
         super(Locale.GERMAN);
+
+        add(QUESTS_NPC_FOUNDBOOK, "&6Du hast/n&l${name} &6gefunden!/n&0${description}");
+
+        // Scoreboard
+        add(QUESTS_SCOREBOARD_DISPLAYNAME, "&6QuestSystem");
+        add(QUESTS_SCOREBOARD_ACTIVE_QUESTNAME, "&aAktive Quest");
+        add(QUESTS_SCOREBOARD_ACTIVE_CURRENT_STEP, "&aAktuelle Aufgabe");
+        add(QUESTS_SCOREBOARD_ACTIVE_FINISH_AT, "&eQuest endet am");
+        add(QUESTS_SCOREBOARD_NO_ACTIVE_1, "&7Keine aktive Quest");
+        add(QUESTS_SCOREBOARD_NO_ACTIVE_2, "&7/quest - Quest starten");
+        add(QUESTS_SCOREBOARD_COINS, "&eCoins");
+
+
         // sign
         add(QUESTS_SIGN_NO_ACTIVE_LINE_1, "Keine aktive Quest");
         add(QUESTS_SIGN_NO_ACTIVE_LINE_2, "Schreibe /quest");
         add(QUESTS_SIGN_ACTIVE_LINE_1, "Quest &6${name}");
         add(QUESTS_SIGN_ACTIVE_LINE_2, "Nächste Aufgabe &e${task}");
 
-// builder
+        // builder
         add(QUESTS_BUILDER_NOT_VALID_NUMBER, "&cDu hast eine ungültige Zahl eingegeben.");
         add(QUESTS_BUILDER_NOT_VALID_UUID, "&cDu hast eine ungültige UUID eingegeben.");
         add(QUESTS_BUILDER_NOT_VALID_MATERIAL, "&cDu hast ein ungültiges Material eingegeben.");
         add(QUESTS_BUILDER_NOT_VALID_ENTITYTYPE, "&cDu hast einen ungültigen Entitätstyp eingegeben.");
         add(QUESTS_BUILDER_MODIFY_INTEGER, "&7Gib eine Zahl für: ${input} ein.");
         add(QUESTS_BUILDER_MODIFY_ITEM_INSERTION, "&7Lege ein Item neben dieses;&7und schließe das Inventar.");
-        add(QUESTS_BUILDER_MODIFY_REMOVE, "&7Klicken, um den Eintrag zu &centfernen&7.");
+        add(QUESTS_BUILDER_MODIFY_REMOVE, "&7Step-id ist: ${id};&7Klicken, um den Eintrag zu &centfernen&7.");
         add(QUESTS_BUILDER_MODIFY_ADD, "&7Klicken, um einen Eintrag zu &ahinzufügen&7.");
         add(QUESTS_BUILDER_MODIFY_QUESTNAME, "&7Gib einen Namen ein, der der Questname sein wird.");
         add(QUESTS_BUILDER_NAME_LORE, "&7Das wird der Name der Quest;&7Klicken, um ihn zu ändern.");
@@ -43,7 +56,8 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_TIMER_LORE, "&7Die Sekunden, die der Spieler hat;&7um die Quest abzuschließen;&7Aktuelle Dauer: &e${duration}");
         add(QUESTS_BUILDER_CREATE_NAME, "&aQuest erstellen");
         add(QUESTS_BUILDER_CREATE_LORE, "&7Klicken, um die Quest zu erstellen.;&7Um die Quest zu erstellen,;&7musst du folgendes gesetzt habeN:;&7- Einen Namen;&7- Eine Beschreibung;&7- Mindestens eine Aufgabe");
-        add(QUESTS_BUILDER_SUCCESSFUL, "&aQuest ${name} wurde erstellt.");
+        add(QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS, "&cDieser Questname existent bereits.");
+        add(QUESTS_BUILDER_SUCCESSFUL_CREATED, "&aQuest ${name} wurde erstellt.");
 
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Aktuelle Reihenfolge: &e${order}");
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Ändere die Reihenfolge dieser Aufgabe;&7Alle Aufgaben mit derselben Reihenfolge;&7können gleichzeitig erledigt werden;&7Klicken, um zu ändern.");
@@ -135,9 +149,7 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_PUBLIC_LORE, " ;&7Diese Quest ist öffentlich.;&7Sie kann ablaufen.;&eKlicken, um Details zu sehen.");
         add(QUESTS_GUI_QUEST_DETAILS_LORE, " ;&7Um &e${time};&eKlicken, um Details zu sehen.");
         add(QUESTS_GUI_ACCEPT_START_NAME, "&eQuest starten");
-        add(QUESTS_GUI_ACCEPT_START_LORE, "&7Klicken, um das Bestätigungsmenü zu öffnen");
-        add(QUESTS_GUI_ACCEPT_CONFIRM_NAME, "&eQuest starten");
-        add(QUESTS_GUI_ACCEPT_CONFIRM_LORE, "&7Klicken, um die Quest zu starten");
+        add(QUESTS_GUI_ACCEPT_START_LORE, "&7Klicken, um die Quest zu starten;&7Eine aktive Quest wird abgebrochen;&7Du kannst sie später neustarten");
         add(QUESTS_GUI_ACCEPT_TITLE, "&6Quest starten");
         add(QUESTS_GUI_QUEST_TIME_NAME, "&eAbgeschlossen am");
         add(QUESTS_GUI_QUEST_TIME_LORE, "&7Du hast diese Quest;&7abgeschlossen am &e${time}");

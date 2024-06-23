@@ -1,6 +1,7 @@
 package net.playlegend.questsystem.database;
 
 import net.playlegend.questsystem.QuestSystem;
+import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.quest.reward.QuestReward;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.util.QuestObjectConverterUtil;
@@ -225,7 +226,7 @@ public class QuestDatabase {
     }
 
     /**
-     * Makes a sql request which returns the columns of all rewards which are in currentRewards. On return, will put the reward id into the map with the object and removes it from currentRewards.
+     * Makes an sql request which returns the columns of all rewards which are in currentRewards. On return, will put the reward id into the map with the object and removes it from currentRewards.
      *
      * @param currentRewards  List - will check which reward in this list is in the database, after the methods all rewards which are not in the database will remain in this list
      * @param existingRewards Map - will put all rewards which are in the database in this map and adds their id
@@ -249,5 +250,9 @@ public class QuestDatabase {
             QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not get existing rewards in database!", exception);
             return false;
         }
+    }
+
+    public void updateQuest(Quest oldQuest, Quest newQuest) {
+        // TODO UPDATE
     }
 }

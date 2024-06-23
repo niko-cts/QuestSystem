@@ -269,4 +269,22 @@ public class QuestManager {
 			}
 		}.runTaskAsynchronously(QuestSystem.getInstance());
 	}
+
+	public void updateQuest(int questId, String name, String description, List<QuestReward<?>> rewards, List<QuestStep<?>> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
+		Optional<Quest> questOptional = getQuestById(questId);
+		if (questOptional.isEmpty())
+			throw new IllegalStateException("Could not find quest which should be modified id=" + questId);
+		Quest oldQuest = questOptional.get();
+		this.quests.remove(oldQuest);
+
+		Quest quest = new Quest(questId, name, description, isPublic, rewards, steps, finishTimeInSeconds, timerRunsOffline);
+		this.quests.add(quest);
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				QuestDatabase.getInstance().updateQuest(oldQuest, quest);
+			}
+		}.runTaskAsynchronously(QuestSystem.getInstance());
+	}
 }

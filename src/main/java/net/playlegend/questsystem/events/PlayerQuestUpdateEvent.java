@@ -11,12 +11,23 @@ import org.bukkit.event.HandlerList;
 public class PlayerQuestUpdateEvent extends Event {
 
     private final QuestPlayer player;
+    private final QuestUpdateType type;
 
     @Getter
     private static final HandlerList handlerList = new HandlerList();
 
     public HandlerList getHandlers() {
         return handlerList;
+    }
+
+    public static enum QuestUpdateType {
+        JOINED,
+        UPDATE_STATS,
+        NEW_QUEST,
+        QUEST_ENDED,
+        STEP,
+        FIND,
+        COMPLETED
     }
 
 }

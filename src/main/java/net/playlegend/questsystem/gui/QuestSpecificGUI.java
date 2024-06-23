@@ -16,7 +16,6 @@ import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class QuestSpecificGUI {
@@ -63,48 +62,19 @@ public class QuestSpecificGUI {
 						: UsefulItems.HEAD_A()
 								.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_START_NAME))
 								.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_START_LORE).split(";")).craft(),
-				new ClickAction() {
+				new ClickAction(Sound.ENTITY_PLAYER_LEVELUP, true) {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						if (finishedAt == null)
-							openConfirmationQuestGUI(questPlayer, quest, questItem,
-									(backPlayer, q) -> openQuestGUI(backPlayer, q, goBack));
+						if (finishedAt == null) {
+							if (questPlayer.getActivePlayerQuest().isPresent())
+								questPlayer.switchActiveQuest(quest);
+							else
+								questPlayer.startActiveQuest(quest);
+						}
 					}
 				});
 
 
 		GUIHelper.fillInventoryWithBackAndOpen(questPlayer, menu, quest, (goBackPlayer, q) -> goBack.accept(goBackPlayer));
-	}
-
-
-	private static void openConfirmationQuestGUI(QuestPlayer questPlayer, Quest quest, ItemStack questItem, BiConsumer<QuestPlayer, Quest> goBack) {
-		Language language = questPlayer.getLanguage();
-		CustomInventory menu = new CustomInventory(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_TITLE), 27);
-
-		menu.setItem(11, questItem);
-		menu.setItem(13, new ItemBuilder(quest.getRewardItem(language))
-						.addLore(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_REWARD).split(";")).craft(),
-				new ClickAction() {
-					@Override
-					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						QuestRewardsGUI.openRewardsFromNormal(questPlayer, quest,
-								(goBackPlayer, questBack) -> openConfirmationQuestGUI(goBackPlayer, questBack, questItem, goBack));
-					}
-				});
-
-		menu.setItem(15, UsefulItems.HEAD_A()
-						.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_CONFIRM_NAME))
-						.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_ACCEPT_CONFIRM_LORE).split(";")).craft(),
-				new ClickAction(Sound.ENTITY_PLAYER_LEVELUP, true) {
-					@Override
-					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						if (questPlayer.getActivePlayerQuest().isPresent())
-							questPlayer.switchActiveQuest(quest);
-						else
-							questPlayer.startActiveQuest(quest);
-					}
-				});
-
-		GUIHelper.fillInventoryWithBackAndOpen(questPlayer, menu, quest, goBack);
 	}
 }

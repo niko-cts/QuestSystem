@@ -8,6 +8,7 @@ import net.playlegend.questsystem.commands.handler.CommandHandler;
 import net.playlegend.questsystem.database.*;
 import net.playlegend.questsystem.listener.QuestPlayerConnectionListener;
 import net.playlegend.questsystem.listener.QuestStepListener;
+import net.playlegend.questsystem.npc.NPCManager;
 import net.playlegend.questsystem.player.PlayerHandler;
 import net.playlegend.questsystem.quest.QuestManager;
 import net.playlegend.questsystem.quest.QuestSignManager;
@@ -27,6 +28,7 @@ public final class QuestSystem extends JavaPlugin {
     private PlayerHandler playerHandler;
     private CommandHandler commandHandler;
     private QuestSignManager questSign;
+    private NPCManager npcManager;
 
 
     @Override
@@ -38,6 +40,9 @@ public final class QuestSystem extends JavaPlugin {
         this.commandHandler = new CommandHandler();
         this.questManager = new QuestManager();
         this.questSign = new QuestSignManager(this);
+        if (getServer().getPluginManager().isPluginEnabled("NPCSystem")) {
+            this.npcManager = new NPCManager(this);
+        }
         QuestDatabase.getInstance();
         PlayerQuestDatabase.getInstance();
         PlayerInfoDatabase.getInstance();

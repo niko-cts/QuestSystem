@@ -13,6 +13,17 @@ public class TranslationKeys {
 
 	private static final String QUEST = "quests.";
 
+	public static final String QUESTS_NPC_FOUNDBOOK = QUEST + "npc.foundbook";
+
+	public static final String QUESTS_SCOREBOARD_DISPLAYNAME = QUEST + "scoreboard.displayname";
+	public static final String QUESTS_SCOREBOARD_ACTIVE_QUESTNAME = QUEST + "scoreboard.active.questname";
+	public static final String QUESTS_SCOREBOARD_ACTIVE_CURRENT_STEP = QUEST + "scoreboard.active.currentstep";
+	public static final String QUESTS_SCOREBOARD_ACTIVE_FINISH_AT = QUEST + "scoreboard.active.finishat";
+	public static final String QUESTS_SCOREBOARD_NO_ACTIVE_1 = QUEST + "scoreboard.noactive.1";
+	public static final String QUESTS_SCOREBOARD_NO_ACTIVE_2 = QUEST + "scoreboard.noactive.2";
+	public static final String QUESTS_SCOREBOARD_COINS = QUEST + "scoreboard.coins";
+
+
 	public static final String QUESTS_SIGN_NO_ACTIVE_LINE_1 = QUEST + "sign.noactive.1";
 	public static final String QUESTS_SIGN_NO_ACTIVE_LINE_2 = QUEST + "sign.noactive.2";
 	public static final String QUESTS_SIGN_ACTIVE_LINE_1 = QUEST + "sign.active.1";
@@ -42,7 +53,9 @@ public class TranslationKeys {
 	public static final String QUESTS_BUILDER_TIMER_LORE = BUILDER + "timer.amount.lore";
 	public static final String QUESTS_BUILDER_CREATE_NAME = BUILDER + "create.name";
 	public static final String QUESTS_BUILDER_CREATE_LORE = BUILDER + "create.lore";
-	public static final String QUESTS_BUILDER_SUCCESSFUL = BUILDER + "created";
+	public static final String QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS = BUILDER + "create.namealreadyexists";
+	public static final String QUESTS_BUILDER_SUCCESSFUL_CREATED = BUILDER + "successful.created";
+	public static final String QUESTS_BUILDER_SUCCESSFUL_UPDATED = BUILDER + "successful.updated";
 	public static final String QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME = BUILDER + "steps.creation.order.name";
 	public static final String QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE = BUILDER + "steps.creation.order.lore";
 	public static final String QUESTS_BUILDER_STEPS_CREATION_AMOUNT_NAME = BUILDER + "steps.creation.amount.name";
@@ -158,8 +171,6 @@ public class TranslationKeys {
 
 	public static final String QUESTS_GUI_ACCEPT_START_NAME = GUI + "accept.start.name";
 	public static final String QUESTS_GUI_ACCEPT_START_LORE = GUI + "accept.start.lore";
-	public static final String QUESTS_GUI_ACCEPT_CONFIRM_NAME = GUI + "accept.confirm.name";
-	public static final String QUESTS_GUI_ACCEPT_CONFIRM_LORE = GUI + "accept.confirm.lore";
 	public static final String QUESTS_GUI_ACCEPT_TITLE = GUI + "accept.title";
 	public static final String QUESTS_GUI_QUEST_TIME_NAME = GUI + "quest.time.name";
 	public static final String QUESTS_GUI_QUEST_TIME_LORE = GUI + "quest.time.lore";

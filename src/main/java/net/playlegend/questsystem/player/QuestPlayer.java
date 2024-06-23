@@ -67,7 +67,7 @@ public class QuestPlayer {
 
 		checkAndFinishActiveQuest();
 		this.questTimer = new QuestTimerPlayer(this);
-		Bukkit.getScheduler().runTaskLater(QuestSystem.getInstance(), this::questUpdateEvent, 10L);
+		Bukkit.getScheduler().runTaskLater(QuestSystem.getInstance(), () -> questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.JOINED), 10L);
 	}
 
 	/**
@@ -82,8 +82,7 @@ public class QuestPlayer {
 			playerDbInformationHolder.addCompletedQuest(activePlayerQuest.getQuest().id(), completedAt);
 			sendMessage(TranslationKeys.QUESTS_EVENT_FINISHED, "${name}", activePlayerQuest.getQuest().name());
 			setActivePlayerQuest(null);
-
-			questUpdateEvent();
+			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.COMPLETED);
 		}
 	}
 
@@ -93,6 +92,7 @@ public class QuestPlayer {
 			Timestamp foundAt = Timestamp.from(Instant.now());
 			playerDbInformationHolder.addFoundQuest(q.id(), foundAt);
 			sendMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, "${name}", q.name());
+			sendEvent(PlayerQuestUpdateEvent.QuestUpdateType.FIND);
 			return foundAt;
 		});
 	}
@@ -105,7 +105,7 @@ public class QuestPlayer {
 		if (activePlayerQuest != null && activePlayerQuest.getSecondsLeft() <= 0) {
 			sendMessage(TranslationKeys.QUESTS_EVENT_TIMER_EXPIRED, "${name}", activePlayerQuest.getQuest().name());
 			setActivePlayerQuest(null);
-			questUpdateEvent();
+			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.QUEST_ENDED);
 		}
 	}
 
@@ -117,18 +117,18 @@ public class QuestPlayer {
 	public void switchActiveQuest(@NonNull Quest quest) {
 		createAndSetPlayerQuest(quest);
 		sendMessage(TranslationKeys.QUESTS_EVENT_SWITCHED, "${name}", quest.name());
-		questUpdateEvent();
+		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.NEW_QUEST);
 	}
 
 	public void startActiveQuest(@NonNull Quest quest) {
 		createAndSetPlayerQuest(quest);
 		sendMessage(TranslationKeys.QUESTS_EVENT_STARTED, "${name}", quest.name());
-		questUpdateEvent();
+		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.NEW_QUEST);
 	}
 
 	public void cancelActiveQuest() {
 		setActivePlayerQuest(null);
-		questUpdateEvent();
+		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.QUEST_ENDED);
 	}
 
 	/**
@@ -141,14 +141,18 @@ public class QuestPlayer {
 	public boolean playerDidQuestStep(ActivePlayerQuest quest, QuestStep<?> step) {
 		playerDbInformationHolder.markActiveQuestDirty();
 		boolean isDone = quest.playerDidQuestStep(step);
-		questUpdateEvent();
+		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.STEP);
 		return isDone;
 	}
 
-	private void questUpdateEvent() {
+	private void questUpdateEvent(@NonNull PlayerQuestUpdateEvent.QuestUpdateType type) {
 		ScoreboardUtil.updateScoreboard(this);
 		QuestSystem.getInstance().getQuestSign().updateSign(this);
-		QuestSystem.getInstance().getServer().getPluginManager().callEvent(new PlayerQuestUpdateEvent(this));
+		sendEvent(type);
+	}
+
+	private void sendEvent(@NonNull PlayerQuestUpdateEvent.QuestUpdateType type) {
+		QuestSystem.getInstance().getServer().getPluginManager().callEvent(new PlayerQuestUpdateEvent(this, type));
 	}
 
 
@@ -187,7 +191,7 @@ public class QuestPlayer {
 	public void setLanguage(Language language) {
 		this.language = language;
 		this.playerDbInformationHolder.markLanguageDirty();
-		questUpdateEvent();
+		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.UPDATE_STATS);
 	}
 
 	/**
@@ -198,7 +202,7 @@ public class QuestPlayer {
 	public void setCoins(int coins) {
 		this.coins = coins;
 		this.playerDbInformationHolder.markCoinsDirty();
-		questUpdateEvent();
+		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.UPDATE_STATS);
 	}
 
 
@@ -237,5 +241,10 @@ public class QuestPlayer {
 			APIPlayer apiPlayer = NikoAPI.getInstance().getPlayerHandler().getPlayer(getPlayer());
 			if (apiPlayer != null) menu.open(apiPlayer);
 		});
+	}
+
+	public void openBook(ItemStack writtenBook) {
+		APIPlayer apiPlayer = NikoAPI.getInstance().getPlayerHandler().getPlayer(player.getUniqueId());
+		if(apiPlayer != null) apiPlayer.openBook(writtenBook);
 	}
 }

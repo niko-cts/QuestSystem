@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class QuestTimingsUtil {
@@ -105,9 +106,10 @@ public class QuestTimingsUtil {
         return now.plusSeconds(secondsLeft);
     }
 
-    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.systemDefault());
+    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     public static String formatDateTime(Instant time) {
-        return time.toString(); // DTF.format(time);
+        ZonedDateTime zonedDateTime = time.atZone(ZoneId.systemDefault());
+        return DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss").format(zonedDateTime);
     }
 }

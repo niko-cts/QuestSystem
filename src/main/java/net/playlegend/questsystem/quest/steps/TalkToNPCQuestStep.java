@@ -9,6 +9,7 @@ import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +33,12 @@ public class TalkToNPCQuestStep extends QuestStep<UUID> {
 	 */
 	@Override
 	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
-		return event instanceof PlayerClickedOnQuestNPCEvent npcEvent && npcEvent.getNpcUUID().equals(getStepObject());
+		if (event instanceof PlayerClickedOnQuestNPCEvent npcEvent && npcEvent.getNpcUUID().equals(getStepObject())) {
+			player.openBook(new ItemBuilder(Material.WRITTEN_BOOK)
+					.addPage(player.getLanguage().translateMessage(npcEvent.getTranslationKey()).split(";")).craft());
+			return true;
+		}
+		return false;
 	}
 
 

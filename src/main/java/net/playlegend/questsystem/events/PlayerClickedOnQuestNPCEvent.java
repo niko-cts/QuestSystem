@@ -14,6 +14,7 @@ public class PlayerClickedOnQuestNPCEvent extends Event {
 
     private final Player player;
     private final UUID npcUUID;
+    private final String translationKey;
 
     @Getter
     private static final HandlerList handlerList = new HandlerList();

@@ -11,6 +11,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.player.QuestPlayer;
+import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.quest.reward.QuestReward;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.translation.Language;
@@ -44,8 +45,8 @@ public class QuestBuilder implements Listener {
 	private static final Map<UUID, QuestBuilder> EDITING_PLAYERS = new HashMap<>();
 	private static final int ITEM_SLOT_INSERT_INDEX = 1;
 
-	public static void addPlayer(QuestPlayer questPlayer) {
-		EDITING_PLAYERS.compute(questPlayer.getUniqueId(), (uuid, questBuilder) -> {
+	public static QuestBuilder addPlayer(QuestPlayer questPlayer) {
+		return EDITING_PLAYERS.compute(questPlayer.getUniqueId(), (uuid, questBuilder) -> {
 			if (questBuilder == null)
 				questBuilder = new QuestBuilder(questPlayer);
 			questBuilder.openMenu();
@@ -64,6 +65,7 @@ public class QuestBuilder implements Listener {
 		});
 	}
 
+	private Integer questId;
 	@NonNull
 	final QuestPlayer questPlayer;
 	@NonNull
@@ -78,6 +80,18 @@ public class QuestBuilder implements Listener {
 	private boolean isPublic;
 
 	private Consumer<ItemStack> addingItemMode;
+
+	private QuestBuilder(@NonNull QuestPlayer questPlayer, Quest quest) {
+		this(questPlayer);
+		this.name = quest.name();
+		this.description = quest.description();
+		this.steps.addAll(quest.completionSteps());
+		this.rewards.addAll(quest.rewards());
+		this.finishTimeInSeconds = quest.finishTimeInSeconds();
+		this.timerRunsOffline = quest.timerRunsOffline();
+		this.isPublic = quest.isPublic();
+		this.questId = quest.id();
+	}
 
 	private QuestBuilder(@NonNull QuestPlayer questPlayer) {
 		this.questPlayer = questPlayer;
@@ -198,9 +212,19 @@ public class QuestBuilder implements Listener {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 						if (name != null && description != null && !steps.isEmpty()) {
-							QuestSystem.getInstance().getQuestManager().addQuest(
-									name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
-							questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL, "${name}", name);
+							if (QuestSystem.getInstance().getQuestManager().getQuestByName(name).isPresent()) {
+								questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS);
+								return;
+							}
+							if (questId == null) {
+								QuestSystem.getInstance().getQuestManager().addQuest(
+										name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
+								questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_CREATED, "${name}", name);
+							} else {
+								QuestSystem.getInstance().getQuestManager().updateQuest(
+										questId, name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
+								questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_UPDATED, "${name}", name);
+							}
 							setCloseInventory(true);
 							removePlayer(apiPlayer.getUniqueId());
 						}

@@ -35,7 +35,7 @@ public class QuestStepBuildingGUI {
 		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(builder.steps.size() + 1));
 		for (QuestStep<?> step : builder.steps) {
 			menu.addItem(new ItemBuilder(step.getTaskItem(builder.language))
-							.addLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_REMOVE).split(";"))
+							.addLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_REMOVE, "${id}", step.getId()).split(";"))
 							.craft(),
 					new ClickAction() {
 						@Override
