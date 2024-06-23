@@ -86,11 +86,13 @@
             <groupId>chatzis.nikolas.mc</groupId>
             <artifactId>NikoAPI</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>chatzis.nikolas.mc</groupId>
             <artifactId>NPCSystem</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
 

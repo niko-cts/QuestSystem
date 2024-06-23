@@ -57,7 +57,9 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_CREATE_NAME, "&aQuest erstellen");
         add(QUESTS_BUILDER_CREATE_LORE, "&7Klicken, um die Quest zu erstellen.;&7Um die Quest zu erstellen,;&7musst du folgendes gesetzt habeN:;&7- Einen Namen;&7- Eine Beschreibung;&7- Mindestens eine Aufgabe");
         add(QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS, "&cDieser Questname existent bereits.");
+
         add(QUESTS_BUILDER_SUCCESSFUL_CREATED, "&aQuest ${name} wurde erstellt.");
+        add(QUESTS_BUILDER_SUCCESSFUL_UPDATED, "&aQuest ${name} wurde aktualisiert.");
 
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Aktuelle Reihenfolge: &e${order}");
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Ändere die Reihenfolge dieser Aufgabe;&7Alle Aufgaben mit derselben Reihenfolge;&7können gleichzeitig erledigt werden;&7Klicken, um zu ändern.");
@@ -91,6 +93,8 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_NOT_FOUND, "&7Diese Quest konnte &cnicht &7gefunden werden.");
         add(QUESTS_COMMAND_ADMIN_USAGE, "questadmin create/list/remove/sign");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE, "questadmin quest create/delete/list");
+        add(QUESTS_COMMAND_ADMIN_QUEST_CREATE_USAGE, "questadmin create (description <description>)");
+        add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_USAGE, "questadmin delete <name>");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM, "&7Möchtest du diese Quest wirklich &clöschen&7? (Hier klicken, um zu bestätigen)");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL, "&7Quest wurde erfolgreich gelöscht.");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST_NO_QUESTS, "&7Es sind keine Quests aufgelistet.");

@@ -56,6 +56,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS, "&cThis quest name already exists!");
 
         add(QUESTS_BUILDER_SUCCESSFUL_CREATED, "&aQuest ${name} was created");
+        add(QUESTS_BUILDER_SUCCESSFUL_UPDATED, "&aQuest ${name} was updated");
 
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Current order: &e${order}");
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Change the order of this task;&7All tasks with the same order;&7can be done at the same time;&7Click to change");

@@ -145,7 +145,7 @@ public class QuestPlayer {
 		return isDone;
 	}
 
-	private void questUpdateEvent(@NonNull PlayerQuestUpdateEvent.QuestUpdateType type) {
+	public void questUpdateEvent(@NonNull PlayerQuestUpdateEvent.QuestUpdateType type) {
 		ScoreboardUtil.updateScoreboard(this);
 		QuestSystem.getInstance().getQuestSign().updateSign(this);
 		sendEvent(type);

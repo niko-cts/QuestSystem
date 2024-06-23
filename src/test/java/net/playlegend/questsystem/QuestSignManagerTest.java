@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -81,7 +82,7 @@ public class QuestSignManagerTest {
 
         Field signs = QuestSignManager.class.getDeclaredField("signs");
         signs.setAccessible(true);
-        List<Location> locations = (List<Location>) signs.get(questSignManager);
+        Set<Location> locations = (Set<Location>) signs.get(questSignManager);
         assertEquals(2, locations.size());
         assertEquals(2, Files.readAllLines(SIGN_FILE.toPath()).size());
     }
@@ -97,7 +98,7 @@ public class QuestSignManagerTest {
 
         Field signs = QuestSignManager.class.getDeclaredField("signs");
         signs.setAccessible(true);
-        List<Location> locations = (List<Location>) signs.get(questSignManager);
+        Set<Location> locations = (Set<Location>) signs.get(questSignManager);
         assertEquals(1, locations.size());
         assertEquals(1, Files.readAllLines(SIGN_FILE.toPath()).size());
     }
@@ -115,7 +116,7 @@ public class QuestSignManagerTest {
 
         Field signs = QuestSignManager.class.getDeclaredField("signs");
         signs.setAccessible(true);
-        List<Location> locations = (List<Location>) signs.get(questSignManager);
+        Set<Location> locations = (Set<Location>) signs.get(questSignManager);
         assertEquals(2, locations.size());
 
         assertTrue(locations.contains(location));
@@ -139,7 +140,7 @@ public class QuestSignManagerTest {
 
         Field signs = QuestSignManager.class.getDeclaredField("signs");
         signs.setAccessible(true);
-        List<Location> locations = (List<Location>) signs.get(questSignManager);
+        Set<Location> locations = (Set<Location>) signs.get(questSignManager);
         assertEquals(2, locations.size());
         assertEquals(2, Files.readAllLines(SIGN_FILE.toPath()).size());
 
@@ -163,7 +164,7 @@ public class QuestSignManagerTest {
 
         Field signs = QuestSignManager.class.getDeclaredField("signs");
         signs.setAccessible(true);
-        List<Location> locations = (List<Location>) signs.get(questSignManager);
+        Set<Location> locations = (Set<Location>) signs.get(questSignManager);
         assertEquals(2, locations.size());
         assertEquals(2, Files.readAllLines(SIGN_FILE.toPath()).size());
 

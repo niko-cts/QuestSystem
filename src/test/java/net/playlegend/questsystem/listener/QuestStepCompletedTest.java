@@ -10,7 +10,6 @@ import net.playlegend.questsystem.player.PlayerDatabaseInformationHolder;
 import net.playlegend.questsystem.player.PlayerHandler;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
-import net.playlegend.questsystem.quest.QuestSignManager;
 import net.playlegend.questsystem.quest.reward.QuestReward;
 import net.playlegend.questsystem.quest.steps.MineQuestStep;
 import net.playlegend.questsystem.quest.steps.QuestStep;
@@ -46,8 +45,6 @@ public class QuestStepCompletedTest {
     QuestPlayer questPlayer;
     @Mock
     QuestSystem questSystem;
-    @Mock
-    QuestSignManager questSignManager;
 
     QuestStepListener questStepListener;
     ServerMock server;
@@ -91,8 +88,7 @@ public class QuestStepCompletedTest {
     @Test
     public void questCompleted_OnBlockbreak() {
         when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
-        when(questSystem.getQuestSign()).thenReturn(questSignManager);
-        when(questSystem.getServer()).thenReturn(server);
+        doNothing().when(questPlayer).questUpdateEvent(any());
 
         BlockMock block = worldMock.getBlockAt(0, 0, 0);
         block.setType(Material.STONE);
@@ -124,9 +120,8 @@ public class QuestStepCompletedTest {
 
     @Test
     public void questStepCompleted_OnMineCorrectBlock_QuestUncompleted() {
+        doNothing().when(questPlayer).questUpdateEvent(any());
         when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
-        when(questSystem.getServer()).thenReturn(server);
-        when(questSystem.getQuestSign()).thenReturn(questSignManager);
         BlockMock block = worldMock.getBlockAt(0, 0, 0);
         block.setType(Material.STONE);
         QuestStep<?> questStep = new MineQuestStep(0, 0, 1, block.getType());
@@ -146,9 +141,8 @@ public class QuestStepCompletedTest {
 
     @Test
     public void questStepCompleted_OnMineCorrectBlock_twoStepsIncreased() {
+        doNothing().when(questPlayer).questUpdateEvent(any());
         when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
-        when(questSystem.getServer()).thenReturn(server);
-        when(questSystem.getQuestSign()).thenReturn(questSignManager);
         BlockMock block = worldMock.getBlockAt(0, 0, 0);
         block.setType(Material.STONE);
         QuestStep<?> questStep = new MineQuestStep(0, 0, 1, block.getType());
