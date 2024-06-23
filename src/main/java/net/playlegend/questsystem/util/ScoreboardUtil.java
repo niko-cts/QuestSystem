@@ -51,7 +51,7 @@ public class ScoreboardUtil {
 
 		scoreboard.addEmptyLine();
 		scoreboard.addTranslatableLine(TranslationKeys.QUESTS_SCOREBOARD_COINS);
-		scoreboard.addLine(APIScoreboard.START_COL + ChatColor.YELLOW + " " + questPlayer.getCoins());
+		scoreboard.addLine(APIScoreboard.START_COL + ChatColor.GOLD + " " + questPlayer.getCoins());
 
 		scoreboard.showPlayer(questPlayer);
 	}

@@ -68,12 +68,11 @@ public class NPCManager implements Listener, NPCClickEvent {
 								q -> findNPCs.put(new NPC(uuid, name, location, NPC.DEFAULT_SKIN, new HashSet<>(List.of(uuid))), q),
 								() -> log.log(Level.WARNING, "Could not find a quest but is inserted in npc id=" + questId)
 						);
-
 					}
 				} catch (SQLException exception) {
 					log.log(Level.SEVERE, "Could not load task NPCs from database", exception);
 				}
-
+				log.log(Level.INFO, "Loaded {0} Find-NPC and {1} task-NPC", new Object[]{findNPCs.size(), taskNPCs.size()});
 			}
 		} catch (SQLException exception) {
 			log.log(Level.SEVERE, "Could not load NPC from database", exception);

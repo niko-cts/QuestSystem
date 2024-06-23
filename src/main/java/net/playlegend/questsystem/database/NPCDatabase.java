@@ -37,7 +37,6 @@ public class NPCDatabase {
 		this.databaseHandler.createTableIfNotExists(TABLE_NPC_FINDINGS, List.of(
 				"uuid VARCHAR(36) NOT NULL PRIMARY KEY",
 				"quest_id INT NOT NULL",
-				"content TEXT NOT NULL",
 				"FOREIGN KEY(uuid) REFERENCES " + TABLE_NPC + "(uuid) ON DELETE CASCADE",
 				"FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUEST_STEPS_INFO + "(quest_id) ON DELETE CASCADE"
 		));
