@@ -39,45 +39,33 @@ Welcome to the Quest System plugin for Minecraft! This plugin provides an engagi
 
 9. **Database Integration**
    - All quest data, progress, and rewards are stored in a relational database.
-
-### Bonus Features
-1. **Multilingual Support**
+     
+10. **Multilingual Support**
    - Support for multiple languages for quests and messages.
 
-3. **Scoreboard**
+11. **Scoreboard**
    - Display quest information on a scoreboard.
 
-4. **Multiple Server Instances**
+12. **Multiple Server Instances**
    - Compatible with multiple server instances using the same database.
 
-## Installation
-
-1. **Download the Plugin**
-   - Download the latest version of the plugin from the [GitHub repository](#).
-
-2. **Install the Plugin**
-   - Place the plugin JAR file into the `plugins` folder of your Minecraft server.
-
-3. **Configure the Plugin**
-   - Edit the configuration file (`config.yml`) to customize messages and settings.
-
-4. **Database Setup**
-   - Ensure your server has access to a relational database and configure the database settings in the configuration file.
-
-5. **Start the Server**
-   - Start or restart your Minecraft server to load the plugin.
+13. **Multiple Tasks per Quest**
+   - Different tasks to complete a quest.
+   - Current task-types are: Speak to NPC, Mine a block, Kill an entity, Craft an item
+   
 
 ## Commands
 
-- `/quest find <quest_name>`: Accept a quest.
 - `/quest`: Quest GUI
 - `/quest cancel`: Cancel a quest.
+- `/quest find <quest_name>`: Find a quest.
 - `/quest info`: View the current quest status.
 - `/questadmin create/remove/list`: Check remaining time for the current quest.
 
 ## Permissions
 
 - `command.quest.admin`: Access to all admin commands.
+- `command.quest.find`: Find a quest via a command
 
 ## Configuration
 
