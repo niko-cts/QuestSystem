@@ -1,10 +1,6 @@
 package net.playlegend.questsystem.npc;
 
-import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
 import chatzis.nikolas.mc.npcsystem.NPC;
-import chatzis.nikolas.mc.npcsystem.NPCSystem;
-import chatzis.nikolas.mc.npcsystem.event.NPCClickEvent;
-import chatzis.nikolas.mc.npcsystem.event.PlayerInteractAtNPCEvent;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.database.NPCDatabase;
 import net.playlegend.questsystem.events.PlayerClickedOnQuestNPCEvent;
@@ -15,11 +11,10 @@ import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.quest.steps.QuestStepType;
 import net.playlegend.questsystem.quest.steps.TalkToNPCQuestStep;
-import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,53 +29,69 @@ import java.util.logging.Logger;
  *
  * @author Niko
  */
-public class NPCManager implements Listener, NPCClickEvent {
+public class NPCManager implements Listener {
 
-	private final Map<NPC, String> taskNPCs;
-	private final Map<NPC, Quest> findNPCs;
+	private final Set<TaskNPC> taskNPCs;
+	private final Set<FindNPC> findNPCs;
+	private final NPCDatabase npcDatabase;
 
 	public NPCManager(QuestSystem questSystem) {
-		this.taskNPCs = new HashMap<>();
-		this.findNPCs = new HashMap<>();
+		this.taskNPCs = new HashSet<>();
+		this.findNPCs = new HashSet<>();
+		npcDatabase = NPCDatabase.getInstance();
 
-		NPCDatabase database = NPCDatabase.getInstance();
 		Logger log = questSystem.getLogger();
-		NPCSystem.getInstance().registerNPCListener(this);
-		try (ResultSet npcSet = database.getAllNPC()) {
+		try (ResultSet npcSet = npcDatabase.getAllTaskNPCs()) {
 			while (npcSet != null && npcSet.next()) {
 				UUID uuid = UUID.fromString(npcSet.getString("uuid"));
 				Location location = new Location(questSystem.getServer().getWorld(npcSet.getString("world")),
 						npcSet.getDouble("x"), npcSet.getDouble("y"), npcSet.getDouble("z"), npcSet.getFloat("yaw"), npcSet.getFloat("pitch"));
 				String name = npcSet.getString("name");
-
-				try (ResultSet taskNPCsSet = database.getAllNPCTasks(uuid)) {
+				Map<String, String> messages = new HashMap<>();
+				try (ResultSet taskNPCsSet = npcDatabase.getNPCTaskMessages(uuid)) {
 					while (taskNPCsSet != null && taskNPCsSet.next()) {
-						taskNPCs.put(new NPC(uuid, name, location, NPC.DEFAULT_SKIN, new HashSet<>(List.of(uuid)), false), taskNPCsSet.getString("content"));
+						messages.put(taskNPCsSet.getString("language"), taskNPCsSet.getString("content"));
 					}
 				} catch (SQLException exception) {
 					log.log(Level.SEVERE, "Could not load task NPCs from database", exception);
 				}
-				try (ResultSet findNpc = database.getAllFindings(uuid)) {
-					while (findNpc != null && findNpc.next()) {
-						int questId = findNpc.getInt("quest_id");
-						Optional<Quest> quest = questSystem.getQuestManager().getQuestById(questId);
-						quest.ifPresentOrElse(
-								q -> findNPCs.put(new NPC(uuid, name, location, NPC.DEFAULT_SKIN, new HashSet<>(List.of(uuid)), true), q),
-								() -> log.log(Level.WARNING, "Could not find a quest but is inserted in npc id=" + questId)
-						);
-					}
-				} catch (SQLException exception) {
-					log.log(Level.SEVERE, "Could not load task NPCs from database", exception);
+
+				if (!messages.isEmpty()) {
+					addTaskNPC(uuid, name, location, messages);
+				} else {
+					log.log(Level.WARNING, "Task NPC '{0}'was not added because there were no messages", uuid);
 				}
-				log.log(Level.INFO, "Loaded {0} Find-NPC and {1} task-NPC", new Object[]{findNPCs.size(), taskNPCs.size()});
 			}
+			log.log(Level.INFO, "Loaded {0} task-NPC", taskNPCs.size());
 		} catch (SQLException exception) {
 			log.log(Level.SEVERE, "Could not load NPC from database", exception);
 		}
+
+		try (ResultSet findNPC = npcDatabase.getAllFindings()) {
+			while (findNPC != null && findNPC.next()) {
+
+				Location location = new Location(questSystem.getServer().getWorld(findNPC.getString("world")),
+						findNPC.getDouble("x"), findNPC.getDouble("y"), findNPC.getDouble("z"), findNPC.getFloat("yaw"), findNPC.getFloat("pitch"));
+				String name = findNPC.getString("name");
+
+				int questId = findNPC.getInt("quest_id");
+				UUID uuid = UUID.randomUUID();
+				Optional<Quest> quest = questSystem.getQuestManager().getQuestById(questId);
+				quest.ifPresentOrElse(
+						q -> addFindNPC(uuid, name, location, q),
+						() -> log.log(Level.WARNING, "Could not find a quest but is inserted in npc id=" + questId)
+				);
+			}
+			log.log(Level.INFO, "Loaded {0} find-NPC", findNPCs.size());
+		} catch (SQLException exception) {
+			log.log(Level.SEVERE, "Could not load find NPCs from database", exception);
+		}
 	}
 
+
 	/**
-	 * Shows or destroys a NPC if necessary. Checks for task and find npcs.
+	 * Shows or destroys a NPC if necessary. Checks for a task and find npcs.
+	 *
 	 * @param event PlayerQuestUpdateEvent - when a quest was updated.
 	 */
 	@EventHandler
@@ -91,7 +102,7 @@ public class NPCManager implements Listener, NPCClickEvent {
 		if (activePlayerQuestOptional.isPresent()) {
 			for (QuestStep<?> step : activePlayerQuestOptional.get().getNextUncompletedSteps()) {
 				if (step.getType() == QuestStepType.SPEAK && step instanceof TalkToNPCQuestStep talkStep) {
-					for (NPC taskNPC : taskNPCs.keySet()) {
+					for (NPC taskNPC : taskNPCs) {
 						if (taskNPC.getUniqueID().equals(talkStep.getStepObject())) {
 							spawnedNPCs.add(taskNPC.getUniqueID());
 							if (!taskNPC.isPlayerAllowedToSee(player.getPlayer()))
@@ -102,14 +113,14 @@ public class NPCManager implements Listener, NPCClickEvent {
 				}
 			}
 		} else {
-			taskNPCs.keySet().forEach(n -> n.destroy(player.getPlayer()));
+			taskNPCs.forEach(n -> n.destroy(player.getPlayer()));
 		}
 
 		if (event.getType() == PlayerQuestUpdateEvent.QuestUpdateType.JOINED) {
-			for (Map.Entry<NPC, Quest> entry : findNPCs.entrySet()) {
-				player.getFoundQuests().compute(entry.getValue(), (quest, timestamp) -> {
-					if (timestamp == null && !spawnedNPCs.contains(entry.getKey().getUniqueID())) {
-						entry.getKey().show(player.getPlayer());
+			for (FindNPC npc : findNPCs) {
+				player.getFoundQuests().compute(npc.getQuest(), (quest, timestamp) -> {
+					if (timestamp == null && !spawnedNPCs.contains(npc.getUniqueID())) {
+						npc.show(player.getPlayer());
 					}
 					return timestamp;
 				});
@@ -117,29 +128,44 @@ public class NPCManager implements Listener, NPCClickEvent {
 		}
 	}
 
-	@Override
-	public void npcClicked(PlayerInteractAtNPCEvent event) {
-		taskNPCs.computeIfPresent(event.getNPC(), (npc, s) -> {
-			QuestSystem.getInstance().getServer().getPluginManager().callEvent(
-					new PlayerClickedOnQuestNPCEvent(event.getPlayer().getPlayer(), event.getNPC().getUniqueID(), s)
-			);
-			return s;
-		});
-		findNPCs.computeIfPresent(event.getNPC(), (npc, quest) -> {
-			QuestPlayer player = QuestSystem.getInstance().getPlayerHandler().getPlayer(event.getPlayer().getPlayer());
-			if (player == null) return quest;
-			String foundBook = player.getLanguage().translateMessage(TranslationKeys.QUESTS_NPC_FOUNDBOOK,
-							List.of("${name}", "${description}"),
-							List.of(quest.name(), player.getLanguage().translateMessage(quest.description())))
-					.replace("/n", "\n");
-			if (player.getFoundQuests().containsKey(quest)) {
-				foundBook = player.getLanguage().translateMessage(TranslationKeys.QUESTS_NPC_FOUNDBOOK_ALREADY)
-				            + ";" + foundBook;
-			} else {
-				player.foundQuest(quest);
+
+	public void insertTaskNPC(UUID uuid, String npcName, Location location, String languageKey, String content) {
+		Optional<TaskNPC> npc = taskNPCs.stream().filter(n -> n.getUniqueID().equals(uuid)).findFirst();
+		if (npc.isPresent()) {
+			TaskNPC taskNPC = npc.get();
+			if (taskNPC.getMessages().containsKey(languageKey))
+				this.npcDatabase.updateTaskNPCAll(uuid, npcName, location, languageKey, content);
+			else {
+				taskNPC.getMessages().put(languageKey, content);
+				this.npcDatabase.createTaskNPCMessage(uuid, languageKey, content);
 			}
-			player.openBook(new ItemBuilder(Material.WRITTEN_BOOK).addPage(foundBook.split(";")).craft());
-			return quest;
-		});
+		} else {
+			addTaskNPC(uuid, npcName, location, Map.of(languageKey, content));
+			this.npcDatabase.createTaskNPC(uuid, npcName, location, languageKey, content);
+		}
+	}
+
+	public void insertFindNPC(Quest quest, String npcName, Location location) {
+		if (findNPCs.stream().anyMatch(n -> n.getQuest().equals(quest)))
+			this.npcDatabase.updateFindNPC(quest.id(), npcName, location);
+		else {
+			addFindNPC(UUID.randomUUID(), npcName, location, quest);
+			this.npcDatabase.createFindNPC(quest.id(), npcName, location);
+		}
+	}
+
+	private void addTaskNPC(UUID uuid, String name, Location location, Map<String, String> messages) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				TaskNPC taskNPC = new TaskNPC(uuid, name, location, NPC.DEFAULT_SKIN, new HashSet<>(Set.of(uuid)), false, new HashMap<>());
+				taskNPC.getMessages().putAll(messages);
+				taskNPCs.add(taskNPC);
+			}
+		}.runTask(QuestSystem.getInstance());
+	}
+
+	private void addFindNPC(UUID uuid, String name, Location location, Quest quest) {
+		this.findNPCs.add(new FindNPC(uuid, name, location, NPC.DEFAULT_SKIN, new HashSet<>(Set.of(uuid)), false, quest));
 	}
 }

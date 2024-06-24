@@ -7,7 +7,6 @@ import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LanguageCommand extends APICommand {
@@ -23,8 +22,7 @@ public class LanguageCommand extends APICommand {
 			return;
 		}
 		String name = args[0].toLowerCase();
-		Set<Language> languages = QuestSystem.getInstance().getLanguageHandler().getSupportedLanguages();
-		Optional<Language> language = languages.stream().filter(s -> s.getName().equalsIgnoreCase(name) || s.getLanguageKey().equalsIgnoreCase(name)).findFirst();
+		Optional<Language> language = QuestSystem.getInstance().getLanguageHandler().getLanguageByName(name);
 		if (language.isPresent()) {
 			questPlayer.setLanguage(language.get());
 			questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_LANGUAGE_UPDATED);

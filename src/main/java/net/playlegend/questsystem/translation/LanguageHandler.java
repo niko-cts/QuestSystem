@@ -166,4 +166,7 @@ public class LanguageHandler {
 		return supportedLanguages.stream().filter(l -> l.getLanguageKey().equals(language)).findFirst();
 	}
 
+	public Optional<Language> getLanguageByName(String name) {
+		return getSupportedLanguages().stream().filter(s -> s.getName().equalsIgnoreCase(name) || s.getLanguageKey().equalsIgnoreCase(name)).findFirst();
+	}
 }

@@ -87,7 +87,7 @@ public class QuestPlayer {
 	}
 
 	public void foundQuest(Quest quest) {
-		if (quest.isPublic()) return;
+		if (quest.isPublic() || getFoundQuests().containsKey(quest)) return;
 		foundQuests.computeIfAbsent(quest, q -> {
 			Timestamp foundAt = Timestamp.from(Instant.now());
 			playerDbInformationHolder.addFoundQuest(q.id(), foundAt);
@@ -147,7 +147,7 @@ public class QuestPlayer {
 
 	public void questUpdateEvent(@NonNull PlayerQuestUpdateEvent.QuestUpdateType type) {
 		ScoreboardUtil.updateScoreboard(this);
-		QuestSystem.getInstance().getQuestSign().updateSign(this);
+		QuestSystem.getInstance().getQuestSignManager().updateSign(this);
 		sendEvent(type);
 	}
 

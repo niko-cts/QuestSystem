@@ -27,7 +27,7 @@ public final class QuestSystem extends JavaPlugin {
 	private QuestManager questManager;
 	private PlayerHandler playerHandler;
 	private CommandHandler commandHandler;
-	private QuestSignManager questSign;
+	private QuestSignManager questSignManager;
 	private NPCManager npcManager;
 
 
@@ -39,7 +39,7 @@ public final class QuestSystem extends JavaPlugin {
 		this.playerHandler = new PlayerHandler();
 		this.commandHandler = new CommandHandler();
 		this.questManager = new QuestManager();
-		this.questSign = new QuestSignManager(this);
+		this.questSignManager = new QuestSignManager(this);
 		if (getServer().getPluginManager().isPluginEnabled("NPCSystem")) {
 			this.npcManager = new NPCManager(this);
 		}
@@ -51,7 +51,7 @@ public final class QuestSystem extends JavaPlugin {
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new QuestPlayerConnectionListener(this, playerHandler), this);
 		pm.registerEvents(new QuestStepListener(playerHandler), this);
-		pm.registerEvents(questSign, this);
+		pm.registerEvents(questSignManager, this);
 		if (npcManager != null)
 			pm.registerEvents(npcManager, this);
 		this.commandHandler.addCommands(new QuestAdminCommand(), new LanguageCommand(), new QuestCommand());

@@ -106,6 +106,11 @@ public class TranslationKeys {
 	public static final String QUESTS_COMMAND_ADMIN_SIGN_NOT_SIGN = Q_COMMAND + "admin.sign.notviewing";
 	public static final String QUESTS_COMMAND_ADMIN_SIGN_ADDED = Q_COMMAND + "admin.sign.added";
 
+	public static final String QUESTS_COMMAND_ADMIN_NPC_USAGE = Q_COMMAND + "admin.npc.usage";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_FIND_USAGE = Q_COMMAND + "admin.npc.find.usage";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_TASK_USAGE = Q_COMMAND + "admin.npc.task.usage";
+	public static final String QUESTS_COMMAND_ADMIN_SETUP_SUCCESSFUL = Q_COMMAND + "admin.npc.successful";
+
 	// /language
 	public static final String QUESTS_COMMAND_LANGUAGE_USAGE = Q_COMMAND + "language.usage";
 	public static final String QUESTS_COMMAND_LANGUAGE_UPDATED = Q_COMMAND + "language.updated";
@@ -205,6 +210,7 @@ public class TranslationKeys {
 	public static final String QUESTS_STEP_KILL_ACTIVE_LORE = QUEST + "step.kill.active.lore";
 	public static final String QUESTS_STEP_NPC_NORMAL_LINE = QUEST + "step.npc.preview.line";
 	public static final String QUESTS_STEP_NPC_ACTIVE_LINE = QUEST + "step.npc.active.line";
+	public static final String QUESTS_STEP_NPC_NORMAL_NAME = QUEST + "step.npc.preview.name";
 	public static final String QUESTS_STEP_NPC_NORMAL_LORE = QUEST + "step.npc.preview.lore";
 	public static final String QUESTS_STEP_NPC_ACTIVE_LORE = QUEST + "step.npc.active.lore";
 

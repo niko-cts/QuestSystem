@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -14,7 +15,7 @@ public class PlayerClickedOnQuestNPCEvent extends Event {
 
     private final Player player;
     private final UUID npcUUID;
-    private final String translationKey;
+    private final Map<String, String> messages;
 
     @Getter
     private static final HandlerList handlerList = new HandlerList();

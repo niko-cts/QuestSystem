@@ -4,6 +4,7 @@ import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
 import chatzis.nikolas.mc.nikoapi.item.UsefulItems;
 import chatzis.nikolas.mc.nikoapi.util.LocationUtil;
 import chatzis.nikolas.mc.npcsystem.NPC;
+import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.events.PlayerClickedOnQuestNPCEvent;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
@@ -35,7 +36,10 @@ public class TalkToNPCQuestStep extends QuestStep<UUID> {
 	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof PlayerClickedOnQuestNPCEvent npcEvent && npcEvent.getNpcUUID().equals(getStepObject())) {
 			player.openBook(new ItemBuilder(Material.WRITTEN_BOOK)
-					.addPage(player.getLanguage().translateMessage(npcEvent.getTranslationKey()).split(";")).craft());
+					.addPage(player.getLanguage().translateMessage(npcEvent.getMessages().getOrDefault(
+							player.getLanguage().getLanguageKey(),
+							QuestSystem.getInstance().getLanguageHandler().getFallbackLanguage().getLanguageKey()
+					)).split(";")).craft());
 			return true;
 		}
 		return false;
@@ -125,7 +129,7 @@ public class TalkToNPCQuestStep extends QuestStep<UUID> {
 
 			return new ItemBuilder(UsefulItems.PLAYER_HEAD)
 					.setSkin(skin[0], skin[1])
-					.setName(language.translateMessage(TranslationKeys.QUESTS_STEP_NPC_NORMAL_LORE, "${name}", name))
+					.setName(language.translateMessage(TranslationKeys.QUESTS_STEP_NPC_NORMAL_NAME, "${name}", name))
 					.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_NPC_NORMAL_LORE,
 									List.of("${name}", "${maxamount}", "${location}"),
 									List.of(name, getMaxAmount(), location))

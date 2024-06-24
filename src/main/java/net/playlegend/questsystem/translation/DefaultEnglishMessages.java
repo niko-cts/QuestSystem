@@ -90,7 +90,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         // Commands
         add(SYSTEM_COMMAND_USAGE, "&7Execute the command with &e/${command}");
         add(QUESTS_COMMAND_NOT_FOUND, "&7This quest could &cnot &7be found.");
-        add(QUESTS_COMMAND_ADMIN_USAGE, "questadmin create/list/remove/sign");
+        add(QUESTS_COMMAND_ADMIN_USAGE, "questadmin create/list/remove/sign/npc");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE, "questadmin list (<questname>) - Shows all or a specific quest");
         add(QUESTS_COMMAND_ADMIN_QUEST_CREATE_USAGE, "questadmin create (description <description>)");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_USAGE, "questadmin delete <name>");
@@ -99,13 +99,19 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL, "&7Quest was successfully deleted.");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST_NO_QUESTS, "&7There are no quests listed.");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST, "&7Every quest: &e${quest}");
-        add(QUESTS_COMMAND_ADMIN_SIGN_USAGE, "/questadmin sign - Adds a sign");
+        add(QUESTS_COMMAND_ADMIN_SIGN_USAGE, "questadmin sign - Adds a sign");
         add(QUESTS_COMMAND_ADMIN_SIGN_NOT_SIGN, "&7You are &cnot &7looking at a sign.");
         add(QUESTS_COMMAND_ADMIN_SIGN_ADDED, "&7A new sign has been &aadded");
 
+        add(QUESTS_COMMAND_ADMIN_NPC_USAGE, "questadmin npc find/task - Create an NPC who lets the player find the quest or complete a quest task");
+        add(QUESTS_COMMAND_ADMIN_SETUP_SUCCESSFUL, "&aSetup was successful. NPC will spawn at your location.");
+        add(QUESTS_COMMAND_ADMIN_NPC_FIND_USAGE, "questadmin npc find <npcname> <questname> - Create an NPC who lets player find NPC");
+        add(QUESTS_COMMAND_ADMIN_NPC_TASK_USAGE, "questadmin npc task <npcname> <uuid> <language> <text> - Create an NPC who lets player complete the task");
+
+
         add(QUESTS_COMMAND_LANGUAGE_USAGE, "language <language>");
         add(QUESTS_COMMAND_LANGUAGE_UPDATED, "&aYour language has been changed.");
-        add(QUESTS_COMMAND_LANGUAGE_ILLEGAL, "&7This language is &cnot &7available");
+        add(QUESTS_COMMAND_LANGUAGE_ILLEGAL, "&7This language is &cnot &7available. Languages are: ${languages}");
         add(QUESTS_COMMAND_QUEST_USAGE, "quest");
         add(QUESTS_COMMAND_QUEST_CANCEL_USAGE, "quest cancel");
         add(QUESTS_COMMAND_QUEST_CANCEL_SUCCESS, "&7Your active quest has been &acanceled&7. You can restart it via the /quest GUI");
@@ -181,6 +187,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_STEP_KILL_ACTIVE_LORE, "&7You need to kill;&7this entity &e&e${amount}&7/&e${maxamount} &7more time(s)");
         add(QUESTS_STEP_NPC_NORMAL_LINE, "&7Speak to &e${name} &a${maxamount} &7time(s)");
         add(QUESTS_STEP_NPC_ACTIVE_LINE, "&7Speak to &e${name} &7- &a${amount}&7/&a${maxamount}");
+        add(QUESTS_STEP_NPC_NORMAL_NAME, "&eSpeak to ${name}");
         add(QUESTS_STEP_NPC_NORMAL_LORE, "&7Speak to &e${name} &a${maxamount} &7time(s);&7${name} is at &e${location}");
         add(QUESTS_STEP_NPC_ACTIVE_LORE, "&7You need to speak;&7to ${name} &e${amount}&7/&e${maxamount} &7more time(s);&7${name} is at &e${location}");
 

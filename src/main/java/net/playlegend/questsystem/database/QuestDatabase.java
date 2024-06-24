@@ -254,5 +254,8 @@ public class QuestDatabase {
 
     public void updateQuest(Quest oldQuest, Quest newQuest) {
         // TODO UPDATE
+        this.dbHandler.update(List.of(TABLE_QUESTS), List.of(List.of("name", "description", "public", "finish_time", "timer_runs_offline")),
+                List.of(List.of(newQuest.name(), newQuest.description(), newQuest.isPublic() ? 1 : 0, newQuest.finishTimeInSeconds(), newQuest.timerRunsOffline() ? 1 : 0)),
+                List.of("WHERE id=" + newQuest.id()));
     }
 }

@@ -46,7 +46,7 @@ public final class DatabaseHandler {
 		this.logger = QuestSystem.getInstance().getLogger();
 
 		this.retrieveConfigData();
-		if (this.username != null && !this.username.isEmpty()) {
+		if (this.username != null && !this.username.isBlank()) {
 			this.connect();
 		} else {
 			logger.info("Database information was not set");
@@ -381,7 +381,7 @@ public final class DatabaseHandler {
 	 */
 	public void closeConnection() {
 		try {
-			if (!this.dbConnection.isClosed())
+			if (this.dbConnection != null && !this.dbConnection.isClosed())
 				this.dbConnection.close();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Could not close the connection to the database! {0}", e.getMessage());
