@@ -55,7 +55,7 @@ public class NPCManager implements Listener, NPCClickEvent {
 
 				try (ResultSet taskNPCsSet = database.getAllNPCTasks(uuid)) {
 					while (taskNPCsSet != null && taskNPCsSet.next()) {
-						taskNPCs.put(new NPC(uuid, name, location, NPC.DEFAULT_SKIN, new HashSet<>(List.of(uuid))), taskNPCsSet.getString("content"));
+						taskNPCs.put(new NPC(uuid, name, location, NPC.DEFAULT_SKIN, new HashSet<>(List.of(uuid)), false), taskNPCsSet.getString("content"));
 					}
 				} catch (SQLException exception) {
 					log.log(Level.SEVERE, "Could not load task NPCs from database", exception);
@@ -65,7 +65,7 @@ public class NPCManager implements Listener, NPCClickEvent {
 						int questId = findNpc.getInt("quest_id");
 						Optional<Quest> quest = questSystem.getQuestManager().getQuestById(questId);
 						quest.ifPresentOrElse(
-								q -> findNPCs.put(new NPC(uuid, name, location, NPC.DEFAULT_SKIN, new HashSet<>(List.of(uuid))), q),
+								q -> findNPCs.put(new NPC(uuid, name, location, NPC.DEFAULT_SKIN, new HashSet<>(List.of(uuid)), true), q),
 								() -> log.log(Level.WARNING, "Could not find a quest but is inserted in npc id=" + questId)
 						);
 					}
@@ -79,6 +79,10 @@ public class NPCManager implements Listener, NPCClickEvent {
 		}
 	}
 
+	/**
+	 * Shows or destroys a NPC if necessary. Checks for task and find npcs.
+	 * @param event PlayerQuestUpdateEvent - when a quest was updated.
+	 */
 	@EventHandler
 	public void onQuestUpdate(PlayerQuestUpdateEvent event) {
 		QuestPlayer player = event.getPlayer();
@@ -101,17 +105,12 @@ public class NPCManager implements Listener, NPCClickEvent {
 			taskNPCs.keySet().forEach(n -> n.destroy(player.getPlayer()));
 		}
 
-		if (event.getType() == PlayerQuestUpdateEvent.QuestUpdateType.FIND || event.getType() == PlayerQuestUpdateEvent.QuestUpdateType.JOINED) {
+		if (event.getType() == PlayerQuestUpdateEvent.QuestUpdateType.JOINED) {
 			for (Map.Entry<NPC, Quest> entry : findNPCs.entrySet()) {
 				player.getFoundQuests().compute(entry.getValue(), (quest, timestamp) -> {
-					if (timestamp != null) {
-						if (!spawnedNPCs.contains(entry.getKey().getUniqueID())) {
-							entry.getKey().show(event.getPlayer().getPlayer());
-						}
-					} else {
-						entry.getKey().destroy(event.getPlayer().getPlayer());
+					if (timestamp == null && !spawnedNPCs.contains(entry.getKey().getUniqueID())) {
+						entry.getKey().show(player.getPlayer());
 					}
-
 					return timestamp;
 				});
 			}
@@ -128,15 +127,18 @@ public class NPCManager implements Listener, NPCClickEvent {
 		});
 		findNPCs.computeIfPresent(event.getNPC(), (npc, quest) -> {
 			QuestPlayer player = QuestSystem.getInstance().getPlayerHandler().getPlayer(event.getPlayer().getPlayer());
-			if (player != null && !player.getFoundQuests().containsKey(quest)) {
+			if (player == null) return quest;
+			String foundBook = player.getLanguage().translateMessage(TranslationKeys.QUESTS_NPC_FOUNDBOOK,
+							List.of("${name}", "${description}"),
+							List.of(quest.name(), player.getLanguage().translateMessage(quest.description())))
+					.replace("/n", "\n");
+			if (player.getFoundQuests().containsKey(quest)) {
+				foundBook = player.getLanguage().translateMessage(TranslationKeys.QUESTS_NPC_FOUNDBOOK_ALREADY)
+				            + ";" + foundBook;
+			} else {
 				player.foundQuest(quest);
-
-				String foundBook = player.getLanguage().translateMessage(TranslationKeys.QUESTS_NPC_FOUNDBOOK,
-						List.of("${name}", "{description}"),
-						List.of(quest.name(), player.getLanguage().translateMessage(quest.description()).replace(";", "\n")));
-
-				player.openBook(new ItemBuilder(Material.WRITTEN_BOOK).addPage(foundBook).craft());
 			}
+			player.openBook(new ItemBuilder(Material.WRITTEN_BOOK).addPage(foundBook.split(";")).craft());
 			return quest;
 		});
 	}

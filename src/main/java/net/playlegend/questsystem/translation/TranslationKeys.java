@@ -13,7 +13,8 @@ public class TranslationKeys {
 
 	private static final String QUEST = "quests.";
 
-	public static final String QUESTS_NPC_FOUNDBOOK = QUEST + "npc.foundbook";
+	public static final String QUESTS_NPC_FOUNDBOOK = QUEST + "npc.found.foundbook";
+	public static final String QUESTS_NPC_FOUNDBOOK_ALREADY = QUEST + "npc.found.alreadyfound";
 
 	public static final String QUESTS_SCOREBOARD_DISPLAYNAME = QUEST + "scoreboard.displayname";
 	public static final String QUESTS_SCOREBOARD_ACTIVE_QUESTNAME = QUEST + "scoreboard.active.questname";

@@ -14,7 +14,8 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
     public DefaultEnglishMessages() {
         super(Locale.ENGLISH);
 
-        add(QUESTS_NPC_FOUNDBOOK, "&6You found/n&l${name}&6!/n&0${description}");
+        add(QUESTS_NPC_FOUNDBOOK, "&6You found/n&l  ${name}&6!/n/n&0Quest description: /n${description}");
+        add(QUESTS_NPC_FOUNDBOOK_ALREADY, "&6You already found this quest!");
 
         // Scoreboard
         add(QUESTS_SCOREBOARD_DISPLAYNAME, "&6QuestSystem");

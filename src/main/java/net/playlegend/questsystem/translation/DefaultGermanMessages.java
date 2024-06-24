@@ -14,7 +14,8 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
     public DefaultGermanMessages() {
         super(Locale.GERMAN);
 
-        add(QUESTS_NPC_FOUNDBOOK, "&6Du hast/n&l${name} &6gefunden!/n&0${description}");
+        add(QUESTS_NPC_FOUNDBOOK, "&6Du hast/n&l${name} &6gefunden!/n/n&0Questbeschreibung:/n${description}");
+        add(QUESTS_NPC_FOUNDBOOK_ALREADY, "&6Du hast diese Quest bereits gefunden!");
 
         // Scoreboard
         add(QUESTS_SCOREBOARD_DISPLAYNAME, "&6QuestSystem");

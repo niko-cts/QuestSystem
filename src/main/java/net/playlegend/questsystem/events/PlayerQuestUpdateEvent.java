@@ -20,7 +20,7 @@ public class PlayerQuestUpdateEvent extends Event {
         return handlerList;
     }
 
-    public static enum QuestUpdateType {
+    public enum QuestUpdateType {
         JOINED,
         UPDATE_STATS,
         NEW_QUEST,

@@ -91,7 +91,7 @@ public class QuestPlayer {
 		foundQuests.computeIfAbsent(quest, q -> {
 			Timestamp foundAt = Timestamp.from(Instant.now());
 			playerDbInformationHolder.addFoundQuest(q.id(), foundAt);
-			sendMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, "${name}", q.name());
+			sendClickableMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, "${name}", q.name(), "/quest");
 			sendEvent(PlayerQuestUpdateEvent.QuestUpdateType.FIND);
 			return foundAt;
 		});
@@ -236,6 +236,12 @@ public class QuestPlayer {
 		player.spigot().sendMessage(textComponent);
 	}
 
+	public void sendClickableMessage(String translationKey, String placeholder, String replacement, String command) {
+		TextComponent textComponent = new TextComponent(language.translateMessage(translationKey, placeholder, replacement));
+		textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+		player.spigot().sendMessage(textComponent);
+	}
+
 	public void openCustomInv(CustomInventory menu) {
 		Bukkit.getScheduler().runTask(QuestSystem.getInstance(), () -> {
 			APIPlayer apiPlayer = NikoAPI.getInstance().getPlayerHandler().getPlayer(getPlayer());
@@ -246,5 +252,9 @@ public class QuestPlayer {
 	public void openBook(ItemStack writtenBook) {
 		APIPlayer apiPlayer = NikoAPI.getInstance().getPlayerHandler().getPlayer(player.getUniqueId());
 		if(apiPlayer != null) apiPlayer.openBook(writtenBook);
+	}
+
+	public List<Quest> getUnfinishedPublicQuests() {
+		return QuestSystem.getInstance().getQuestManager().getPublicQuests().stream().filter(q -> !foundQuests.containsKey(q)).toList();
 	}
 }
