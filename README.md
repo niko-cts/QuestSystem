@@ -59,8 +59,8 @@ Welcome to the Quest System plugin for Minecraft! This plugin provides an engagi
 - `/quest`: Quest GUI
 - `/quest cancel`: Cancel a quest.
 - `/quest find <quest_name>`: Find a quest.
-- `/quest info`: View the current quest status.
-- `/questadmin create/remove/list`: Check remaining time for the current quest.
+- `/quest info`: View the current quest status and remaining time.
+- `/questadmin create/remove/list/sign`: Admin commands to manage the quests and signs.
 
 ## Permissions
 
