@@ -24,6 +24,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -241,6 +242,15 @@ public class QuestBuilder implements Listener {
 		description = ChatColor.translateAlternateColorCodes('&',
 				String.join(";", newBookMeta.getPages()));
 		openMenu();
+	}
+
+	@EventHandler
+	public void onInteraction(InventoryClickEvent event) {
+		if (!event.getWhoClicked().getUniqueId().equals(questPlayer.getUniqueId())) return;
+		if (addingItemMode == null) return;
+		if (event.getRawSlot() != event.getSlot()) return;
+		if (event.getRawSlot() < event.getInventory().getSize() && event.getRawSlot() != ITEM_SLOT_INSERT_INDEX)
+			event.setCancelled(true);
 	}
 
 	@EventHandler

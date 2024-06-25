@@ -17,7 +17,8 @@ public class QuestAdminCommand extends APICommand {
 		addSubCommand(new QuestCreateSubCommand());
 		addSubCommand(new QuestDeleteSubCommand());
 		addSubCommand(new QuestListSubCommand());
-		addSubCommand(new QuestNpcCommand());
+		if(QuestSystem.getInstance().getNpcManager() != null)
+			addSubCommand(new QuestNpcCommand());
 		addSubCommand(QuestSystem.getInstance().getQuestSignManager());
 	}
 

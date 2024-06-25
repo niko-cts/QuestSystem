@@ -104,6 +104,8 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_ADMIN_SIGN_ADDED, "&7A new sign has been &aadded");
 
         add(QUESTS_COMMAND_ADMIN_NPC_USAGE, "questadmin npc find/task - Create an NPC who lets the player find the quest or complete a quest task");
+        add(QUESTS_COMMAND_ADMIN_NPC_FIND, "&7All Find-NPC: ${npc}");
+        add(QUESTS_COMMAND_ADMIN_NPC_TASK, "&7All Task-NPC: ${npc}");
         add(QUESTS_COMMAND_ADMIN_SETUP_SUCCESSFUL, "&aSetup was successful. NPC will spawn at your location.");
         add(QUESTS_COMMAND_ADMIN_NPC_FIND_USAGE, "questadmin npc find <npcname> <questname> - Create an NPC who lets player find NPC");
         add(QUESTS_COMMAND_ADMIN_NPC_TASK_USAGE, "questadmin npc task <npcname> <uuid> <language> <text> - Create an NPC who lets player complete the task");
@@ -152,7 +154,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_NORMAL_STEPS_TITLE, "&6Quest tasks");
         add(QUESTS_GUI_NORMAL_STEPS_INFO, "&7All tasks to complete ->");
 
-        add(QUESTS_GUI_FOUND_INFO, "&6found quests");
+        add(QUESTS_GUI_FOUND_INFO, "&6Found quests");
         add(QUESTS_GUI_COMPLETED_INFO, "&6Completed quests");
         add(QUESTS_GUI_PUBLIC_INFO, "&ePublic quests");
         add(QUESTS_GUI_PUBLIC_LORE, " ;&7This quest is public.;&7It may exceed.;&eClick to see details.");

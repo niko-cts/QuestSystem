@@ -34,7 +34,7 @@ public class ScoreboardUtil {
 		if (activeQuestOptional.isPresent()) {
 			ActivePlayerQuest activeQuest = activeQuestOptional.get();
 			scoreboard.addTranslatableLine(TranslationKeys.QUESTS_SCOREBOARD_ACTIVE_QUESTNAME);
-			scoreboard.addLine(APIScoreboard.START_COL + " " + activeQuest.getQuest().name());
+			scoreboard.addLine(APIScoreboard.START_COL + " " + ChatColor.YELLOW + activeQuest.getQuest().name());
 			scoreboard.addEmptyLine();
 			activeQuest.getNextUncompletedStep().ifPresent(nextStep -> {
 				scoreboard.addTranslatableLine(TranslationKeys.QUESTS_SCOREBOARD_ACTIVE_CURRENT_STEP);

@@ -28,7 +28,8 @@ public class LanguageCommand extends APICommand {
 			questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_LANGUAGE_UPDATED);
 		} else {
 			questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_LANGUAGE_ILLEGAL, "${languages}",
-					language.stream().map(Language::getName).collect(Collectors.joining(", ")));
+					QuestSystem.getInstance().getLanguageHandler().getSupportedLanguages()
+							.stream().map(Language::getName).collect(Collectors.joining(", ")));
 		}
 	}
 }

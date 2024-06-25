@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * This class loads all npc's regarding quests.
@@ -166,6 +167,19 @@ public class NPCManager implements Listener {
 	}
 
 	private void addFindNPC(UUID uuid, String name, Location location, Quest quest) {
-		this.findNPCs.add(new FindNPC(uuid, name, location, NPC.DEFAULT_SKIN, new HashSet<>(Set.of(uuid)), false, quest));
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				findNPCs.add(new FindNPC(uuid, name, location, NPC.DEFAULT_SKIN, new HashSet<>(Set.of(uuid)), false, quest));
+			}
+		}.runTask(QuestSystem.getInstance());
+	}
+
+	public String getTaskNPCList() {
+		return taskNPCs.stream().map(Object::toString).collect(Collectors.joining(", "));
+	}
+
+	public String getFindNPCList() {
+		return findNPCs.stream().map(Object::toString).collect(Collectors.joining(", "));
 	}
 }

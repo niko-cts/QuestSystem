@@ -106,6 +106,8 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_ADMIN_SIGN_ADDED, "&7Ein neues Schild wurde &ahinzugefügt");
 
         add(QUESTS_COMMAND_ADMIN_NPC_USAGE, "questadmin npc find/task - Erstelle einen NPC, der zum finden der Quest oder einer Questaufgabe zuständig ist");
+        add(QUESTS_COMMAND_ADMIN_NPC_FIND, "&7Alle Finding-NPC: ${npc}");
+        add(QUESTS_COMMAND_ADMIN_NPC_TASK, "&7Alle Aufgaben-NPC: ${npc}");
         add(QUESTS_COMMAND_ADMIN_SETUP_SUCCESSFUL, "&aSetup was erfolgreich. Der NPC spawnt an deiner Position");
         add(QUESTS_COMMAND_ADMIN_NPC_FIND_USAGE, "questadmin npc find <npcname> <questname> - Erstelle einen NPC, der zum finden einer Quest da ist");
         add(QUESTS_COMMAND_ADMIN_NPC_TASK_USAGE, "questadmin npc task <npcname> <uuid> <language> <text> - Erstelle einen NPC, der zum abschließend einer Questaufgabe da ist");

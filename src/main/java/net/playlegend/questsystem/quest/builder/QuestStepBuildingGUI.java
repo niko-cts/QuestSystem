@@ -137,13 +137,13 @@ public class QuestStepBuildingGUI {
 
 						String newParameter = parameter.toString();
 						try {
-							if (parameter.getClass() == ItemStack.class) {
+							if (type.getConstructorParameter() == ItemStack.class) {
 								newParameter = ItemToBase64ConverterUtil.toBase64((ItemStack) parameter);
 							}
 							questBuilder.steps.add(QuestObjectConverterUtil.instantiateQuestStepFromTypeAndParameter(type,
 									questBuilder.steps.stream().map(QuestStep::getId).max(Comparator.comparingInt(id -> id)).orElse(0) + 1,
 									order, amount, newParameter));
-						} catch (IOException | ClassNotFoundException e) {
+						} catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
 							QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not add QuestStep in QuestBuilder", e);
 						}
 

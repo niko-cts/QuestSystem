@@ -107,6 +107,8 @@ public class TranslationKeys {
 	public static final String QUESTS_COMMAND_ADMIN_SIGN_ADDED = Q_COMMAND + "admin.sign.added";
 
 	public static final String QUESTS_COMMAND_ADMIN_NPC_USAGE = Q_COMMAND + "admin.npc.usage";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_TASK = Q_COMMAND + "admin.npc.list.task";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_FIND = Q_COMMAND + "admin.npc.list.find";
 	public static final String QUESTS_COMMAND_ADMIN_NPC_FIND_USAGE = Q_COMMAND + "admin.npc.find.usage";
 	public static final String QUESTS_COMMAND_ADMIN_NPC_TASK_USAGE = Q_COMMAND + "admin.npc.task.usage";
 	public static final String QUESTS_COMMAND_ADMIN_SETUP_SUCCESSFUL = Q_COMMAND + "admin.npc.successful";

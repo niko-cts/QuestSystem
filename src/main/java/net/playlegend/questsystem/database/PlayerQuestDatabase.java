@@ -31,7 +31,7 @@ public class PlayerQuestDatabase {
 				"quest_id INT NOT NULL",
 				"created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
 				"PRIMARY KEY(uuid, quest_id)",
-				"CONSTRAINT fk_foundquests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id)")
+				"CONSTRAINT fk_foundquests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id) ON DELETE CASCADE")
 		);
 
 		dbHandler.createTableIfNotExists(TABLE_PLAYER_COMPLETED_QUESTS, List.of(
@@ -39,7 +39,7 @@ public class PlayerQuestDatabase {
 				"quest_id INT NOT NULL",
 				"created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
 				"PRIMARY KEY(uuid, quest_id)",
-				"CONSTRAINT fk_completedquests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id)")
+				"CONSTRAINT fk_completedquests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id) ON DELETE CASCADE")
 		);
 
 		dbHandler.createTableIfNotExists(TABLE_PLAYER_ACTIVE_QUEST_STEPS, List.of(
@@ -47,14 +47,14 @@ public class PlayerQuestDatabase {
 				"step_id INT NOT NULL",
 				"amount INT NOT NULL DEFAULT 0",
 				"PRIMARY KEY(uuid, step_id)",
-				"CONSTRAINT fk_activequests_sId FOREIGN KEY(step_id) REFERENCES " + QuestDatabase.TABLE_QUEST_STEPS_INFO + "(id)")
+				"CONSTRAINT fk_activequests_sId FOREIGN KEY(step_id) REFERENCES " + QuestDatabase.TABLE_QUEST_STEPS_INFO + "(id) ON DELETE CASCADE")
 		);
 
 		dbHandler.createTableIfNotExists(TABLE_PLAYER_ACTIVE_QUEST, List.of(
 				"uuid VARCHAR(36) NOT NULL PRIMARY KEY",
 				"quest_id INT NOT NULL",
 				"time_left BIGINT NOT NULL",
-				"CONSTRAINT fk_activequests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id)")
+				"CONSTRAINT fk_activequests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id) ON DELETE CASCADE")
 		);
 	}
 

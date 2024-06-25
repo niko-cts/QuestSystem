@@ -44,8 +44,8 @@ public final class QuestSystem extends JavaPlugin {
 			this.npcManager = new NPCManager(this);
 		}
 		QuestDatabase.getInstance();
-		PlayerQuestDatabase.getInstance();
 		PlayerInfoDatabase.getInstance();
+		PlayerQuestDatabase.getInstance();
 		NPCDatabase.getInstance();
 
 		PluginManager pm = getServer().getPluginManager();

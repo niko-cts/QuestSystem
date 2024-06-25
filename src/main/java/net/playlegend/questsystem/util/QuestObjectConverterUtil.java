@@ -72,9 +72,10 @@ public class QuestObjectConverterUtil {
     }
 
     public static String convertObjectToDatabaseString(Object paramterObject) throws IOException {
-        if (paramterObject.getClass() == ItemStack.class)
+        if (paramterObject instanceof ItemStack) {
             return ItemToBase64ConverterUtil.toBase64((ItemStack) paramterObject);
-        if (paramterObject.getClass().isEnum()) {
+        }
+	    if (paramterObject.getClass().isEnum()) {
             return ((Enum<?>) paramterObject).name();
         }
         return paramterObject.toString();

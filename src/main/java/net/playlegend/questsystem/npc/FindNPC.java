@@ -1,6 +1,7 @@
 package net.playlegend.questsystem.npc;
 
 import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
+import chatzis.nikolas.mc.nikoapi.util.LocationUtil;
 import chatzis.nikolas.mc.npcsystem.NPC;
 import chatzis.nikolas.mc.npcsystem.NPCSkin;
 import lombok.Getter;
@@ -31,7 +32,7 @@ public class FindNPC extends NPC {
 			if (player == null) return;
 			String foundBook = player.getLanguage().translateMessage(TranslationKeys.QUESTS_NPC_FOUNDBOOK,
 							List.of("${name}", "${description}"),
-							List.of(quest.name(), player.getLanguage().translateMessage(quest.description())))
+							List.of(quest.name(), quest.description()))
 					.replace("/n", "\n");
 			if (player.getFoundQuests().containsKey(quest)) {
 				foundBook = player.getLanguage().translateMessage(TranslationKeys.QUESTS_NPC_FOUNDBOOK_ALREADY)
@@ -41,5 +42,10 @@ public class FindNPC extends NPC {
 			}
 			player.openBook(new ItemBuilder(Material.WRITTEN_BOOK).addPage(foundBook.split(";")).craft());
 		});
+	}
+
+	@Override
+	public String toString() {
+		return "[" + getName() + ": " + quest.id() + " at " + LocationUtil.locationToString(getLocation()) + "]";
 	}
 }
