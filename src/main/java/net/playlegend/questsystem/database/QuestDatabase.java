@@ -8,8 +8,10 @@ import net.playlegend.questsystem.util.QuestObjectConverterUtil;
 
 import java.io.IOException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -19,7 +21,6 @@ public class QuestDatabase {
     protected static final String TABLE_QUESTS = "system_quests_overview";
     protected static final String TABLE_QUEST_STEPS_INFO = "system_quests_steps";
     private static final String TABLE_QUEST_REWARD_INFO = "system_quests_rewards";
-    private static final String TABLE_QUEST_REWARD_MAP = "system_quests_has_rewards";
 
     private static QuestDatabase instance;
 
@@ -36,7 +37,6 @@ public class QuestDatabase {
      */
     private QuestDatabase() {
         this.dbHandler = DatabaseHandler.getInstance();
-
 
         dbHandler.createTableIfNotExists(TABLE_QUESTS, List.of(
                 "id int NOT NULL PRIMARY KEY AUTO_INCREMENT",
@@ -55,22 +55,16 @@ public class QuestDatabase {
                 "step_order INT NOT NULL DEFAULT 1",
                 "step_object VARCHAR(1000) NOT NULL",
                 "PRIMARY KEY(id, quest_id)",
-                "CONSTRAINT fk_stepForQuestId FOREIGN KEY(quest_id) REFERENCES " + TABLE_QUESTS + "(id)")
+                "FOREIGN KEY(quest_id) REFERENCES " + TABLE_QUESTS + "(id) ON DELETE CASCADE")
         );
 
 
         dbHandler.createTableIfNotExists(TABLE_QUEST_REWARD_INFO, List.of(
-                "id INT NOT NULL PRIMARY KEY AUTO_INCREMENT",
                 "type VARCHAR(36) NOT NULL",
-                "reward_object VARCHAR(1000) NOT NULL")
-        );
-
-        dbHandler.createTableIfNotExists(TABLE_QUEST_REWARD_MAP, List.of(
-                "reward_id INT NOT NULL",
+                "reward_object VARCHAR(1000) NOT NULL",
                 "quest_id INT NOT NULL",
-                "CONSTRAINT pk_rewardmaps PRIMARY KEY (reward_id, quest_id)",
-                "CONSTRAINT fk_quest_id FOREIGN KEY (quest_id) REFERENCES " + TABLE_QUESTS + "(id)",
-                "CONSTRAINT fk_reward_id FOREIGN KEY (reward_id) REFERENCES " + TABLE_QUEST_REWARD_INFO + "(id)")
+                "PRIMARY KEY (type, reward_object, quest_id)",
+                "FOREIGN KEY (quest_id) REFERENCES " + TABLE_QUESTS + "(id) ON DELETE CASCADE")
         );
     }
 
@@ -97,21 +91,22 @@ public class QuestDatabase {
 
     /**
      * Returns the query of all all quest rewards + quest_id's
-     * <p>SELECT reward_id, quest_id, type, reward_object FROM  {@link QuestDatabase#TABLE_QUEST_REWARD_INFO} JOIN {@link QuestDatabase#TABLE_QUEST_REWARD_MAP} AND quest_id={param}</p>
+     * <p>SELECT reward_id, quest_id, type, reward_object FROM  {@link QuestDatabase#TABLE_QUEST_REWARD_INFO} JOIN {@link QuestDatabase#TABLE_QUEST_REWARD_INFO} AND quest_id={param}</p>
      *
      * @param questId int - the quest id
      * @return ResultSet - All quest rewards with the quest_id's
      */
     public ResultSet getAllQuestRewards(int questId) {
-        return this.dbHandler.executeQuery(String.format(
-                "SELECT type, reward_object FROM %s JOIN %s ON id=reward_id AND quest_id=%s",
-                TABLE_QUEST_REWARD_INFO, TABLE_QUEST_REWARD_MAP, questId));
+        return this.dbHandler.select(TABLE_QUEST_REWARD_INFO, List.of("type", "reward_object"), "WHERE quest_id=" + questId);
     }
 
-
+    /**
+     * Deletes the quest. All other quest information will be cascaded.
+     *
+     * @param id int - quest id
+     */
     public void deleteQuest(int id) {
-        this.dbHandler.delete(List.of(TABLE_QUEST_REWARD_MAP, TABLE_QUEST_STEPS_INFO, TABLE_QUESTS),
-                List.of("WHERE quest_id=" + id, "WHERE quest_id=" + id, "WHERE id=" + id + " LIMIT 1"));
+        this.dbHandler.delete(List.of(TABLE_QUESTS), List.of("WHERE id=" + id + " LIMIT 1"));
     }
 
     /**
@@ -138,58 +133,12 @@ public class QuestDatabase {
             return Optional.empty();
         }
 
-        List<QuestReward<?>> unaddedRewards = new ArrayList<>(rewards);
-        Map<Integer, QuestReward<?>> existingRewards = new HashMap<>();
-        boolean success = insertRewardObjectsAndPutExistingAndRemoveFromRewardObjects(unaddedRewards, existingRewards);
-        if (!success) return Optional.empty();
-
-        if (!unaddedRewards.isEmpty()) {
-            StringBuilder insertRewards = new StringBuilder()
-                    .append("INSERT INTO ").append(TABLE_QUEST_REWARD_INFO).append(" (type,reward_object) VALUES");
-            Iterator<QuestReward<?>> notInDBRewardsIterator = unaddedRewards.iterator();
-            while (notInDBRewardsIterator.hasNext()) {
-                QuestReward<?> notInDBRewards = notInDBRewardsIterator.next();
-                try {
-                    insertRewards.append("('").append(notInDBRewards.getRewardType().name()).append("','")
-                            .append(QuestObjectConverterUtil.convertObjectToDatabaseString(notInDBRewards.getRewardObject())).append("')");
-                    if (notInDBRewardsIterator.hasNext())
-                        insertRewards.append(",");
-                } catch (IOException exception) {
-                    log.log(Level.SEVERE, "Could not convert new RewardObject to database string", exception);
-                }
-            }
-            insertRewards.append(";");
-            if (!dbHandler.execute(insertRewards.toString())) {
-                log.log(Level.SEVERE, "Could not insert new rewards in database");
-                deleteQuest(questId);
-                return Optional.empty();
-            }
-        }
-
-        success = insertRewardObjectsAndPutExistingAndRemoveFromRewardObjects(unaddedRewards, existingRewards);
-        if (!success) {
-            log.log(Level.SEVERE, "A quest reward could not be retrieved by the database! Will not add quest! Remaining rewards: {0}",
-                    unaddedRewards.stream().map(r -> r.getRewardType().name()).collect(Collectors.joining(",")));
-            deleteQuest(questId);
-            return Optional.empty();
-        }
-
-        if (!unaddedRewards.isEmpty()) {
-            log.log(Level.WARNING, "There was a quest reward which could not be added to the database: {0}",
-                    unaddedRewards.stream().map(r -> r.getRewardType().name()).collect(Collectors.joining(",")));
-        }
-
         List<Object> allSteps = new ArrayList<>();
         Iterator<QuestStep<?>> newSteps = steps.iterator();
         while (newSteps.hasNext()) {
             QuestStep<?> step = newSteps.next();
             try {
-                allSteps.add(step.getId());
-                allSteps.add(questId);
-                allSteps.add(step.getType().name());
-                allSteps.add(step.getMaxAmount());
-                allSteps.add(step.getOrder());
-                allSteps.add(QuestObjectConverterUtil.convertObjectToDatabaseString(step.getStepObject()));
+                addStepFieldsToList(allSteps, step, questId);
                 if (newSteps.hasNext())
                     allSteps.add(null);
             } catch (IOException e) {
@@ -207,18 +156,23 @@ public class QuestDatabase {
         tableNames.add(TABLE_QUEST_STEPS_INFO);
         allValues.add(allSteps);
 
-        if (!existingRewards.isEmpty()) {
-            List<Object> allRewardMappings = new ArrayList<>();
-            Iterator<Integer> rewardMapIterator = existingRewards.keySet().iterator();
-            while (rewardMapIterator.hasNext()) {
-                Integer rewardId = rewardMapIterator.next();
-                allRewardMappings.add(rewardId);
-                allRewardMappings.add(questId);
-                if (rewardMapIterator.hasNext())
-                    allRewardMappings.add(null);
+        List<Object> allRewards = new ArrayList<>();
+        Iterator<QuestReward<?>> rewardIterator = rewards.iterator();
+        while (rewardIterator.hasNext()) {
+            try {
+                QuestReward<?> reward = rewardIterator.next();
+                addRewardFieldsToList(allRewards, reward, questId);
+                if (rewardIterator.hasNext()) {
+                    allRewards.add(null);
+                }
+            } catch (IOException ex) {
+                log.log(Level.SEVERE, "Could not convert reward object to database string for new quest", ex);
             }
-            tableNames.add(TABLE_QUEST_REWARD_MAP);
-            allValues.add(allRewardMappings);
+        }
+
+        if (!allRewards.isEmpty()) {
+            tableNames.add(TABLE_QUEST_REWARD_INFO);
+            allValues.add(allRewards);
         }
 
         dbHandler.insertIntoTable(tableNames, allValues);
@@ -226,33 +180,177 @@ public class QuestDatabase {
     }
 
     /**
-     * Makes an sql request which returns the columns of all rewards which are in currentRewards. On return, will put the reward id into the map with the object and removes it from currentRewards.
+     * Updates all necessary quest informations.
+     * Deletes, inserts new elements.
      *
-     * @param currentRewards  List - will check which reward in this list is in the database, after the methods all rewards which are not in the database will remain in this list
-     * @param existingRewards Map - will put all rewards which are in the database in this map and adds their id
-     * @return boolean - operation was successful
+     * @param oldQuest Quest - the old quest
+     * @param newQuest Quest - the new updated quest with the same quest id
      */
-    private boolean insertRewardObjectsAndPutExistingAndRemoveFromRewardObjects(List<QuestReward<?>> currentRewards, Map<Integer, QuestReward<?>> existingRewards) {
-        try (ResultSet rewardSet = this.dbHandler.select(TABLE_QUEST_REWARD_INFO, List.of("*"),
-                "WHERE type IN (" + currentRewards.stream().map(t -> "'" + t.getRewardType().name() + "'").collect(Collectors.joining(","))
-                        + ") AND reward_object IN(" + currentRewards.stream().map(t -> "'" + t.getRewardObject().toString() + "'").collect(Collectors.joining(","))
-                        + ")")) {
-            while (rewardSet != null && rewardSet.next()) {
-                String type = rewardSet.getString("type");
-                String object = rewardSet.getString("reward_object");
+    public void updateQuest(Quest oldQuest, Quest newQuest) {
+        List<String> updateTableNames = new ArrayList<>();
+        List<List<String>> allColumns = new ArrayList<>();
+        List<List<Object>> allValues = new ArrayList<>();
+        List<String> whereClauses = new ArrayList<>();
 
-                QuestReward<?> existingReward = currentRewards.stream().filter(f -> f.getRewardType().name().equals(type) && f.getRewardObject().toString().equals(object)).findFirst().orElseThrow();
-                currentRewards.remove(existingReward);
-                existingRewards.put(rewardSet.getInt("id"), existingReward);
+        List<String> insertTableNames = new ArrayList<>();
+        List<Object> insertValues = new ArrayList<>();
+
+        // QUEST DATA
+
+        List<String> questColumns = new ArrayList<>();
+        List<Object> questValues = new ArrayList<>();
+        if (!oldQuest.name().equals(newQuest.name())) {
+            questColumns.add("name");
+            questValues.add(newQuest.name());
+        }
+        if (!oldQuest.description().equals(newQuest.description())) {
+            questColumns.add("description");
+            questValues.add(newQuest.description());
+        }
+        if (oldQuest.isPublic() != newQuest.isPublic()) {
+            questColumns.add("public");
+            questValues.add(newQuest.isPublic() ? 1 : 0);
+        }
+        if (oldQuest.timerRunsOffline() != newQuest.timerRunsOffline()) {
+            questColumns.add("timer_runs_offline");
+            questValues.add(newQuest.timerRunsOffline() ? 1 : 0);
+        }
+        if (oldQuest.finishTimeInSeconds() != newQuest.finishTimeInSeconds()) {
+            questColumns.add("finish_time");
+            questValues.add(newQuest.finishTimeInSeconds());
+        }
+        if (!questColumns.isEmpty()) {
+            updateTableNames.add(TABLE_QUESTS);
+            allColumns.add(questColumns);
+            allValues.add(questValues);
+            whereClauses.add("WHERE id=" + newQuest.id() + " LIMIT 1");
+        }
+
+
+        List<String> deleteTables = new ArrayList<>();
+        List<String> deleteWheres = new ArrayList<>();
+
+        // STEPS
+
+        List<String> stepsUpdateColumn = new ArrayList<>();
+        List<Object> stepsValuesColumn = new ArrayList<>();
+        List<Object> newSteps = new ArrayList<>();
+
+        List<QuestStep<?>> oldSteps = new ArrayList<>(oldQuest.completionSteps());
+        for (QuestStep<?> newStep : newQuest.completionSteps()) {
+            Optional<QuestStep<?>> oldStep = oldSteps.stream().filter(o -> o.getId() == newStep.getId()).findFirst();
+            if (oldStep.isPresent()) {
+                try {
+                    updateStepInList(oldStep.get(), newStep, stepsUpdateColumn, stepsValuesColumn);
+                } catch (IOException exception) {
+                    QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not convert quest step object for database update", exception);
+                }
+                oldSteps.remove(newStep);
+            } else {
+                try {
+                    if (!newSteps.isEmpty())
+                        newSteps.add(null);
+                    addStepFieldsToList(newSteps, newStep, newQuest.id());
+                } catch (IOException exception) {
+                    QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not convert quest step object for database insertion", exception);
+                }
             }
-            return true;
-        } catch (SQLException exception) {
-            QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not get existing rewards in database!", exception);
-            return false;
+        }
+        if (!oldSteps.isEmpty()) {
+            deleteTables.add(TABLE_QUEST_STEPS_INFO);
+            deleteWheres.add("WHERE quest_id=" + oldQuest.id() + " AND id IN (" + oldSteps.stream().map(s -> s.getId() + "").collect(Collectors.joining(",")) + ")");
+        }
+
+        if (!stepsUpdateColumn.isEmpty()) {
+            updateTableNames.add(TABLE_QUEST_STEPS_INFO);
+            allColumns.add(stepsUpdateColumn);
+            allValues.add(stepsValuesColumn);
+        }
+        if (!newSteps.isEmpty()) {
+            insertTableNames.add(TABLE_QUEST_STEPS_INFO);
+            insertValues.add(newSteps);
+        }
+
+        // REWARDS
+        List<Object> newRewards = new ArrayList<>();
+
+        List<QuestReward<?>> oldRewards = new ArrayList<>(oldQuest.rewards());
+        for (QuestReward<?> reward : newQuest.rewards()) {
+            try {
+                if (oldRewards.contains(reward)) {
+                    oldRewards.remove(reward);
+                } else {
+                    if (!newRewards.isEmpty())
+                        newRewards.add(null);
+                    addRewardFieldsToList(newRewards, reward, newQuest.id());
+                }
+            } catch (IOException exception) {
+                QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not convert quest reward object for database insertion", exception);
+            }
+        }
+        if (!newRewards.isEmpty()) {
+            insertTableNames.add(TABLE_QUEST_REWARD_INFO);
+            allValues.add(newRewards);
+        }
+        if (!oldRewards.isEmpty()) { // delete not found rewards
+            deleteTables.add(TABLE_QUEST_REWARD_INFO);
+
+            List<String> types = new ArrayList<>();
+            List<String> objects = new ArrayList<>();
+            for (QuestReward<?> oldReward : oldRewards) {
+                try {
+                    types.add(oldReward.getRewardType().name());
+                    objects.add(QuestObjectConverterUtil.convertObjectToDatabaseString(oldReward.getRewardObject()));
+                } catch (IOException exception) {
+                    QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not convert quest reward object for database insertion", exception);
+                }
+            }
+
+            deleteWheres.add("WHERE type in '" + String.join(",", types) + "' AND reward_object in '" +
+                    String.join(",", objects) + "' AND quest_id=" + newQuest.id() + " LIMIT 1");
+        }
+
+        // FINISH
+
+        if (!deleteTables.isEmpty())
+            dbHandler.delete(deleteTables, deleteWheres);
+        if (!insertTableNames.isEmpty())
+            dbHandler.insertIntoTable(insertTableNames, allValues);
+        if (!updateTableNames.isEmpty())
+            dbHandler.update(updateTableNames, allColumns, allValues, whereClauses);
+    }
+
+    private void updateStepInList(QuestStep<?> old, QuestStep<?> newStep, List<String> columns, List<Object> values) throws IOException {
+        if (old.getOrder() != newStep.getOrder()) {
+            columns.add("step_order");
+            values.add(newStep.getOrder());
+        }
+        if (old.getType() != newStep.getType()) {
+            columns.add("type");
+            values.add(newStep.getType());
+        }
+        if (!old.getStepObject().equals(newStep.getStepObject())) {
+            columns.add("step_object");
+            values.add(QuestObjectConverterUtil.convertObjectToDatabaseString(newStep.getStepObject()));
+        }
+        if (old.getMaxAmount() != newStep.getMaxAmount()) {
+            columns.add("amount");
+            values.add(newStep.getMaxAmount());
         }
     }
 
-    public void updateQuest(Quest oldQuest, Quest newQuest) {
-        // TODO UPDATE
+    private void addRewardFieldsToList(List<Object> allRewards, QuestReward<?> reward, Integer questId) throws IOException {
+        allRewards.add(reward.getRewardType().name());
+        allRewards.add(QuestObjectConverterUtil.convertObjectToDatabaseString(reward.getRewardObject()));
+        allRewards.add(questId);
+    }
+
+    private void addStepFieldsToList(List<Object> allSteps, QuestStep<?> step, Integer questId) throws IOException {
+        allSteps.add(step.getId());
+        allSteps.add(questId);
+        allSteps.add(step.getType().name());
+        allSteps.add(step.getMaxAmount());
+        allSteps.add(step.getOrder());
+        allSteps.add(QuestObjectConverterUtil.convertObjectToDatabaseString(step.getStepObject()));
     }
 }
