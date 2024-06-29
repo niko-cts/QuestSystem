@@ -3,7 +3,6 @@ package net.playlegend.questsystem.database;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.quest.reward.QuestReward;
-import net.playlegend.questsystem.quest.reward.RewardType;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.util.QuestObjectConverterUtil;
 
@@ -189,12 +188,15 @@ public class QuestDatabase {
      */
     public void updateQuest(Quest oldQuest, Quest newQuest) {
         List<String> updateTableNames = new ArrayList<>();
-        List<List<String>> allColumns = new ArrayList<>();
-        List<List<Object>> allValues = new ArrayList<>();
-        List<String> whereClauses = new ArrayList<>();
+        List<List<String>> updateColumns = new ArrayList<>();
+        List<List<Object>> updateValues = new ArrayList<>();
+        List<String> updateWhereClauses = new ArrayList<>();
 
         List<String> insertTableNames = new ArrayList<>();
-        List<Object> insertValues = new ArrayList<>();
+        List<List<Object>> insertValues = new ArrayList<>();
+
+        List<String> deleteTables = new ArrayList<>();
+        List<String> deleteWheres = new ArrayList<>();
 
         // QUEST DATA
 
@@ -222,19 +224,18 @@ public class QuestDatabase {
         }
         if (!questColumns.isEmpty()) {
             updateTableNames.add(TABLE_QUESTS);
-            allColumns.add(questColumns);
-            allValues.add(questValues);
-            whereClauses.add("WHERE id=" + newQuest.id() + " LIMIT 1");
+            updateColumns.add(questColumns);
+            updateValues.add(questValues);
+            updateWhereClauses.add("WHERE id=" + newQuest.id() + " LIMIT 1");
         }
 
 
-        List<String> deleteTables = new ArrayList<>();
-        List<String> deleteWheres = new ArrayList<>();
 
         // STEPS
 
         List<String> stepsUpdateColumn = new ArrayList<>();
-        List<Object> stepsValuesColumn = new ArrayList<>();
+        List<Object> stepsUpdateValues = new ArrayList<>();
+        List<Integer> stepsIdWheres = new ArrayList<>();
         List<Object> newSteps = new ArrayList<>();
 
         List<QuestStep<?>> oldSteps = new ArrayList<>(oldQuest.completionSteps());
@@ -242,11 +243,14 @@ public class QuestDatabase {
             Optional<QuestStep<?>> oldStep = oldSteps.stream().filter(o -> o.getId() == newStep.getId()).findFirst();
             if (oldStep.isPresent()) {
                 try {
-                    updateStepInList(oldStep.get(), newStep, stepsUpdateColumn, stepsValuesColumn);
+                    int oldColumnSize = stepsUpdateColumn.size();
+                    updateStepInList(oldStep.get(), newStep, stepsUpdateColumn, stepsUpdateValues);
+                    if (oldColumnSize != stepsUpdateColumn.size())
+                        stepsIdWheres.add(newStep.getId());
                 } catch (IOException exception) {
                     QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not convert quest step object for database update", exception);
                 }
-                oldSteps.remove(newStep);
+                oldSteps.remove(oldStep.get());
             } else {
                 try {
                     if (!newSteps.isEmpty())
@@ -264,8 +268,10 @@ public class QuestDatabase {
 
         if (!stepsUpdateColumn.isEmpty()) {
             updateTableNames.add(TABLE_QUEST_STEPS_INFO);
-            allColumns.add(stepsUpdateColumn);
-            allValues.add(stepsValuesColumn);
+            updateColumns.add(stepsUpdateColumn);
+            updateValues.add(stepsUpdateValues);
+            updateWhereClauses.add("WHERE quest_id=" + newQuest.id() +
+                                   " AND id in(" + stepsIdWheres.stream().map(String::valueOf).collect(Collectors.joining(",")) + ") LIMIT " + stepsIdWheres.size());
         }
         if (!newSteps.isEmpty()) {
             insertTableNames.add(TABLE_QUEST_STEPS_INFO);
@@ -291,7 +297,7 @@ public class QuestDatabase {
         }
         if (!newRewards.isEmpty()) {
             insertTableNames.add(TABLE_QUEST_REWARD_INFO);
-            allValues.add(newRewards);
+            insertValues.add(newRewards);
         }
         if (!oldRewards.isEmpty()) { // delete not found rewards
             deleteTables.add(TABLE_QUEST_REWARD_INFO);
@@ -307,8 +313,8 @@ public class QuestDatabase {
                 }
             }
 
-            deleteWheres.add("WHERE type in '" + String.join(",", types) + "' AND reward_object in '" +
-                    String.join(",", objects) + "' AND quest_id=" + newQuest.id() + " LIMIT 1");
+            deleteWheres.add("WHERE type in ('" + String.join("','", types) + "') AND reward_object in ('" +
+                    String.join("','", objects) + "') AND quest_id=" + newQuest.id() + " LIMIT 1");
         }
 
         // FINISH
@@ -316,9 +322,9 @@ public class QuestDatabase {
         if (!deleteTables.isEmpty())
             dbHandler.delete(deleteTables, deleteWheres);
         if (!insertTableNames.isEmpty())
-            dbHandler.insertIntoTable(insertTableNames, allValues);
+            dbHandler.insertIntoTable(insertTableNames, insertValues);
         if (!updateTableNames.isEmpty())
-            dbHandler.update(updateTableNames, allColumns, allValues, whereClauses);
+            dbHandler.update(updateTableNames, updateColumns, updateValues, updateWhereClauses);
     }
 
     private void updateStepInList(QuestStep<?> old, QuestStep<?> newStep, List<String> columns, List<Object> values) throws IOException {
@@ -328,7 +334,7 @@ public class QuestDatabase {
         }
         if (old.getType() != newStep.getType()) {
             columns.add("type");
-            values.add(newStep.getType());
+            values.add(newStep.getType().name());
         }
         if (!old.getStepObject().equals(newStep.getStepObject())) {
             columns.add("step_object");

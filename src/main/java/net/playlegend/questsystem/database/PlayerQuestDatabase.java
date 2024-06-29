@@ -38,16 +38,16 @@ public class PlayerQuestDatabase {
 				"uuid VARCHAR(36) NOT NULL",
 				"quest_id INT NOT NULL",
 				"created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
-				"PRIMARY KEY(uuid, quest_id)",
+				"CONSTRAINT pk_completedquests_uQid PRIMARY KEY(uuid, quest_id)",
 				"CONSTRAINT fk_completedquests_qId FOREIGN KEY(quest_id) REFERENCES " + QuestDatabase.TABLE_QUESTS + "(id) ON DELETE CASCADE")
 		);
 
 		dbHandler.createTableIfNotExists(TABLE_PLAYER_ACTIVE_QUEST_STEPS, List.of(
-				"uuid VARCHAR(36) NOT NULL ",
+				"uuid VARCHAR(36) NOT NULL",
 				"step_id INT NOT NULL",
 				"amount INT NOT NULL DEFAULT 0",
-				"PRIMARY KEY(uuid, step_id)",
-				"CONSTRAINT fk_activequests_sId FOREIGN KEY(step_id) REFERENCES " + QuestDatabase.TABLE_QUEST_STEPS_INFO + "(id) ON DELETE CASCADE")
+				"CONSTRAINT pk_activequests_uSId PRIMARY KEY(uuid, step_id)",
+				"CONSTRAINT fk_activequests_qId FOREIGN KEY(step_id) REFERENCES " + QuestDatabase.TABLE_QUEST_STEPS_INFO + "(id) ON DELETE CASCADE")
 		);
 
 		dbHandler.createTableIfNotExists(TABLE_PLAYER_ACTIVE_QUEST, List.of(

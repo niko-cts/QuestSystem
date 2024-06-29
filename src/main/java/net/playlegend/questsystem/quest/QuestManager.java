@@ -12,7 +12,6 @@ import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.quest.steps.QuestStepType;
 import net.playlegend.questsystem.util.QuestObjectConverterUtil;
 import net.playlegend.questsystem.util.QuestTimingsUtil;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,8 +40,8 @@ public class QuestManager {
 	 */
 	public QuestManager() {
 		this.quests = new Vector<>();
-		this.playerDatabase = PlayerQuestDatabase.getInstance();
 		QuestDatabase questDatabase = QuestDatabase.getInstance();
+		this.playerDatabase = PlayerQuestDatabase.getInstance(); // needs to come after questDatabase
 		Logger log = QuestSystem.getInstance().getLogger();
 
 		try (ResultSet questResult = questDatabase.getAllQuests()) {
@@ -261,13 +260,8 @@ public class QuestManager {
 	}
 
 	public void addQuest(String name, String description, List<QuestReward<?>> rewards, List<QuestStep<?>> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				Optional<Integer> idOptional = QuestDatabase.getInstance().insertNewQuest(name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
-				idOptional.ifPresent(id -> quests.add(new Quest(id, name, description, isPublic, rewards, steps, finishTimeInSeconds, timerRunsOffline)));
-			}
-		}.runTaskAsynchronously(QuestSystem.getInstance());
+		Optional<Integer> idOptional = QuestDatabase.getInstance().insertNewQuest(name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
+		idOptional.ifPresent(id -> quests.add(new Quest(id, name, description, isPublic, rewards, steps, finishTimeInSeconds, timerRunsOffline)));
 	}
 
 	public void updateQuest(int questId, String name, String description, List<QuestReward<?>> rewards, List<QuestStep<?>> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
@@ -275,16 +269,9 @@ public class QuestManager {
 		if (questOptional.isEmpty())
 			throw new IllegalStateException("Could not find quest which should be modified id=" + questId);
 		Quest oldQuest = questOptional.get();
-		this.quests.remove(oldQuest);
-
 		Quest quest = new Quest(questId, name, description, isPublic, rewards, steps, finishTimeInSeconds, timerRunsOffline);
+		this.quests.remove(oldQuest);
 		this.quests.add(quest);
-
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				QuestDatabase.getInstance().updateQuest(oldQuest, quest);
-			}
-		}.runTaskAsynchronously(QuestSystem.getInstance());
+		QuestDatabase.getInstance().updateQuest(oldQuest, quest);
 	}
 }

@@ -31,6 +31,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 
 import java.util.*;
@@ -217,15 +218,21 @@ public class QuestBuilder implements Listener {
 								questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS);
 								return;
 							}
-							if (questId == null) {
-								QuestSystem.getInstance().getQuestManager().addQuest(
-										name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
-								questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_CREATED, "${name}", name);
-							} else {
-								QuestSystem.getInstance().getQuestManager().updateQuest(
-										questId, name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
-								questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_UPDATED, "${name}", name);
-							}
+							new BukkitRunnable() {
+								@Override
+								public void run() {
+									if (questId == null) {
+										QuestSystem.getInstance().getQuestManager().addQuest(
+												name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
+										questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_CREATED, "${name}", name);
+									} else {
+										QuestSystem.getInstance().getQuestManager().updateQuest(
+												questId, name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
+										questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_UPDATED, "${name}", name);
+									}
+								}
+							}.runTaskAsynchronously(QuestSystem.getInstance());
+
 							setCloseInventory(true);
 							removePlayer(apiPlayer.getUniqueId());
 						}
