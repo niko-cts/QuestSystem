@@ -27,15 +27,16 @@ public class MineQuestStep extends QuestStep<Material> {
 	 *
 	 * @param player QuestPlayer - the player who triggered the event
 	 * @param event  Event - the event that was triggered
-	 * @return boolean - player did a quest step
+	 * @return int - the amount the player did with this event
 	 */
 	@Override
-	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
+	public int checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof BlockBreakEvent blockBreak) {
-			return blockBreak.getBlock().getType() == getStepObject();
+			return blockBreak.getBlock().getType() == getStepObject() ? 1 : 0;
 		}
-		return false;
+		return 0;
 	}
+
 	/**
 	 * Returns a one-liner that previews the quest step. E.g. "Mine block"
 	 *

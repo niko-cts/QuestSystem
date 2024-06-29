@@ -9,6 +9,8 @@ import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.translation.TranslationKeys;
+import net.playlegend.questsystem.util.ColorConverterUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -21,7 +23,6 @@ public class FindNPC extends NPC {
 
 	private final Quest quest;
 
-
 	public FindNPC(UUID uuid, String wholeName, Location location, NPCSkin skin, Set<UUID> visibleTo, boolean withAi,
 	               Quest quest) {
 		super(uuid, wholeName, location, skin, visibleTo, withAi);
@@ -32,7 +33,7 @@ public class FindNPC extends NPC {
 			if (player == null) return;
 			String foundBook = player.getLanguage().translateMessage(TranslationKeys.QUESTS_NPC_FOUNDBOOK,
 							List.of("${name}", "${description}"),
-							List.of(quest.name(), quest.description()))
+							List.of(ColorConverterUtil.convertToBlackColors(quest.name()), ColorConverterUtil.convertToBlackColors(quest.description())))
 					.replace("/n", "\n");
 			if (player.getFoundQuests().containsKey(quest)) {
 				foundBook = player.getLanguage().translateMessage(TranslationKeys.QUESTS_NPC_FOUNDBOOK_ALREADY)
@@ -46,6 +47,7 @@ public class FindNPC extends NPC {
 
 	@Override
 	public String toString() {
-		return "[" + getName() + ": " + quest.id() + " at " + LocationUtil.locationToString(getLocation()) + "]";
+		return ChatColor.RED + "[" + ChatColor.GRAY + getName() + ChatColor.GRAY + " to find "
+		       + ChatColor.YELLOW + quest.name() + ChatColor.GRAY + " at " + LocationUtil.locationToString(getLocation()) + ChatColor.RED + "]" + ChatColor.GRAY;
 	}
 }

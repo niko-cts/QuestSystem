@@ -28,9 +28,8 @@ public class QuestTimingsTest {
         assertEquals(2, QuestTimingsUtil.calculateNextDuration(12));
         assertEquals(1, QuestTimingsUtil.calculateNextDuration(5));
 
-        assertEquals(0, QuestTimingsUtil.calculateNextDuration(600));
+        assertEquals(300, QuestTimingsUtil.calculateNextDuration(600));
         assertEquals(1800, QuestTimingsUtil.calculateNextDuration(3600));
-        assertEquals(0, QuestTimingsUtil.calculateNextDuration(600));
     }
 
     @Mock
@@ -50,17 +49,17 @@ public class QuestTimingsTest {
         Mockito.when(mockedLanguage.translateMessage(TranslationKeys.QUESTS_DISPLAY_SECONDS))
                 .thenReturn("second(s)");
 
-        assertEquals("1 day(s) 10 hour(s) ", QuestTimingsUtil.convertSecondsToDHMS(
+        assertEquals("1 day(s) 10 hour(s)", QuestTimingsUtil.convertSecondsToDHMS(
                 mockedLanguage, 3600 * 24 + 3600 * 10 + 251
         ));
 
 
-        assertEquals("10 hour(s) 5 minute(s) ", QuestTimingsUtil.convertSecondsToDHMS(
+        assertEquals("10 hour(s) 5 minute(s)", QuestTimingsUtil.convertSecondsToDHMS(
                 mockedLanguage, 3600 * 10 + 60 * 5 + 10
         ));
 
 
-        assertEquals("7 minute(s) ", QuestTimingsUtil.convertSecondsToDHMS(
+        assertEquals("7 minute(s)", QuestTimingsUtil.convertSecondsToDHMS(
                 mockedLanguage, 60 * 7
         ));
 

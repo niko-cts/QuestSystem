@@ -1,6 +1,7 @@
 package net.playlegend.questsystem.listener;
 
 import lombok.RequiredArgsConstructor;
+import net.playlegend.questsystem.events.PlayerClickedOnQuestNPCEvent;
 import net.playlegend.questsystem.player.PlayerHandler;
 import net.playlegend.questsystem.player.QuestPlayer;
 import org.bukkit.entity.Player;
@@ -36,6 +37,11 @@ public class QuestStepListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onSpeak(PlayerClickedOnQuestNPCEvent event) {
+        checkConditionsAndCallSteps(event.getPlayer(), event);
+    }
+
     /**
      * Checks if the event executes a quest step.
      * Checks if a quest step is finished.
@@ -50,9 +56,11 @@ public class QuestStepListener implements Listener {
         if (questPlayer == null) return;
         questPlayer.getActivePlayerQuest()
                 .flatMap(quest -> quest.getNextUncompletedSteps().stream()
-                        .filter(step -> step.checkIfEventExecutesQuestStep(questPlayer, event))
-                        // adds one to the current amount and returns true if a step is now completed
-                        .filter(step -> questPlayer.playerDidQuestStep(quest, step))
+                        .filter(step -> {
+                            int amount = step.checkIfEventExecutesQuestStep(questPlayer, event);
+                            // adds the amount to the current amount and returns true if a step is now completed
+                            return amount > 0 && questPlayer.playerDidQuestStep(quest, step, amount);
+                        })
                         .reduce((first, second) -> second))
                 // CHECK QUEST FINISHED
                 .ifPresent(step -> questPlayer.checkAndFinishActiveQuest());

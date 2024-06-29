@@ -42,7 +42,7 @@ public class ScoreboardUtil {
 			});
 			scoreboard.addEmptyLine();
 			scoreboard.addTranslatableLine(TranslationKeys.QUESTS_SCOREBOARD_ACTIVE_FINISH_AT);
-			scoreboard.addLine(APIScoreboard.START_COL + " " + QuestTimingsUtil.formatDateTime(activeQuest.getTimeLeft()));
+			scoreboard.addLine(APIScoreboard.START_COL + " " + ChatColor.GRAY + QuestTimingsUtil.formatDateTime(activeQuest.getTimeLeft()));
 		} else {
 			scoreboard.addTranslatableLine(TranslationKeys.QUESTS_SCOREBOARD_NO_ACTIVE_1);
 			scoreboard.addEmptyLine();

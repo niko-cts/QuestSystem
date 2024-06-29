@@ -33,14 +33,14 @@ public class KillQuestStep extends QuestStep<EntityType> {
 	 *
 	 * @param player QuestPlayer - the player who triggered the event
 	 * @param event  Event - the event that was triggered
-	 * @return boolean - player did a quest step
+	 * @return int - the amount the player did with this event
 	 */
 	@Override
-	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
+	public int checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof EntityDeathEvent deathEvent) {
-			return deathEvent.getEntityType() == getStepObject();
+			return deathEvent.getEntityType() == getStepObject() ? 1 : 0;
 		}
-		return false;
+		return 0;
 	}
 
 

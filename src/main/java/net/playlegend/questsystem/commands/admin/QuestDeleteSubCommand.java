@@ -39,7 +39,7 @@ public class QuestDeleteSubCommand extends APISubCommand {
 				if (getQuestByNameOrMessageError(questPlayer, name) == null)
 					return null;
 
-				questPlayer.sendClickableMessage(TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM, "/questadmin delete " + name);
+				questPlayer.sendClickableMessage(TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM_TEXT, TranslationKeys.QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM_HOVER, "/questadmin delete " + name);
 
 				return new BukkitRunnable() {
 					@Override

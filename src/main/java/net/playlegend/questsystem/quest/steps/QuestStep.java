@@ -15,6 +15,11 @@ public abstract class QuestStep<T> {
     private final int maxAmount;
     private final T stepObject;
 
+    /**
+     * Checks if the step is completed.
+     * @param currentAmount int - the current amount the player has
+     * @return boolean - is step completed
+     */
     public boolean isStepComplete(int currentAmount) {
         return currentAmount >= maxAmount;
     }
@@ -24,9 +29,9 @@ public abstract class QuestStep<T> {
      *
      * @param player QuestPlayer - the player who triggered the event
      * @param event  Event - the event that was triggered
-     * @return boolean - player did a quest step
+     * @return int - the amount the player did with this event
      */
-    public abstract boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event);
+    public abstract int checkIfEventExecutesQuestStep(QuestPlayer player, Event event);
 
     /**
      * Returns a one-liner that explains the quest step in an active quest E.g. "Mine 5 more blocks"

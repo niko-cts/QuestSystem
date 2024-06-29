@@ -6,6 +6,7 @@ import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.translation.TranslationKeys;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -210,7 +211,7 @@ public abstract class APISubCommand {
 	}
 
 	public Quest getQuestByNameOrMessageError(QuestPlayer questPlayer, String name) {
-		Optional<Quest> quest = QuestSystem.getInstance().getQuestManager().getQuestByName(name);
+		Optional<Quest> quest = QuestSystem.getInstance().getQuestManager().getQuestByName(ChatColor.translateAlternateColorCodes('&', name));
 		if (quest.isEmpty()) {
 			questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_NOT_FOUND, "${name}", name);
 			return null;

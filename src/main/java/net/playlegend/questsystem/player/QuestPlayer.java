@@ -6,7 +6,9 @@ import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
 import lombok.Getter;
 import lombok.NonNull;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.events.PlayerQuestUpdateEvent;
 import net.playlegend.questsystem.quest.Quest;
@@ -56,18 +58,26 @@ public class QuestPlayer {
 		QuestManager questManager = QuestSystem.getInstance().getQuestManager();
 		this.finishedQuests = questManager.loadCompletedQuestIdsByPlayer(player.getUniqueId());
 		this.foundQuests = questManager.loadFoundQuestIdsByPlayer(player.getUniqueId());
-		this.playerDbInformationHolder = new PlayerDatabaseInformationHolder(activePlayerQuest == null);
+
+		PlayerDatabaseInformationHolder playerDbInformationHolder;
 		try {
-			this.activePlayerQuest = questManager.loadActiveQuestIdByPlayer(player.getUniqueId(), lastLogout).orElse(null);
+			ActivePlayerQuest activePlayerQuest = questManager.loadActiveQuestIdByPlayer(player.getUniqueId(), lastLogout).orElse(null);
+			this.activePlayerQuest = activePlayerQuest;
+			playerDbInformationHolder = new PlayerDatabaseInformationHolder(activePlayerQuest == null);
 		} catch (QuestNotFoundException exception) {
-			QuestSystem.getInstance().getLogger().info("Player had active quest which could not be found: " + exception.getMessage());
-			this.playerDbInformationHolder.markActiveQuestDirty();
+			playerDbInformationHolder = new PlayerDatabaseInformationHolder(false);
+			playerDbInformationHolder.markActiveQuestDirty();
 			this.activePlayerQuest = null;
+			QuestSystem.getInstance().getLogger().info("Player had active quest which could not be found: " + exception.getMessage());
 		}
 
-		checkAndFinishActiveQuest();
+		this.playerDbInformationHolder = playerDbInformationHolder;
+
 		this.questTimer = new QuestTimerPlayer(this);
-		Bukkit.getScheduler().runTaskLater(QuestSystem.getInstance(), () -> questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.JOINED), 10L);
+		Bukkit.getScheduler().runTaskLater(QuestSystem.getInstance(), () -> {
+			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.JOINED);
+			this.questTimer.startTimerIfActiveQuestPresent();
+		}, 10L);
 	}
 
 	/**
@@ -81,6 +91,7 @@ public class QuestPlayer {
 			finishedQuests.put(activePlayerQuest.getQuest(), completedAt);
 			playerDbInformationHolder.addCompletedQuest(activePlayerQuest.getQuest().id(), completedAt);
 			sendMessage(TranslationKeys.QUESTS_EVENT_FINISHED, "${name}", activePlayerQuest.getQuest().name());
+			playSound(Sound.ENTITY_ENDER_DRAGON_GROWL);
 			setActivePlayerQuest(null);
 			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.COMPLETED);
 		}
@@ -91,7 +102,7 @@ public class QuestPlayer {
 		foundQuests.computeIfAbsent(quest, q -> {
 			Timestamp foundAt = Timestamp.from(Instant.now());
 			playerDbInformationHolder.addFoundQuest(q.id(), foundAt);
-			sendClickableMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, "${name}", q.name(), "/quest");
+			sendClickableMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, TranslationKeys.QUESTS_EVENT_FOUND_NEW_HOVER, "${name}", q.name(), "/quest");
 			sendEvent(PlayerQuestUpdateEvent.QuestUpdateType.FIND);
 			return foundAt;
 		});
@@ -107,6 +118,11 @@ public class QuestPlayer {
 			setActivePlayerQuest(null);
 			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.QUEST_ENDED);
 		}
+	}
+
+	public void playerQuit() {
+		checkIfExpired();
+		this.questTimer.cancelTask();
 	}
 
 	/**
@@ -134,14 +150,18 @@ public class QuestPlayer {
 	/**
 	 * Adds one to the current step. Marks the active quest as dirty.
 	 *
-	 * @param quest ActivePlayerQuest - the quest the player did the step in.
-	 * @param step  QuestStep - the step which was done
+	 * @param quest       ActivePlayerQuest - the quest the player did the step in.
+	 * @param step        QuestStep - the step which was done
+	 * @param amountToAdd int - the amount the player did at once
 	 * @return boolean - The questStep is finished
 	 */
-	public boolean playerDidQuestStep(ActivePlayerQuest quest, QuestStep<?> step) {
+	public boolean playerDidQuestStep(ActivePlayerQuest quest, QuestStep<?> step, int amountToAdd) {
 		playerDbInformationHolder.markActiveQuestDirty();
-		boolean isDone = quest.playerDidQuestStep(step);
-		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.STEP);
+		boolean isDone = quest.playerDidQuestStep(step, amountToAdd);
+		if (isDone) {
+			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.STEP);
+			playSound(Sound.ENTITY_PLAYER_LEVELUP);
+		}
 		return isDone;
 	}
 
@@ -230,15 +250,19 @@ public class QuestPlayer {
 		player.getInventory().addItem(item);
 	}
 
-	public void sendClickableMessage(String translationKey, String command) {
+	public void sendClickableMessage(String translationKey, String hoverKey, String command) {
 		TextComponent textComponent = new TextComponent(language.translateMessage(translationKey));
 		textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+		if (hoverKey != null)
+			textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(language.translateMessage(hoverKey))));
 		player.spigot().sendMessage(textComponent);
 	}
 
-	public void sendClickableMessage(String translationKey, String placeholder, String replacement, String command) {
+	public void sendClickableMessage(String translationKey, String hoverKey, String placeholder, String replacement, String command) {
 		TextComponent textComponent = new TextComponent(language.translateMessage(translationKey, placeholder, replacement));
 		textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+		if (hoverKey != null)
+			textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(language.translateMessage(hoverKey))));
 		player.spigot().sendMessage(textComponent);
 	}
 
@@ -251,7 +275,7 @@ public class QuestPlayer {
 
 	public void openBook(ItemStack writtenBook) {
 		APIPlayer apiPlayer = NikoAPI.getInstance().getPlayerHandler().getPlayer(player.getUniqueId());
-		if(apiPlayer != null) apiPlayer.openBook(writtenBook);
+		if (apiPlayer != null) apiPlayer.openBook(writtenBook);
 	}
 
 	public List<Quest> getUnfinishedPublicQuests() {

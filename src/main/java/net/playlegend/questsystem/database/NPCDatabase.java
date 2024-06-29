@@ -122,4 +122,11 @@ public class NPCDatabase {
 						location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch())));
 	}
 
+	public void deleteFindNPC(int id) {
+		this.databaseHandler.delete(List.of(TABLE_NPC_FINDINGS), List.of("WHERE quest_id=" + id + " LIMIT 1"));
+	}
+
+	public void deleteTaskNPC(UUID uuid) {
+		this.databaseHandler.delete(List.of(TABLE_NPC_STEPS_INFO), List.of("WHERE uuid='" + uuid + "' LIMIT 1"));
+	}
 }

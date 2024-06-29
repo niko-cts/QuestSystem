@@ -33,22 +33,27 @@ public class QuestTimingsUtil {
             return 600; // every 10 min
         if (secondsLeft > 600)
             return secondsLeft % 600; // every 10 min
+        if (secondsLeft == 600)
+            return 300; // every 10 min
         if (secondsLeft > 300)
             return secondsLeft % 300; // 5 minutes left
-
-        if (secondsLeft >= 180 && secondsLeft % 60 == 0)
-            return 60; // every minute
+        if (secondsLeft >= 120 && secondsLeft % 60 == 0)
+            return 60;
         if (secondsLeft > 60)
             return secondsLeft % 60; // 1 minute left
+        if (secondsLeft == 60)
+            return 30; // 30 seconds
         if (secondsLeft > 30)
             return secondsLeft % 30; // 30 seconds left
+        if (secondsLeft == 30)
+            return 15; // 30 seconds left
         if (secondsLeft > 15)
             return secondsLeft % 15; // 15 seconds left
+        if(secondsLeft == 15)
+            return 5;
         if (secondsLeft > 10)
             return secondsLeft % 10; // 10 seconds left
-
         return 1; // Last 15 seconds, run every second
-
     }
 
     /**
@@ -68,13 +73,14 @@ public class QuestTimingsUtil {
 
         StringBuilder builder = new StringBuilder();
         if (days != 0)
-            builder.append(days).append(" ").append(language.translateMessage(TranslationKeys.QUESTS_DISPLAY_DAYS)).append(" ");
+            builder.append(days).append(" ").append(language.translateMessage(TranslationKeys.QUESTS_DISPLAY_DAYS));
         if (hours != 0)
-            builder.append(hours).append(" ").append(language.translateMessage(TranslationKeys.QUESTS_DISPLAY_HOURS)).append(" ");
+            builder.append(builder.isEmpty() ? "" : " ").append(hours).append(" ").append(language.translateMessage(TranslationKeys.QUESTS_DISPLAY_HOURS));
         if (minutes != 0 && days == 0)
-            builder.append(minutes).append(" ").append(language.translateMessage(TranslationKeys.QUESTS_DISPLAY_MINUTES)).append(" ");
-        if (seconds != 0 && days == 0 && hours == 0)
-            builder.append(seconds).append(" ").append(language.translateMessage(TranslationKeys.QUESTS_DISPLAY_SECONDS));
+            builder.append(builder.isEmpty() ? "" : " ").append(minutes).append(" ").append(language.translateMessage(TranslationKeys.QUESTS_DISPLAY_MINUTES));
+        if ((days == 0 && hours == 0) && (minutes == 0 || seconds != 0)) {
+            builder.append(builder.isEmpty() ? "" : " ").append(seconds).append(" ").append(language.translateMessage(TranslationKeys.QUESTS_DISPLAY_SECONDS));
+        }
 
         return builder.toString();
     }

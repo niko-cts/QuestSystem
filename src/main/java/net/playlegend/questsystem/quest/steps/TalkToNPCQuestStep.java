@@ -9,6 +9,7 @@ import net.playlegend.questsystem.events.PlayerClickedOnQuestNPCEvent;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
+import net.playlegend.questsystem.util.ColorConverterUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -30,19 +31,19 @@ public class TalkToNPCQuestStep extends QuestStep<UUID> {
 	 *
 	 * @param player QuestPlayer - the player who triggered the event
 	 * @param event  Event - the event that was triggered
-	 * @return boolean - player did a quest step
+	 * @return int - 1 if player spoke to npc, 0 if not
 	 */
 	@Override
-	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
+	public int checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof PlayerClickedOnQuestNPCEvent npcEvent && npcEvent.getNpcUUID().equals(getStepObject())) {
 			player.openBook(new ItemBuilder(Material.WRITTEN_BOOK)
-					.addPage(player.getLanguage().translateMessage(npcEvent.getMessages().getOrDefault(
+					.addPage(ColorConverterUtil.convertToBlackColors(player.getLanguage().translateMessage(npcEvent.getMessages().getOrDefault(
 							player.getLanguage().getLanguageKey(),
-							QuestSystem.getInstance().getLanguageHandler().getFallbackLanguage().getLanguageKey()
-					)).split(";")).craft());
-			return true;
+							QuestSystem.getInstance().getLanguageHandler().getFallbackLanguage().getLanguageKey()))
+					).split(";")).craft());
+			return 1;
 		}
-		return false;
+		return 0;
 	}
 
 
@@ -137,7 +138,7 @@ public class TalkToNPCQuestStep extends QuestStep<UUID> {
 					.craft();
 		} else {
 			return new ItemBuilder(UsefulItems.SKELETON_SKULL)
-					.setName(language.translateMessage(TranslationKeys.QUESTS_STEP_NPC_NORMAL_LORE, "${name}", "unknown"))
+					.setName(language.translateMessage(TranslationKeys.QUESTS_STEP_NPC_NORMAL_NAME, "${name}", "unknown"))
 					.setLore(language.translateMessage(TranslationKeys.QUESTS_STEP_NPC_NORMAL_LORE,
 									List.of("${name}", "${maxamount}", "${location}"),
 									List.of("unknown", getMaxAmount(), "unknown"))

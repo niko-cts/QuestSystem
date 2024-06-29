@@ -39,7 +39,7 @@ public class QuestPlayerConnectionListener implements Listener {
 							List.of("${name}", "${duration}"),
 							List.of(activePlayerQuest.getQuest().name(), QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getLanguage(), activePlayerQuest.getSecondsLeft())));
 				} else {
-					questPlayer.sendClickableMessage(TranslationKeys.QUESTS_EVENT_JOINED_NO_ACTIVE, "/quest");
+					questPlayer.sendClickableMessage(TranslationKeys.QUESTS_EVENT_JOINED_NO_ACTIVE_TEXT, TranslationKeys.QUESTS_EVENT_JOINED_NO_ACTIVE_HOVER, "/quest");
 				}
 			});
 		});

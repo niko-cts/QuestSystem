@@ -26,11 +26,24 @@ public class CraftQuestStep extends QuestStep<ItemStack> {
 	 *
 	 * @param player QuestPlayer - the player who triggered the event
 	 * @param event  Event - the event that was triggered
-	 * @return boolean - player did a quest step
+	 * @return int - the amount the player crafted the item
 	 */
 	@Override
-	public boolean checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
-		return event instanceof CraftItemEvent craftItem && craftItem.getRecipe().getResult().equals(getStepObject());
+	public int checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
+		if (event instanceof CraftItemEvent crafEvent) {
+			ItemStack result = crafEvent.getRecipe().getResult();
+			if (result.equals(getStepObject()))
+				return result.getAmount();
+
+			if (result.getAmount() > getStepObject().getAmount()) {
+				// extra check,
+				// if player crafted more than the necessary amount at once
+				ItemStack clone = getStepObject().clone();
+				clone.setAmount(result.getAmount());
+				return result.equals(clone) ? result.getAmount() : 0;
+			}
+		}
+		return 0;
 	}
 
 	/**

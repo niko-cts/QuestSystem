@@ -87,7 +87,7 @@ public class QuestStepCompletedTest {
 
     @Test
     public void questCompleted_OnBlockbreak() {
-        when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
+        when(questPlayer.playerDidQuestStep(any(), any(), anyInt())).thenCallRealMethod();
         doNothing().when(questPlayer).questUpdateEvent(any());
 
         BlockMock block = worldMock.getBlockAt(0, 0, 0);
@@ -113,7 +113,7 @@ public class QuestStepCompletedTest {
 
         questStepListener.onMine(new BlockBreakEvent(block, player));
 
-        verify(questPlayer, never()).playerDidQuestStep(any(), any());
+        verify(questPlayer, never()).playerDidQuestStep(any(), any(), anyInt());
         verify(questPlayer, never()).checkAndFinishActiveQuest();
         assertFalse(activePlayerQuest.isQuestFinished());
     }
@@ -121,7 +121,7 @@ public class QuestStepCompletedTest {
     @Test
     public void questStepCompleted_OnMineCorrectBlock_QuestUncompleted() {
         doNothing().when(questPlayer).questUpdateEvent(any());
-        when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
+        when(questPlayer.playerDidQuestStep(any(), any(), anyInt())).thenCallRealMethod();
         BlockMock block = worldMock.getBlockAt(0, 0, 0);
         block.setType(Material.STONE);
         QuestStep<?> questStep = new MineQuestStep(0, 0, 1, block.getType());
@@ -142,7 +142,7 @@ public class QuestStepCompletedTest {
     @Test
     public void questStepCompleted_OnMineCorrectBlock_twoStepsIncreased() {
         doNothing().when(questPlayer).questUpdateEvent(any());
-        when(questPlayer.playerDidQuestStep(any(), any())).thenCallRealMethod();
+        when(questPlayer.playerDidQuestStep(any(), any(), anyInt())).thenCallRealMethod();
         BlockMock block = worldMock.getBlockAt(0, 0, 0);
         block.setType(Material.STONE);
         QuestStep<?> questStep = new MineQuestStep(0, 0, 1, block.getType());

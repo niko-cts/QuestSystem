@@ -8,8 +8,11 @@ import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
 import lombok.NonNull;
 import lombok.Setter;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import net.playlegend.questsystem.QuestSystem;
+import net.playlegend.questsystem.gui.GUIHelper;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.quest.reward.QuestReward;
@@ -47,10 +50,14 @@ public class QuestBuilder implements Listener {
 	private static final Map<UUID, QuestBuilder> EDITING_PLAYERS = new HashMap<>();
 	private static final int ITEM_SLOT_INSERT_INDEX = 1;
 
-	public static QuestBuilder addPlayer(QuestPlayer questPlayer) {
-		return EDITING_PLAYERS.compute(questPlayer.getUniqueId(), (uuid, questBuilder) -> {
+	public static void addPlayer(QuestPlayer questPlayer) {
+		addPlayer(questPlayer, null);
+	}
+
+	public static void addPlayer(QuestPlayer questPlayer, Quest quest) {
+		EDITING_PLAYERS.compute(questPlayer.getUniqueId(), (uuid, questBuilder) -> {
 			if (questBuilder == null)
-				questBuilder = new QuestBuilder(questPlayer);
+				questBuilder = quest == null ? new QuestBuilder(questPlayer) : new QuestBuilder(questPlayer, quest);
 			questBuilder.openMenu();
 			return questBuilder;
 		});
@@ -131,15 +138,14 @@ public class QuestBuilder implements Listener {
 				new ClickAction(true) {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						TextComponent textComponent = new TextComponent(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_CLICK));
+						TextComponent textComponent = new TextComponent(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_CLICK_TEXT));
 						textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/questadmin create description " + (description != null ? description.replace("§", "&") : "")));
+						textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_CLICK_HOVER))));
 						apiPlayer.getPlayer().spigot().sendMessage(textComponent);
 					}
 				});
 
-		menu.setItem(12, new ItemBuilder(Material.GOLD_INGOT)
-				.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_REWARD_NAME))
-				.setLore(rewards.stream().map(r -> ChatColor.GRAY + "- " + r.getRewardPreview(language)).toList())
+		menu.setItem(12, new ItemBuilder(GUIHelper.getRewardItem(language, rewards))
 				.addLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_REWARDS_LORE).split(";"))
 				.craft(), new ClickAction() {
 			@Override
@@ -160,7 +166,7 @@ public class QuestBuilder implements Listener {
 				.craft(), new ClickAction() {
 			@Override
 			public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-				QuestStepBuildingGUI.addNewRewardSelection(QuestBuilder.this);
+				QuestStepBuildingGUI.openStepCreationSelection(QuestBuilder.this);
 			}
 
 			@Override
@@ -214,7 +220,7 @@ public class QuestBuilder implements Listener {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 						if (name != null && description != null && !steps.isEmpty()) {
-							if (QuestSystem.getInstance().getQuestManager().getQuestByName(name).isPresent()) {
+							if (questId == null && QuestSystem.getInstance().getQuestManager().getQuestByName(name).isPresent()) {
 								questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS);
 								return;
 							}
@@ -222,13 +228,17 @@ public class QuestBuilder implements Listener {
 								@Override
 								public void run() {
 									if (questId == null) {
-										QuestSystem.getInstance().getQuestManager().addQuest(
-												name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
-										questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_CREATED, "${name}", name);
+										if (QuestSystem.getInstance().getQuestManager().addQuest(
+												name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline))
+											questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_CREATED, "${name}", name);
+										else
+											questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_CREATED_ERROR, "${name}", name);
 									} else {
-										QuestSystem.getInstance().getQuestManager().updateQuest(
-												questId, name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
-										questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_UPDATED, "${name}", name);
+										if (QuestSystem.getInstance().getQuestManager().updateQuest(
+												questId, name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline))
+											questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_UPDATED, "${name}", name);
+										else
+											questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_UPDATED_ERROR, "${name}", name);
 									}
 								}
 							}.runTaskAsynchronously(QuestSystem.getInstance());

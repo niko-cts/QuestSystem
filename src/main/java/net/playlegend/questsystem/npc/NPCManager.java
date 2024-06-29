@@ -11,6 +11,7 @@ import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.quest.steps.QuestStepType;
 import net.playlegend.questsystem.quest.steps.TalkToNPCQuestStep;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,8 +38,8 @@ public class NPCManager implements Listener {
 	private final NPCDatabase npcDatabase;
 
 	public NPCManager(QuestSystem questSystem) {
-		this.taskNPCs = new HashSet<>();
-		this.findNPCs = new HashSet<>();
+		this.taskNPCs = Collections.synchronizedSet(new HashSet<>());
+		this.findNPCs = Collections.synchronizedSet(new HashSet<>());
 		npcDatabase = NPCDatabase.getInstance();
 
 		Logger log = questSystem.getLogger();
@@ -117,11 +118,13 @@ public class NPCManager implements Listener {
 			taskNPCs.forEach(n -> n.destroy(player.getPlayer()));
 		}
 
-		if (event.getType() == PlayerQuestUpdateEvent.QuestUpdateType.JOINED) {
+		if (event.getType() == PlayerQuestUpdateEvent.QuestUpdateType.JOINED || event.getType() == PlayerQuestUpdateEvent.QuestUpdateType.QUEST_ENDED) {
 			for (FindNPC npc : findNPCs) {
 				player.getFoundQuests().compute(npc.getQuest(), (quest, timestamp) -> {
 					if (timestamp == null && !spawnedNPCs.contains(npc.getUniqueID())) {
 						npc.show(player.getPlayer());
+					} else if (timestamp != null) {
+						npc.destroy(player.getPlayer());
 					}
 					return timestamp;
 				});
@@ -129,30 +132,33 @@ public class NPCManager implements Listener {
 		}
 	}
 
-
 	public void insertTaskNPC(UUID uuid, String npcName, Location location, String languageKey, String content) {
 		Optional<TaskNPC> npc = taskNPCs.stream().filter(n -> n.getUniqueID().equals(uuid)).findFirst();
-		if (npc.isPresent()) {
-			TaskNPC taskNPC = npc.get();
-			if (taskNPC.getMessages().containsKey(languageKey))
-				this.npcDatabase.updateTaskNPCAll(uuid, npcName, location, languageKey, content);
-			else {
-				taskNPC.getMessages().put(languageKey, content);
-				this.npcDatabase.createTaskNPCMessage(uuid, languageKey, content);
-			}
-		} else {
-			addTaskNPC(uuid, npcName, location, Map.of(languageKey, content));
-			this.npcDatabase.createTaskNPC(uuid, npcName, location, languageKey, content);
-		}
+		npc.ifPresentOrElse(taskNPC -> {
+					Bukkit.getScheduler().runTask(QuestSystem.getInstance(), () -> taskNPC.teleport(location));
+					if (taskNPC.getMessages().containsKey(languageKey))
+						this.npcDatabase.updateTaskNPCAll(uuid, npcName, location, languageKey, content);
+					else {
+						taskNPC.getMessages().put(languageKey, content);
+						this.npcDatabase.createTaskNPCMessage(uuid, languageKey, content);
+					}
+				},
+				() -> {
+					addTaskNPC(uuid, npcName, location, Map.of(languageKey, content));
+					this.npcDatabase.createTaskNPC(uuid, npcName, location, languageKey, content);
+				});
 	}
 
 	public void insertFindNPC(Quest quest, String npcName, Location location) {
-		if (findNPCs.stream().anyMatch(n -> n.getQuest().equals(quest)))
-			this.npcDatabase.updateFindNPC(quest.id(), npcName, location);
-		else {
-			addFindNPC(UUID.randomUUID(), npcName, location, quest);
-			this.npcDatabase.createFindNPC(quest.id(), npcName, location);
-		}
+		findNPCs.stream().filter(n -> n.getQuest().equals(quest)).findFirst().ifPresentOrElse(
+				npc -> {
+					Bukkit.getScheduler().runTask(QuestSystem.getInstance(), () -> npc.destroy());
+					findNPCs.remove(npc);
+					this.npcDatabase.updateFindNPC(quest.id(), npcName, location);
+				},
+				() -> this.npcDatabase.createFindNPC(quest.id(), npcName, location)
+		);
+		addFindNPC(UUID.randomUUID(), npcName, location, quest);
 	}
 
 	private void addTaskNPC(UUID uuid, String name, Location location, Map<String, String> messages) {
@@ -176,10 +182,27 @@ public class NPCManager implements Listener {
 	}
 
 	public String getTaskNPCList() {
-		return taskNPCs.stream().map(Object::toString).collect(Collectors.joining(", "));
+		return taskNPCs.stream().map(Object::toString).collect(Collectors.joining("\n- "));
 	}
 
 	public String getFindNPCList() {
-		return findNPCs.stream().map(Object::toString).collect(Collectors.joining(", "));
+		return findNPCs.stream().map(Object::toString).collect(Collectors.joining("\n- "));
 	}
+
+	public void deleteFindNPC(Quest quest) {
+		findNPCs.stream().filter(n -> n.getQuest().id() == quest.id()).findFirst().ifPresent(npc -> {
+			npc.destroy();
+			findNPCs.remove(npc);
+			npcDatabase.deleteFindNPC(npc.getQuest().id());
+		});
+	}
+
+	public void deleteTaskNPC(UUID uuid) {
+		taskNPCs.stream().filter(n -> n.getUniqueID().equals(uuid)).findFirst().ifPresent(npc -> {
+			npc.destroy();
+			taskNPCs.remove(npc);
+			npcDatabase.deleteTaskNPC(uuid);
+		});
+	}
+
 }

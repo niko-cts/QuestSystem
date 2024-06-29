@@ -66,7 +66,7 @@ public class QuestOverviewGUI {
 						FoundAndCompletedQuestsGUI.openPublicQuestsGUI(questPlayer);
 					}
 				});
-		menu.setItem(13, new ItemBuilder(Material.WRITABLE_BOOK)
+		menu.setItem(14, new ItemBuilder(Material.WRITABLE_BOOK)
 						.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_OVERVIEW_FOUND_NAME))
 						.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_OVERVIEW_FOUND_LORE).split(";"))
 						.setAmount(Math.min(64, Math.max(1, questPlayer.getFoundQuests().size())))

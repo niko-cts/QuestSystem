@@ -21,7 +21,6 @@ public class QuestTimerPlayer {
 
     public QuestTimerPlayer(QuestPlayer questPlayer) {
         this.questPlayer = questPlayer;
-        startTimerIfActiveQuestPresent();
     }
 
     protected void startTimerIfActiveQuestPresent() {
@@ -34,6 +33,7 @@ public class QuestTimerPlayer {
         if (secondsLeft < 1) {
             return;
         }
+        cancelTask();
 
         long delay = QuestTimingsUtil.calculateNextDuration(secondsLeft);
 

@@ -259,12 +259,38 @@ public class QuestManager {
 		});
 	}
 
-	public void addQuest(String name, String description, List<QuestReward<?>> rewards, List<QuestStep<?>> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
+	/**
+	 * Adds a new Quest to the System.
+	 *
+	 * @param name                String - name of quest
+	 * @param description         String - description of quest (; represents line breaks, §n represents color)
+	 * @param rewards             List<QuestReward<?>>- a list of all rewards a player receives on completion
+	 * @param steps               List<QuestStep<?>> - a list of all steps a player needs to complete
+	 * @param finishTimeInSeconds long - the amount of seconds the player has to complete the quest
+	 * @param isPublic            boolean - quest is publicly visible in the menu
+	 * @param timerRunsOffline    boolean - timer runs offline
+	 * @return boolean - creation was successful
+	 */
+	public boolean addQuest(String name, String description, List<QuestReward<?>> rewards, List<QuestStep<?>> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
 		Optional<Integer> idOptional = QuestDatabase.getInstance().insertNewQuest(name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline);
 		idOptional.ifPresent(id -> quests.add(new Quest(id, name, description, isPublic, rewards, steps, finishTimeInSeconds, timerRunsOffline)));
+		return idOptional.isPresent();
 	}
 
-	public void updateQuest(int questId, String name, String description, List<QuestReward<?>> rewards, List<QuestStep<?>> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
+	/**
+	 * Updates an old Quest.
+	 *
+	 * @param questId             int - the quest id
+	 * @param name                String - name of a quest
+	 * @param description         String - description of quest (; represents line breaks, §n represents color)
+	 * @param rewards             List<QuestReward<?>>- a list of all rewards a player receives on completion
+	 * @param steps               List<QuestStep<?>> - a list of all steps a player needs to complete
+	 * @param finishTimeInSeconds long - the amount of seconds the player has to complete the quest
+	 * @param isPublic            boolean - quest is publicly visible in the menu
+	 * @param timerRunsOffline    boolean - timer runs offline
+	 * @return boolean - creation was successful
+	 */
+	public boolean updateQuest(int questId, String name, String description, List<QuestReward<?>> rewards, List<QuestStep<?>> steps, long finishTimeInSeconds, boolean isPublic, boolean timerRunsOffline) {
 		Optional<Quest> questOptional = getQuestById(questId);
 		if (questOptional.isEmpty())
 			throw new IllegalStateException("Could not find quest which should be modified id=" + questId);
@@ -272,6 +298,7 @@ public class QuestManager {
 		Quest quest = new Quest(questId, name, description, isPublic, rewards, steps, finishTimeInSeconds, timerRunsOffline);
 		this.quests.remove(oldQuest);
 		this.quests.add(quest);
-		QuestDatabase.getInstance().updateQuest(oldQuest, quest);
+		return QuestDatabase.getInstance().updateQuest(oldQuest, quest);
+
 	}
 }

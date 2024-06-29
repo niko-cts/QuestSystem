@@ -40,13 +40,15 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_NOT_VALID_ENTITYTYPE, "&cDu hast einen ungültigen Entitätstyp eingegeben.");
         add(QUESTS_BUILDER_MODIFY_INTEGER, "&7Gib eine Zahl für: ${input} ein.");
         add(QUESTS_BUILDER_MODIFY_ITEM_INSERTION, "&7Lege ein Item neben dieses;&7und schließe das Inventar.");
-        add(QUESTS_BUILDER_MODIFY_REMOVE, "&7Step-id ist: ${id};&7Klicken, um den Eintrag zu &centfernen&7.");
+        add(QUESTS_BUILDER_MODIFY_STEPS_REMOVE, ";&7Task-id ist: ${id};&7Klicken, um die Aufgabe zu &centfernen&7.");
+        add(QUESTS_BUILDER_MODIFY_REWARD_REMOVE, ";&7Klicken, um die Belohnung zu &centfernen&7.");
         add(QUESTS_BUILDER_MODIFY_ADD, "&7Klicken, um einen Eintrag zu &ahinzufügen&7.");
         add(QUESTS_BUILDER_MODIFY_QUESTNAME, "&7Gib einen Namen ein, der der Questname sein wird.");
         add(QUESTS_BUILDER_NAME_LORE, "&7Das wird der Name der Quest;&7Klicken, um ihn zu ändern.");
         add(QUESTS_BUILDER_DESCRIPTION_NAME, "&eQuestbeschreibung");
         add(QUESTS_BUILDER_DESCRIPTION_LORE, "&7Klicken, um die Questbeschreibung zu ändern.");
-        add(QUESTS_BUILDER_DESCRIPTION_CLICK, "&7Klicken und Questbeschreibung eingeben. Ein ';' ist ein line-break.");
+        add(QUESTS_BUILDER_DESCRIPTION_CLICK_TEXT, "&e[KLICK] &7Und Questbeschreibung eingeben (';' ist ein line-break). Die Beschreibung wird in der Lore des Quest-Items angezeigt.");
+        add(QUESTS_BUILDER_DESCRIPTION_CLICK_HOVER, "&7Klicken und Questbeschreibung nach dem Befehl eingeben.");
         add(QUESTS_BUILDER_REWARDS_LORE, "&7Linksklick, um eine neue Questbelohnung hinzuzufügen; ;&7Shift-Klick, um die aktuellen Einträge zu sehen.");
         add(QUESTS_BUILDER_STEPS_LORE, "&7Linksklick, um einen neuen Questschritt hinzuzufügen; ;&7Shift-Klick, um die aktuellen Einträge zu sehen.");
         add(QUESTS_BUILDER_TIMER_OFFLINE_NAME, "&eCountdown läuft offline: ${active}");
@@ -59,8 +61,10 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_CREATE_LORE, "&7Klicken, um die Quest zu erstellen.;&7Um die Quest zu erstellen,;&7musst du folgendes gesetzt habeN:;&7- Einen Namen;&7- Eine Beschreibung;&7- Mindestens eine Aufgabe");
         add(QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS, "&cDieser Questname existent bereits.");
 
-        add(QUESTS_BUILDER_SUCCESSFUL_CREATED, "&aQuest ${name} wurde erstellt.");
-        add(QUESTS_BUILDER_SUCCESSFUL_UPDATED, "&aQuest ${name} wurde aktualisiert.");
+        add(QUESTS_BUILDER_SUCCESSFUL_CREATED, "&aQuest &e${name} &awurde erstellt.");
+        add(QUESTS_BUILDER_SUCCESSFUL_CREATED_ERROR, "&e${name} &ckonnte nicht erstellt werden! &7Schaue in der Konsole nach.");
+        add(QUESTS_BUILDER_SUCCESSFUL_UPDATED, "&aQuest &e${name} &awurde aktualisiert.");
+        add(QUESTS_BUILDER_SUCCESSFUL_UPDATED_ERROR, "&e${name} &ckonnte nicht aktualisiert werden! &7Schaue in der Konsole nach.");
 
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Aktuelle Reihenfolge: &e${order}");
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Ändere die Reihenfolge dieser Aufgabe;&7Alle Aufgaben mit derselben Reihenfolge;&7können gleichzeitig erledigt werden;&7Klicken, um zu ändern.");
@@ -71,14 +75,16 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_STEPS_CREATION_ACCEPT, "&aKlicken, um hinzuzufügen.");
 
         // events
-        add(QUESTS_EVENT_TIMER_EXPIRED, "&e${name} &7ist &cabgelaufen&7!");
+        add(QUESTS_EVENT_TIMER_EXPIRED, "&e${name} &7ist &cabgelaufen&7! Starte sie neu über /quest");
         add(QUESTS_EVENT_FINISHED, "&aDu hast &e${name}&a abgeschlossen!");
         add(QUESTS_EVENT_SWITCHED, "&7Du hast dein &aaktive Quest &7zu &e${name} &7gewechselt.");
         add(QUESTS_EVENT_STARTED, "&7Die Quest &e${name}&7 wurde gestartet!");
         add(QUESTS_EVENT_COUNTDOWN, "&7Du hast noch &e${duration} &7für die Quest &e${name}");
-        add(QUESTS_EVENT_FOUND_NEW, "&7Du hast eine &eneue Quest &7gefunden: &e${name}");
+        add(QUESTS_EVENT_FOUND_NEW, "&7Du hast die Quest '&e${name}&7' gefunden! Starte sie über /quest");
+        add(QUESTS_EVENT_FOUND_NEW_HOVER, "&7Klicken, um das Questmenü zu öffnen und Quest zu starten");
         add(QUESTS_EVENT_JOINED_HAS_ACTIVE, "&7Du hast eine &aaktive Quest '&e${name}' &7laufen! Verbleibende Zeit: &e${duration}");
-        add(QUESTS_EVENT_JOINED_NO_ACTIVE, "&7Du hast keine aktive Quest laufen. Beginne eine neue Quest mit &e/quest");
+        add(QUESTS_EVENT_JOINED_NO_ACTIVE_TEXT, "&7Du hast keine aktive Quest laufen. Beginne eine neue Quest mit &e/quest");
+        add(QUESTS_EVENT_JOINED_NO_ACTIVE_HOVER, "&7Klicken, um dein Questmenü zu öffnen");
 
         add(QUESTS_DISPLAY_DAYS, "Tage");
         add(QUESTS_DISPLAY_HOURS, "Stunden");
@@ -96,10 +102,12 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE, "questadmin quest create/delete/list");
         add(QUESTS_COMMAND_ADMIN_QUEST_CREATE_USAGE, "questadmin create (description <description>)");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_USAGE, "questadmin delete <name>");
-        add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM, "&7Möchtest du diese Quest wirklich &clöschen&7? (Hier klicken, um zu bestätigen)");
+        add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM_TEXT, "&7Möchtest du diese Quest wirklich &clöschen&7? (Hier klicken, um zu bestätigen)");
+        add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM_HOVER, "&7Klicken, um Quest &cpermanent&7 zu löschen!");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL, "&7Quest wurde erfolgreich gelöscht.");
         add(QUESTS_COMMAND_ADMIN_QUEST_LIST_NO_QUESTS, "&7Es sind keine Quests aufgelistet.");
-        add(QUESTS_COMMAND_ADMIN_QUEST_LIST, "&7Alle Quests: &e${quest}");
+        add(QUESTS_COMMAND_ADMIN_QUEST_LIST, "&7Liste aller Questnamen - Klicken, um GUI zu öffnen: &e${quest}");
+        add(QUESTS_COMMAND_ADMIN_QUEST_LIST_HOVER, "&7Klicken, um Quest GUI zu öffnen");
 
         add(QUESTS_COMMAND_ADMIN_SIGN_USAGE, "questadmin sign - Füge ein Questschild hinzu");
         add(QUESTS_COMMAND_ADMIN_SIGN_NOT_SIGN, "&7Du schaust auf &ckein Schild");
@@ -108,9 +116,12 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_ADMIN_NPC_USAGE, "questadmin npc find/task - Erstelle einen NPC, der zum finden der Quest oder einer Questaufgabe zuständig ist");
         add(QUESTS_COMMAND_ADMIN_NPC_FIND, "&7Alle Finding-NPC: ${npc}");
         add(QUESTS_COMMAND_ADMIN_NPC_TASK, "&7Alle Aufgaben-NPC: ${npc}");
-        add(QUESTS_COMMAND_ADMIN_SETUP_SUCCESSFUL, "&aSetup was erfolgreich. Der NPC spawnt an deiner Position");
-        add(QUESTS_COMMAND_ADMIN_NPC_FIND_USAGE, "questadmin npc find <npcname> <questname> - Erstelle einen NPC, der zum finden einer Quest da ist");
+        add(QUESTS_COMMAND_ADMIN_NPC_FIND_SUCCESSFUL, "&aSetup was erfolgreich. Der NPC spawnt an deiner Position");
+        add(QUESTS_COMMAND_ADMIN_NPC_FIND_DELETED, "&7Find-NPC wurde gelöscht.");
+        add(QUESTS_COMMAND_ADMIN_NPC_FIND_USAGE, "questadmin npc find <questname> <npcname> - Erstelle einen NPC, der zum finden einer Quest da ist");
         add(QUESTS_COMMAND_ADMIN_NPC_TASK_USAGE, "questadmin npc task <npcname> <uuid> <language> <text> - Erstelle einen NPC, der zum abschließend einer Questaufgabe da ist");
+        add(QUESTS_COMMAND_ADMIN_NPC_TASK_DELETED, "&7Task-NPC wurde gelöscht.");
+        add(QUESTS_COMMAND_ADMIN_NPC_TASK_SUCCESSFUL, "&aTask-NPC wurde erstellt/gelöscht. &7Ein NPC wird an dieser Position spawnen. Spieler müssen mit diesem NPC interagieren, um die Aufgabe 'talk' abzuschließen!");
 
         add(QUESTS_COMMAND_LANGUAGE_USAGE, "language <language>");
         add(QUESTS_COMMAND_LANGUAGE_UPDATED, "&aDeine Sprache wurde geändert.");
@@ -157,20 +168,26 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
 
         add(QUESTS_GUI_FOUND_INFO, "&6Gefundene Quests");
         add(QUESTS_GUI_COMPLETED_INFO, "&6Abgeschlossene Quests");
-        add(QUESTS_GUI_PUBLIC_INFO, "&eÖffentliche Quests");
+        add(QUESTS_GUI_PUBLIC_INFO_NAME, "&eÖffentliche Quests");
+        add(QUESTS_GUI_PUBLIC_INFO_LORE, "&7Hier ist jede öffentliche Quest;&7die du noch nicht absolviert hast.");
         add(QUESTS_GUI_PUBLIC_LORE, " ;&7Diese Quest ist öffentlich.;&7Sie kann ablaufen.;&eKlicken, um Details zu sehen.");
-        add(QUESTS_GUI_QUEST_DETAILS_LORE, " ;&7Um &e${time};&eKlicken, um Details zu sehen.");
+        add(QUESTS_GUI_QUEST_DETAILS_FOUND_LORE, " ;&7Du hast diese Quest am &e${time} &7gefunden;&eKlicken, um Details zu sehen.");
+        add(QUESTS_GUI_QUEST_DETAILS_COMPLETED_LORE, " ;&7Du hast diese Quest am &e${time} &7absolviert;&eKlicken, um Details zu sehen.");
         add(QUESTS_GUI_ACCEPT_START_NAME, "&eQuest starten");
         add(QUESTS_GUI_ACCEPT_START_LORE, "&7Klicken, um die Quest zu starten;&7Eine aktive Quest wird abgebrochen;&7Du kannst sie später neustarten");
         add(QUESTS_GUI_ACCEPT_TITLE, "&6Quest starten");
         add(QUESTS_GUI_QUEST_TIME_NAME, "&eAbgeschlossen am");
         add(QUESTS_GUI_QUEST_TIME_LORE, "&7Du hast diese Quest;&7abgeschlossen am &e${time}");
         add(QUESTS_GUI_QUEST_STEPS_NAME, "&eAlle Questaufgaben");
-        add(QUESTS_GUI_QUEST_REWARD_NAME, "&eAlle Questbelohnungen");
-        add(QUESTS_GUI_QUEST_DETAILS_ITEM_LORE, "&7Beende diese Quest in &e${duration};&7Es gibt &e${rewards} Belohnungen;&7und &e${tasks} Aufgaben.");
-
-
+        add(QUESTS_GUI_QUEST_REWARD_NAME_HAS, "&eAlle Questbelohnungen");
+        add(QUESTS_GUI_QUEST_REWARD_NAME_NONE, "&eKeine Questbelohnungen");
+        add(QUESTS_GUI_QUEST_DETAILS_ITEM_LORE, ";&7Beende diese Quest in &e${duration};&7Es gibt &e${rewards} Belohnung(en);&7und &e${tasks} Aufgab(en).");
         add(QUESTS_GUI_ACCEPT_REWARD, " ;&7Klicken, um ein;&7detailliertes Belohnungsmenü zu öffnen");
+        add(QUESTS_GUI_QUEST_ADMIN_MODIFY_NAME, "&eQuest verändern");
+        add(QUESTS_GUI_QUEST_ADMIN_MODIFY_LORE, "&7Klicken, um Quest;&7zu verändern");
+        add(QUESTS_GUI_QUEST_ADMIN_DELETE_NAME, "&cQuest löschen");
+        add(QUESTS_GUI_QUEST_ADMIN_DELETE_LORE, "&7Klicken, um Quest;&7zu &clöschen&7!");
+
         add(QUESTS_GUI_BACK, "&eZurück");
         add(QUESTS_GUI_REWARDS_PREVIEW_NAME, "&eQuest Belohnungen");
         add(QUESTS_GUI_REWARDS_PREVIEW_LORE, "&7Klicken, um die Belohnungen;&7für diese Quest zu öffnen");
@@ -192,18 +209,21 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_STEP_NPC_NORMAL_LINE, "&7Sprich mit &e${name} &a${maxamount} &7Mal");
         add(QUESTS_STEP_NPC_ACTIVE_LINE, "&7Sprich mit &e${name} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_NPC_NORMAL_NAME, "&eSprich mit ${name}");
-        add(QUESTS_STEP_NPC_NORMAL_LORE, "&7Sprich mit &e${name} &a${maxamount} &7Mal;&7${name} ist bei &e${location}");
-        add(QUESTS_STEP_NPC_ACTIVE_LORE, "&7Du musst;&7mit ${name} noch &e${amount}&7/&e${maxamount} &7mal sprechen;&7${name} ist bei &e${location}");
+        add(QUESTS_STEP_NPC_NORMAL_LORE, "&7Sprich mit &e${name} &a${maxamount} &7Mal;&7${name} &7ist bei &e${location}");
+        add(QUESTS_STEP_NPC_ACTIVE_LORE, "&7Du musst;&7mit ${name} noch &e${amount}&7/&e${maxamount} &7mal sprechen;&7${name} &7ist bei &e${location}");
 
 // REWARDS
         add(QUESTS_REWARD_COINS_PREVIEW, "&e${amount} Münzen");
+        add(QUESTS_REWARD_COINS_MESSAGE, "&7Du &eerhälst &e${amount} Münzen");
         add(QUESTS_REWARD_COINS_NAME, "&eMünzen");
         add(QUESTS_REWARD_COINS_LORE, "&7Du erhältst &e${amount} Münzen;&7nach Abschluss der Quest");
         add(QUESTS_REWARD_LVL_PREVIEW, "&e${amount} Level");
         add(QUESTS_REWARD_LVL_NAME, "&eLevel");
         add(QUESTS_REWARD_LVL_LORE, "&7Du erhältst &e${amount} Level;&7nach Abschluss der Quest");
+        add(QUESTS_REWARD_LVL_MESSAGE, "&7Du &eerhälst &e${amount} Level");
         add(QUESTS_REWARD_ITEM_PREVIEW, "1 Item");
         add(QUESTS_REWARD_ITEM_LORE, "&7Du erhältst diesen Item;&7nach Abschluss der Quest");
+        add(QUESTS_REWARD_ITEM_MESSAGE, "&7Du &eerhälst das Item: &e${name}");
 
         save();
     }

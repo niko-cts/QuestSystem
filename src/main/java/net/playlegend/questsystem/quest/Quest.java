@@ -2,6 +2,7 @@ package net.playlegend.questsystem.quest;
 
 import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
 import lombok.NonNull;
+import net.playlegend.questsystem.gui.GUIHelper;
 import net.playlegend.questsystem.quest.reward.QuestReward;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.translation.Language;
@@ -34,11 +35,9 @@ public record Quest(int id,
     }
 
     public ItemStack getRewardItem(Language language) {
-        return new ItemBuilder(Material.GOLD_INGOT)
-                .setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_REWARD_NAME))
-                .setLore(rewards.stream().map(r -> ChatColor.GRAY + "- " + r.getRewardPreview(language)).toList())
-                .craft();
+        return GUIHelper.getRewardItem(language, rewards);
     }
+
 
     public ItemStack getStepItem(Language language) {
         return new ItemBuilder(Material.IRON_DOOR)

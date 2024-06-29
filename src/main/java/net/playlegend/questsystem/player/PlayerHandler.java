@@ -76,7 +76,7 @@ public class PlayerHandler {
      */
     public void playerDisconnected(UUID uuid) {
         this.questPlayerMap.computeIfPresent(uuid, (uuid1, questPlayer) -> {
-            questPlayer.checkIfExpired();
+            questPlayer.playerQuit();
             playerDb.updateAllPlayerData(questPlayer, Instant.now());
             return null;
         });

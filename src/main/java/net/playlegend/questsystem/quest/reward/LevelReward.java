@@ -24,6 +24,7 @@ public class LevelReward extends QuestReward<Integer> {
 	public void rewardPlayer(QuestPlayer player) {
 		player.getPlayer().setLevel(player.getPlayer().getLevel() + getRewardObject());
 		player.playSound(Sound.ENTITY_PLAYER_LEVELUP);
+		player.sendMessage(TranslationKeys.QUESTS_REWARD_LVL_MESSAGE, "${amount}", getRewardObject());
 	}
 
 	/**

@@ -30,6 +30,7 @@ public class CoinsReward extends QuestReward<Integer> {
     public void rewardPlayer(QuestPlayer player) {
         player.setCoins(player.getCoins() + getRewardObject());
         player.playSound(Sound.ENTITY_PLAYER_LEVELUP);
+        player.sendMessage(TranslationKeys.QUESTS_REWARD_COINS_MESSAGE, "${amount}", getRewardObject());
     }
 
     /**

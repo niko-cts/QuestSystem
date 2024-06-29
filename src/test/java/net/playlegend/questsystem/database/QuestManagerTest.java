@@ -60,6 +60,34 @@ public class QuestManagerTest  extends AbstractDatabaseTest {
 	}
 
 	@Test
+	public void addQuest_withMultipleSpeaks() {
+		assertTrue(questManager.getQuests().isEmpty());
+
+		UUID talkUUID = UUID.randomUUID();
+		UUID talk2UUID = UUID.randomUUID();
+		questManager.addQuest("testname", "testdescription",
+				List.of(new LevelReward(10)),
+				List.of(new TalkToNPCQuestStep(1, 1, 1, talkUUID),
+						new TalkToNPCQuestStep(2, 2, 3, talk2UUID)),
+				500, false, true);
+
+		assertFalse(questManager.getQuests().isEmpty());
+		Quest quest = questManager.getQuests().get(0);
+		Quest expected = new Quest(quest.id(), "testname", "testdescription", false,
+				List.of(new LevelReward(10)),
+				List.of(new TalkToNPCQuestStep(1, 1, 1, talkUUID),
+						new TalkToNPCQuestStep(2, 2, 3, talk2UUID)),
+				500, true);
+		assertEquals(expected, quest);
+
+
+		// reload db
+		questManager = new QuestManager();
+		assertEquals(1, questManager.getQuests().size());
+		assertEquals(expected, questManager.getQuests().get(0));
+	}
+
+	@Test
 	public void updateQuest() {
 		assertTrue(questManager.getQuests().isEmpty());
 
@@ -88,7 +116,7 @@ public class QuestManagerTest  extends AbstractDatabaseTest {
 						100, true),
 				quest);
 
-		// reload from db
+		// reload db
 		questManager = new QuestManager();
 		assertEquals(1, questManager.getQuests().size());
 		quest = questManager.getQuests().get(0);

@@ -123,6 +123,7 @@ public final class DatabaseHandler {
 		}
 
 		sql.append(");");
+
 		try (Statement stmt = this.dbConnection.createStatement()) {
 			stmt.execute(sql.toString());
 		} catch (SQLException e) {
@@ -142,7 +143,7 @@ public final class DatabaseHandler {
 			return false;
 
 		try (Statement stmt = this.dbConnection.createStatement()) {
-			return stmt.executeQuery(new StringBuilder().append("show tables like '").append(tableName).append("';").toString()).next();
+			return stmt.executeQuery(new StringBuilder().append("show tables where '").append(tableName).append("';").toString()).next();
 		} catch (SQLException exception) {
 			logger.log(Level.WARNING, "Could not check if table exists! {0}", exception.getMessage());
 			return this.reconnectIfClosed() && doesTableExist(tableName);
@@ -157,9 +158,9 @@ public final class DatabaseHandler {
 	 * @param tableNames List<String> - tables to insert to.
 	 * @param values     List<List<Object>> - the list all values - 'null' will add another line to the insertion in the same table.
 	 */
-	public void insertIntoTable(List<String> tableNames, List<List<Object>> values) {
+	public boolean insertIntoTable(List<String> tableNames, List<List<Object>> values) {
 		if (!this.reconnectIfClosed())
-			return;
+			return false;
 
 		try (Statement stmt = this.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
 			for (int i = 0; i < tableNames.size(); i++) {
@@ -184,8 +185,11 @@ public final class DatabaseHandler {
 			}
 			stmt.executeBatch();
 			logger.log(Level.INFO, "Inserted into table: {0}", tableNames);
+			return true;
+
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Could not insert into table {0}: {1}", new String[]{tableNames.toString(), e.getMessage()});
+			return false;
 		}
 	}
 
@@ -245,26 +249,6 @@ public final class DatabaseHandler {
 	 * Executes an SQL script from the plain String.
 	 *
 	 * @param sql String - the sql script.
-	 * @return ResultSet - the query result
-	 */
-	public ResultSet executeQuery(String sql) {
-		if (!this.reconnectIfClosed())
-			return null;
-
-		try {
-			Statement stmt = this.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			return stmt.executeQuery(sql);
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Could not perform sql:", e);
-			logger.log(Level.SEVERE, "SQL-Query: {0}", sql);
-			return null;
-		}
-	}
-
-	/**
-	 * Executes an SQL script from the plain String.
-	 *
-	 * @param sql String - the sql script.
 	 * @return boolean - operation was successful
 	 */
 	public boolean execute(String sql) {
@@ -314,6 +298,7 @@ public final class DatabaseHandler {
 				stmt.addBatch(getUpdateBatchData(tableNames.get(w), columns, values, whereClauses.get(w)));
 			}
 			stmt.executeBatch();
+			logger.info("Updated tables: " + String.join(", ", tableNames));
 			return true;
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Could not execute update! {0}", e.getMessage());
@@ -352,13 +337,13 @@ public final class DatabaseHandler {
 	 * @param tableNames   List<String> - the table name.
 	 * @param whereClauses List<String> - the where clauses.
 	 */
-	public void delete(List<String> tableNames, List<String> whereClauses) {
+	public boolean delete(List<String> tableNames, List<String> whereClauses) {
 		if (!this.reconnectIfClosed())
-			return;
+			return false;
 
 		if (tableNames.size() != whereClauses.size()) {
 			logger.warning("Length of columns is not equal to the length of tableNames, values, data types or where clause.");
-			return;
+			return false;
 		}
 
 		try (Statement stmt = this.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
@@ -370,8 +355,11 @@ public final class DatabaseHandler {
 				stmt.addBatch(sql.toString());
 			}
 			stmt.executeBatch();
+			logger.info("Deleted data in tables: " + String.join(", ", tableNames));
+			return true;
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Could not perform delete on {0}", e.getMessage());
+			return false;
 		}
 	}
 

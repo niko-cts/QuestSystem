@@ -1,10 +1,14 @@
 package net.playlegend.questsystem.quest.reward;
 
 import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
+import chatzis.nikolas.mc.nikoapi.util.MaterialConverterUtil;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Objects;
 
 public class ItemReward extends QuestReward<ItemStack> {
 
@@ -21,6 +25,10 @@ public class ItemReward extends QuestReward<ItemStack> {
     @Override
     public void rewardPlayer(QuestPlayer player) {
         player.addItem(getRewardObject().clone());
+        player.sendMessage(TranslationKeys.QUESTS_REWARD_ITEM_MESSAGE, "${name}",
+		        getRewardObject().hasItemMeta() && Objects.requireNonNull(getRewardObject().getItemMeta()).hasDisplayName() ?
+                getRewardObject().getItemMeta().getDisplayName() :
+                        ChatColor.BLUE + MaterialConverterUtil.convertMaterialToName(getRewardObject().getType()));
     }
 
     /**

@@ -37,13 +37,15 @@ public class TranslationKeys {
 	public static final String QUESTS_BUILDER_NOT_VALID_ENTITYTYPE = BUILDER + "input.invalid.entitytype";
 	public static final String QUESTS_BUILDER_MODIFY_INTEGER = BUILDER + "input.modify.integer";
 	public static final String QUESTS_BUILDER_MODIFY_ITEM_INSERTION = BUILDER + "modify.item";
-	public static final String QUESTS_BUILDER_MODIFY_REMOVE = BUILDER + "input.modify.remove";
+	public static final String QUESTS_BUILDER_MODIFY_STEPS_REMOVE = BUILDER + "input.modify.steps.remove";
+	public static final String QUESTS_BUILDER_MODIFY_REWARD_REMOVE = BUILDER + "input.modify.reward.remove";
 	public static final String QUESTS_BUILDER_MODIFY_ADD = BUILDER + "input.modify.add";
 	public static final String QUESTS_BUILDER_MODIFY_QUESTNAME = BUILDER + "input.modify.questname";
 	public static final String QUESTS_BUILDER_NAME_LORE = BUILDER + "questname.lore";
 	public static final String QUESTS_BUILDER_DESCRIPTION_NAME = BUILDER + "description.name";
 	public static final String QUESTS_BUILDER_DESCRIPTION_LORE = BUILDER + "description.lore";
-	public static final String QUESTS_BUILDER_DESCRIPTION_CLICK = BUILDER + "description.click";
+	public static final String QUESTS_BUILDER_DESCRIPTION_CLICK_TEXT = BUILDER + "description.click.text";
+	public static final String QUESTS_BUILDER_DESCRIPTION_CLICK_HOVER = BUILDER + "description.click.hover";
 	public static final String QUESTS_BUILDER_REWARDS_LORE = BUILDER + "rewards.lore";
 	public static final String QUESTS_BUILDER_STEPS_LORE = BUILDER + "steps.lore";
 	public static final String QUESTS_BUILDER_TIMER_OFFLINE_NAME = BUILDER + "timer.runsoffline.name";
@@ -55,8 +57,10 @@ public class TranslationKeys {
 	public static final String QUESTS_BUILDER_CREATE_NAME = BUILDER + "create.name";
 	public static final String QUESTS_BUILDER_CREATE_LORE = BUILDER + "create.lore";
 	public static final String QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS = BUILDER + "create.namealreadyexists";
-	public static final String QUESTS_BUILDER_SUCCESSFUL_CREATED = BUILDER + "successful.created";
-	public static final String QUESTS_BUILDER_SUCCESSFUL_UPDATED = BUILDER + "successful.updated";
+	public static final String QUESTS_BUILDER_SUCCESSFUL_CREATED = BUILDER + "successful.created.success";
+	public static final String QUESTS_BUILDER_SUCCESSFUL_CREATED_ERROR = BUILDER + "successful.created.error";
+	public static final String QUESTS_BUILDER_SUCCESSFUL_UPDATED = BUILDER + "successful.updated.success";
+	public static final String QUESTS_BUILDER_SUCCESSFUL_UPDATED_ERROR = BUILDER + "successful.updated.error";
 	public static final String QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME = BUILDER + "steps.creation.order.name";
 	public static final String QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE = BUILDER + "steps.creation.order.lore";
 	public static final String QUESTS_BUILDER_STEPS_CREATION_AMOUNT_NAME = BUILDER + "steps.creation.amount.name";
@@ -73,11 +77,13 @@ public class TranslationKeys {
 	public static final String QUESTS_EVENT_FINISHED = QUEST_EVENT + "finished";
 	public static final String QUESTS_EVENT_SWITCHED = QUEST_EVENT + "switched";
 	public static final String QUESTS_EVENT_STARTED = QUEST_EVENT + "started";
-	public static final String QUESTS_EVENT_COUNTDOWN = QUEST_EVENT + "timer";
-	public static final String QUESTS_EVENT_FOUND_NEW = QUEST_EVENT + "found";
+	public static final String QUESTS_EVENT_COUNTDOWN = QUEST_EVENT + "timer.left";
+	public static final String QUESTS_EVENT_FOUND_NEW = QUEST_EVENT + "found.text";
+	public static final String QUESTS_EVENT_FOUND_NEW_HOVER = QUEST_EVENT + "found.hover";
 
 	public static final String QUESTS_EVENT_JOINED_HAS_ACTIVE = QUEST_EVENT + "join.has";
-	public static final String QUESTS_EVENT_JOINED_NO_ACTIVE = QUEST_EVENT + "join.none";
+	public static final String QUESTS_EVENT_JOINED_NO_ACTIVE_TEXT = QUEST_EVENT + "join.none.text";
+	public static final String QUESTS_EVENT_JOINED_NO_ACTIVE_HOVER = QUEST_EVENT + "join.none.hover";
 
 	public static final String QUESTS_DISPLAY_DAYS = QUEST + "display.days";
 	public static final String QUESTS_DISPLAY_HOURS = QUEST + "display.hours";
@@ -98,20 +104,26 @@ public class TranslationKeys {
 	public static final String QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE = Q_COMMAND + "admin.quest.list.usage";
 	public static final String QUESTS_COMMAND_ADMIN_QUEST_CREATE_USAGE = Q_COMMAND + "admin.quest.create.usage";
 	public static final String QUESTS_COMMAND_ADMIN_QUEST_DELETE_USAGE = Q_COMMAND + "admin.quest.delete.usage";
-	public static final String QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM = Q_COMMAND + "admin.quest.delete.confirmation";
+	public static final String QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM_TEXT = Q_COMMAND + "admin.quest.delete.confirmation.text";
+	public static final String QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM_HOVER = Q_COMMAND + "admin.quest.delete.confirmation.hover";
 	public static final String QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL = Q_COMMAND + "admin.quest.delete.successful";
 	public static final String QUESTS_COMMAND_ADMIN_QUEST_LIST_NO_QUESTS = Q_COMMAND + "admin.quest.list.noquests";
-	public static final String QUESTS_COMMAND_ADMIN_QUEST_LIST = Q_COMMAND + "admin.quest.list.show";
+	public static final String QUESTS_COMMAND_ADMIN_QUEST_LIST = Q_COMMAND + "admin.quest.list.show.text";
+	public static final String QUESTS_COMMAND_ADMIN_QUEST_LIST_HOVER = Q_COMMAND + "admin.quest.list.show.hover";
 	public static final String QUESTS_COMMAND_ADMIN_SIGN_USAGE = Q_COMMAND + "admin.sign.usage";
 	public static final String QUESTS_COMMAND_ADMIN_SIGN_NOT_SIGN = Q_COMMAND + "admin.sign.notviewing";
 	public static final String QUESTS_COMMAND_ADMIN_SIGN_ADDED = Q_COMMAND + "admin.sign.added";
 
 	public static final String QUESTS_COMMAND_ADMIN_NPC_USAGE = Q_COMMAND + "admin.npc.usage";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_LIST_USAGE = Q_COMMAND + "admin.npc.list.usage";
 	public static final String QUESTS_COMMAND_ADMIN_NPC_TASK = Q_COMMAND + "admin.npc.list.task";
 	public static final String QUESTS_COMMAND_ADMIN_NPC_FIND = Q_COMMAND + "admin.npc.list.find";
 	public static final String QUESTS_COMMAND_ADMIN_NPC_FIND_USAGE = Q_COMMAND + "admin.npc.find.usage";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_FIND_SUCCESSFUL = Q_COMMAND + "admin.npc.find.successful";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_FIND_DELETED = Q_COMMAND + "admin.npc.find.deleted";
 	public static final String QUESTS_COMMAND_ADMIN_NPC_TASK_USAGE = Q_COMMAND + "admin.npc.task.usage";
-	public static final String QUESTS_COMMAND_ADMIN_SETUP_SUCCESSFUL = Q_COMMAND + "admin.npc.successful";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_TASK_SUCCESSFUL = Q_COMMAND + "admin.npc.task.successful";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_TASK_DELETED = Q_COMMAND + "admin.npc.task.deleted";
 
 	// /language
 	public static final String QUESTS_COMMAND_LANGUAGE_USAGE = Q_COMMAND + "language.usage";
@@ -138,7 +150,7 @@ public class TranslationKeys {
 
 
 	// GUI
-	private static final String GUI = QUEST + "gui";
+	private static final String GUI = QUEST + "gui.";
 	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_NO_ACTIVE_NAME = GUI + "overview.noactive.name";
 	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_NO_ACTIVE_LORE = GUI + "overview.noactive.lore";
 	public static final String QUESTS_GUI_OVERVIEW_ACTIVE_NAME = GUI + "overview.active.name";
@@ -173,9 +185,11 @@ public class TranslationKeys {
 	// FOUND, COMPLETED, PUBLIC QUESTS GUI
 	public static final String QUESTS_GUI_FOUND_INFO = GUI + "found.info";
 	public static final String QUESTS_GUI_COMPLETED_INFO = GUI + "completed.info";
-	public static final String QUESTS_GUI_PUBLIC_INFO = GUI + "public.info";
+	public static final String QUESTS_GUI_PUBLIC_INFO_NAME = GUI + "public.info.name";
+	public static final String QUESTS_GUI_PUBLIC_INFO_LORE = GUI + "public.info.lore";
 	public static final String QUESTS_GUI_PUBLIC_LORE = GUI + "public.lore";
-	public static final String QUESTS_GUI_QUEST_DETAILS_LORE = GUI + "details.lore";
+	public static final String QUESTS_GUI_QUEST_DETAILS_FOUND_LORE = GUI + "details.found.lore";
+	public static final String QUESTS_GUI_QUEST_DETAILS_COMPLETED_LORE = GUI + "details.completed.lore";
 
 	public static final String QUESTS_GUI_ACCEPT_START_NAME = GUI + "accept.start.name";
 	public static final String QUESTS_GUI_ACCEPT_START_LORE = GUI + "accept.start.lore";
@@ -183,9 +197,14 @@ public class TranslationKeys {
 	public static final String QUESTS_GUI_QUEST_TIME_NAME = GUI + "quest.time.name";
 	public static final String QUESTS_GUI_QUEST_TIME_LORE = GUI + "quest.time.lore";
 	public static final String QUESTS_GUI_QUEST_STEPS_NAME = GUI + "quest.steps.name";
-	public static final String QUESTS_GUI_QUEST_REWARD_NAME = GUI + "quest.reward.name";
+	public static final String QUESTS_GUI_QUEST_REWARD_NAME_HAS = GUI + "quest.reward.name.has";
+	public static final String QUESTS_GUI_QUEST_REWARD_NAME_NONE = GUI + "quest.reward.name.none";
 	public static final String QUESTS_GUI_QUEST_DETAILS_ITEM_LORE = GUI + "quest.details.lore";
 	public static final String QUESTS_GUI_ACCEPT_REWARD = GUI + "accept.reward";
+	public static final String QUESTS_GUI_QUEST_ADMIN_MODIFY_NAME = GUI + "quest.modify.name";
+	public static final String QUESTS_GUI_QUEST_ADMIN_MODIFY_LORE = GUI + "quest.modify.lore";
+	public static final String QUESTS_GUI_QUEST_ADMIN_DELETE_NAME = GUI + "quest.delete.name";
+	public static final String QUESTS_GUI_QUEST_ADMIN_DELETE_LORE = GUI + "quest.delete.lore";
 
 
 	public static final String QUESTS_GUI_BACK = GUI + "back";
@@ -218,12 +237,17 @@ public class TranslationKeys {
 
 	// REWARDS
 	public static final String QUESTS_REWARD_COINS_PREVIEW = QUEST + "reward.coins.preview";
+	public static final String QUESTS_REWARD_COINS_MESSAGE = QUEST + "reward.coins.message";
 	public static final String QUESTS_REWARD_COINS_NAME = QUEST + "reward.coins.name";
 	public static final String QUESTS_REWARD_COINS_LORE = QUEST + "reward.coins.lore";
+
 	public static final String QUESTS_REWARD_LVL_PREVIEW = QUEST + "reward.lvl.preview";
+	public static final String QUESTS_REWARD_LVL_MESSAGE = QUEST + "reward.lvl.message";
 	public static final String QUESTS_REWARD_LVL_NAME = QUEST + "reward.lvl.name";
 	public static final String QUESTS_REWARD_LVL_LORE = QUEST + "reward.lvl.lore";
+
 	public static final String QUESTS_REWARD_ITEM_PREVIEW = QUEST + "reward.item.preview";
+	public static final String QUESTS_REWARD_ITEM_MESSAGE = QUEST + "reward.item.message";
 	public static final String QUESTS_REWARD_ITEM_LORE = QUEST + "reward.item.lore";
 
 

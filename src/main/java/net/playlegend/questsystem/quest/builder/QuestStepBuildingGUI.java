@@ -35,7 +35,7 @@ public class QuestStepBuildingGUI {
 		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(builder.steps.size() + 1));
 		for (QuestStep<?> step : builder.steps) {
 			menu.addItem(new ItemBuilder(step.getTaskItem(builder.language))
-							.addLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_REMOVE, "${id}", step.getId()).split(";"))
+							.addLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_STEPS_REMOVE, "${id}", step.getId()).split(";"))
 							.craft(),
 					new ClickAction() {
 						@Override
@@ -50,7 +50,7 @@ public class QuestStepBuildingGUI {
 	}
 
 
-	protected static void addNewRewardSelection(QuestBuilder builder) {
+	protected static void openStepCreationSelection(QuestBuilder builder) {
 		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(RewardType.values().length + 1));
 		for (QuestStepType type : QuestStepType.values()) {
 			menu.addItem(new ItemBuilder(Material.GOLD_INGOT)
@@ -59,7 +59,7 @@ public class QuestStepBuildingGUI {
 					new ClickAction() {
 						@Override
 						public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-							openAddNewQuestStepForType(builder, type, 1, 1, null);
+							openStepCreationMenu(builder, type, 1, 1, null);
 						}
 					});
 		}
@@ -67,8 +67,8 @@ public class QuestStepBuildingGUI {
 		GUIHelper.fillInventoryWithBackAndOpen(builder.questPlayer, menu, null, (questPlayer, o) -> builder.openMenu());
 	}
 
-	private static void openAddNewQuestStepForType(QuestBuilder questBuilder, QuestStepType type,
-	                                               int order, int amount, Object parameter) {
+	private static void openStepCreationMenu(QuestBuilder questBuilder, QuestStepType type,
+	                                         int order, int amount, Object parameter) {
 		CustomInventory menu = new CustomInventory(9 * 3);
 		menu.setItem(10, new ItemBuilder(Material.WHITE_BANNER)
 						.setName(questBuilder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "${order}", order))
@@ -79,7 +79,7 @@ public class QuestStepBuildingGUI {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 						AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, order + "",
-								newOrder -> openAddNewQuestStepForType(questBuilder, type, Math.max(1, newOrder), amount, parameter));
+								newOrder -> openStepCreationMenu(questBuilder, type, Math.max(1, newOrder), amount, parameter));
 					}
 				});
 
@@ -93,7 +93,7 @@ public class QuestStepBuildingGUI {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 						AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, amount + "",
-								newAmount -> openAddNewQuestStepForType(questBuilder, type, order, Math.max(1, newAmount), parameter));
+								newAmount -> openStepCreationMenu(questBuilder, type, order, Math.max(1, newAmount), parameter));
 					}
 				});
 
@@ -109,19 +109,19 @@ public class QuestStepBuildingGUI {
 						Class<?> constructorParameter = type.getConstructorParameter();
 						if (constructorParameter == int.class || constructorParameter == Integer.class) {
 							AnvilInsertionHelper.acceptNumberInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.getSimpleName(),
-									newParameter -> openAddNewQuestStepForType(questBuilder, type, order, amount, newParameter));
+									newParameter -> openStepCreationMenu(questBuilder, type, order, amount, newParameter));
 						} else if (constructorParameter == Material.class) {
 							AnvilInsertionHelper.acceptMaterialInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.getSimpleName(),
-									newParameter -> openAddNewQuestStepForType(questBuilder, type, order, amount, newParameter));
+									newParameter -> openStepCreationMenu(questBuilder, type, order, amount, newParameter));
 						} else if (constructorParameter == ItemStack.class) {
 							questBuilder.openItemInsertion(
-									newItem -> openAddNewQuestStepForType(questBuilder, type, order, amount, newItem));
+									newItem -> openStepCreationMenu(questBuilder, type, order, amount, newItem));
 						} else if (constructorParameter == UUID.class) {
 							AnvilInsertionHelper.acceptUUIDInAnvilMenu(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.getSimpleName(),
-									newParameter -> openAddNewQuestStepForType(questBuilder, type, order, amount, newParameter));
+									newParameter -> openStepCreationMenu(questBuilder, type, order, amount, newParameter));
 						} else if (constructorParameter == EntityType.class) {
 							AnvilInsertionHelper.acceptEntityType(questBuilder.questPlayer, TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, constructorParameter.getSimpleName(),
-									newParameter -> openAddNewQuestStepForType(questBuilder, type, order, amount, newParameter));
+									newParameter -> openStepCreationMenu(questBuilder, type, order, amount, newParameter));
 						} else {
 							QuestSystem.getInstance().getLogger().log(Level.WARNING, "QuestStepType is not implemented in creation: ", type);
 						}
@@ -140,9 +140,9 @@ public class QuestStepBuildingGUI {
 							if (type.getConstructorParameter() == ItemStack.class) {
 								newParameter = ItemToBase64ConverterUtil.toBase64((ItemStack) parameter);
 							}
-							questBuilder.steps.add(QuestObjectConverterUtil.instantiateQuestStepFromTypeAndParameter(type,
-									questBuilder.steps.stream().map(QuestStep::getId).max(Comparator.comparingInt(id -> id)).orElse(0) + 1,
-									order, amount, newParameter));
+							int newStepId = questBuilder.steps.stream().max(Comparator.comparingInt(QuestStep::getId))
+									             .map(QuestStep::getId).orElse(0) + 1;
+							questBuilder.steps.add(QuestObjectConverterUtil.instantiateQuestStepFromTypeAndParameter(type, newStepId, order, amount, newParameter));
 						} catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
 							QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not add QuestStep in QuestBuilder", e);
 						}
