@@ -1,5 +1,8 @@
 # This is the config for the quest system
 
+# The delay in seconds a NPC has to vanish as soon as a Player found or completed the task.
+npc:
+  vanish-delay: 3
 
 # database section
 database:

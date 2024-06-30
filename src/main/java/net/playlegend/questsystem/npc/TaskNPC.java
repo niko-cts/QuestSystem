@@ -9,13 +9,21 @@ import net.playlegend.questsystem.events.PlayerClickedOnQuestNPCEvent;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.quest.steps.QuestStepType;
-import org.bukkit.ChatColor;
+import net.playlegend.questsystem.translation.Language;
+import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.Location;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Represents a task NPC.
+ * This NPC should be clicked to complete {@link net.playlegend.questsystem.quest.steps.TalkToNPCQuestStep}
+ *
+ * @author Niko
+ */
 @Getter
 public class TaskNPC extends NPC {
 
@@ -31,21 +39,22 @@ public class TaskNPC extends NPC {
 	}
 
 
-	@Override
-	public String toString() {
+	public String toString(Language language) {
 		StringBuilder questAndStepsNPCIsIn = new StringBuilder();
 		for (Quest quest : QuestSystem.getInstance().getQuestManager().getQuests()) {
 			for (QuestStep<?> step : quest.completionSteps()) {
 				if (step.getType() == QuestStepType.SPEAK && step.getStepObject() instanceof UUID stepUUID && getUniqueID().equals(stepUUID)) {
 					if (!questAndStepsNPCIsIn.isEmpty())
 						questAndStepsNPCIsIn.append(", ");
-					questAndStepsNPCIsIn.append("Q: ").append(quest.name()).append(ChatColor.GRAY).append(" - Task-ID: ").append(step.getId());
+					questAndStepsNPCIsIn.append(language.translateMessage(TranslationKeys.QUESTS_COMMAND_ADMIN_NPC_LIST_TASK_ELEMENT_STEP,
+							List.of("${questname}", "${stepid}"),
+							List.of(quest.name(), step.getId())));
 				}
 			}
 		}
 
-		return ChatColor.RED + "[" + ChatColor.GRAY + getName() +
-		       ChatColor.GRAY + " in " + ChatColor.BLUE + "{" + ChatColor.GRAY + questAndStepsNPCIsIn + ChatColor.BLUE + "} " + ChatColor.GRAY + "at " + LocationUtil.locationToString(getLocation()) + ChatColor.RED + "]" + ChatColor.GRAY;
+		return language.translateMessage(TranslationKeys.QUESTS_COMMAND_ADMIN_NPC_LIST_TASK_ELEMENT,
+				List.of("${name}", "${location}", "${queststeps}"),
+				List.of(getName(), LocationUtil.locationToString(getLocation()), questAndStepsNPCIsIn));
 	}
-
 }

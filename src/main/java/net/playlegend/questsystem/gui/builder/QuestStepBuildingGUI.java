@@ -1,4 +1,4 @@
-package net.playlegend.questsystem.quest.builder;
+package net.playlegend.questsystem.gui.builder;
 
 import chatzis.nikolas.mc.nikoapi.inventory.ClickAction;
 import chatzis.nikolas.mc.nikoapi.inventory.CustomInventory;

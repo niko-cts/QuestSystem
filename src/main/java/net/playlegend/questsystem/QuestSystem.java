@@ -15,6 +15,7 @@ import net.playlegend.questsystem.quest.QuestSignManager;
 import net.playlegend.questsystem.translation.DefaultEnglishMessages;
 import net.playlegend.questsystem.translation.DefaultGermanMessages;
 import net.playlegend.questsystem.translation.LanguageHandler;
+import net.playlegend.questsystem.util.SaveTimerUtil;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -58,6 +59,8 @@ public final class QuestSystem extends JavaPlugin {
 
 		new DefaultGermanMessages();
 		new DefaultEnglishMessages();
+
+		SaveTimerUtil.startsSaveTimer(this);
 	}
 
 	@Override

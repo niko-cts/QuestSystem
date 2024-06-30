@@ -10,24 +10,36 @@ import org.bukkit.event.HandlerList;
 @Getter
 public class PlayerQuestUpdateEvent extends Event {
 
-    private final QuestPlayer player;
-    private final QuestUpdateType type;
+	private final QuestPlayer player;
+	private final QuestUpdateType type;
 
-    @Getter
-    private static final HandlerList handlerList = new HandlerList();
+	@Getter
+	private static final HandlerList handlerList = new HandlerList();
 
-    public HandlerList getHandlers() {
-        return handlerList;
-    }
+	public HandlerList getHandlers() {
+		return handlerList;
+	}
 
-    public enum QuestUpdateType {
-        JOINED,
-        UPDATE_STATS,
-        NEW_QUEST,
-        QUEST_ENDED,
-        STEP,
-        FIND,
-        COMPLETED
-    }
+	public enum QuestUpdateType {
+		JOINED,
+		UPDATE_STATS,
+		NEW_QUEST,
+		QUEST_ENDED,
+		STEP,
+		FIND,
+		COMPLETED;
+
+		public boolean taskNPCNeedsUpdate() {
+			return this == JOINED ||
+			       this == NEW_QUEST ||
+			       this == QUEST_ENDED ||
+			       this == STEP ||
+			       this == COMPLETED;
+		}
+
+		public boolean needsFindUpdate() {
+			return this == JOINED || this == FIND;
+		}
+	}
 
 }

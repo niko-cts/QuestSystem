@@ -8,9 +8,9 @@ import lombok.Getter;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
+import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import net.playlegend.questsystem.util.ColorConverterUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -45,9 +45,9 @@ public class FindNPC extends NPC {
 		});
 	}
 
-	@Override
-	public String toString() {
-		return ChatColor.RED + "[" + ChatColor.GRAY + getName() + ChatColor.GRAY + " to find "
-		       + ChatColor.YELLOW + quest.name() + ChatColor.GRAY + " at " + LocationUtil.locationToString(getLocation()) + ChatColor.RED + "]" + ChatColor.GRAY;
+	public String toString(Language language) {
+		return language.translateMessage(TranslationKeys.QUESTS_COMMAND_ADMIN_NPC_LIST_FIND_ELEMENT,
+				List.of("${name}", "${questname}", "${location}"),
+				List.of(getName(), quest.name(), LocationUtil.locationToString(getLocation())));
 	}
 }

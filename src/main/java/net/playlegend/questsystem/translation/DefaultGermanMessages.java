@@ -99,9 +99,9 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(SYSTEM_COMMAND_USAGE, "&7Führe den Befehl mit &e/${command} aus");
         add(QUESTS_COMMAND_NOT_FOUND, "&7Diese Quest konnte &cnicht &7gefunden werden.");
         add(QUESTS_COMMAND_ADMIN_USAGE, "questadmin create/list/remove/sign/npc");
-        add(QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE, "questadmin quest create/delete/list");
-        add(QUESTS_COMMAND_ADMIN_QUEST_CREATE_USAGE, "questadmin create (description <description>)");
-        add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_USAGE, "questadmin delete <name>");
+        add(QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE, "questadmin list (<questname>) - Zeigt alle Quests oder öffnet einen Adminmodus-GUI für eine spezifische Quest");
+        add(QUESTS_COMMAND_ADMIN_QUEST_CREATE_USAGE, "questadmin create (description <description>) - Start a creation of a quest. (Write a description for the current creation)");
+        add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_USAGE, "questadmin delete <name> - Delete a Quest");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM_TEXT, "&7Möchtest du diese Quest wirklich &clöschen&7? (Hier klicken, um zu bestätigen)");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_CONFIRM_HOVER, "&7Klicken, um Quest &cpermanent&7 zu löschen!");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_SUCCESSFUL, "&7Quest wurde erfolgreich gelöscht.");
@@ -113,9 +113,15 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_ADMIN_SIGN_NOT_SIGN, "&7Du schaust auf &ckein Schild");
         add(QUESTS_COMMAND_ADMIN_SIGN_ADDED, "&7Ein neues Schild wurde &ahinzugefügt");
 
-        add(QUESTS_COMMAND_ADMIN_NPC_USAGE, "questadmin npc find/task - Erstelle einen NPC, der zum finden der Quest oder einer Questaufgabe zuständig ist");
-        add(QUESTS_COMMAND_ADMIN_NPC_FIND, "&7Alle Finding-NPC: ${npc}");
-        add(QUESTS_COMMAND_ADMIN_NPC_TASK, "&7Alle Aufgaben-NPC: ${npc}");
+        add(QUESTS_COMMAND_ADMIN_NPC_USAGE, "questadmin npc find/task/list - Erstelle/Lösche einen NPC, der zum finden einer Quest oder einer Questaufgabe zuständig ist");
+
+        add(QUESTS_COMMAND_ADMIN_NPC_LIST_USAGE, "questadmin npc list - Listet alle aktuellen NPC");
+        add(QUESTS_COMMAND_ADMIN_NPC_LIST_FIND, "&7Alle Finding-NPC:");
+        add(QUESTS_COMMAND_ADMIN_NPC_LIST_FIND_ELEMENT, "&7- &c[&7Finde Quest &e${questname} &7durch ${name} &7bei ${location}&c]");
+        add(QUESTS_COMMAND_ADMIN_NPC_LIST_TASK, "&7Alle Aufgaben-NPC:");
+        add(QUESTS_COMMAND_ADMIN_NPC_LIST_TASK_ELEMENT, "&c[&e${name} &7soll in &b(&7${queststeps}&b) &7angesprochen werden. Position ist ${location}&c]");
+        add(QUESTS_COMMAND_ADMIN_NPC_LIST_TASK_ELEMENT_STEP, "&7Quest: ${questname} &7in Aufgabe-ID: &e${stepid}&7");
+
         add(QUESTS_COMMAND_ADMIN_NPC_FIND_SUCCESSFUL, "&aSetup was erfolgreich. Der NPC spawnt an deiner Position");
         add(QUESTS_COMMAND_ADMIN_NPC_FIND_DELETED, "&7Find-NPC wurde gelöscht.");
         add(QUESTS_COMMAND_ADMIN_NPC_FIND_USAGE, "questadmin npc find <questname> <npcname> - Erstelle einen NPC, der zum finden einer Quest da ist");

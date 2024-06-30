@@ -1,4 +1,4 @@
-package net.playlegend.questsystem.commands;
+package net.playlegend.questsystem.commands.admin;
 
 import net.playlegend.questsystem.commands.handler.APISubCommand;
 import net.playlegend.questsystem.player.QuestPlayer;
@@ -8,7 +8,7 @@ import net.playlegend.questsystem.translation.TranslationKeys;
 public class QuestFindCommand extends APISubCommand {
 
     public QuestFindCommand() {
-        super("find", "command.quest.find", TranslationKeys.QUESTS_COMMAND_QUEST_FIND_USAGE, 1, "finden", "found", "discover");
+        super("find", "command.quest.admin.find", TranslationKeys.QUESTS_COMMAND_QUEST_FIND_USAGE, 1, "finden", "found", "discover");
     }
 
     /**

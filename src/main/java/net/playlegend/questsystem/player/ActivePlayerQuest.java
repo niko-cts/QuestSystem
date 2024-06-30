@@ -69,6 +69,17 @@ public class ActivePlayerQuest {
 		return stepsToComplete.stream().filter(s -> s.getOrder() == order).toList();
 	}
 
+	public List<? extends QuestStep<?>> getPreviousSteps() {
+		List<? extends QuestStep<?>> stepsToComplete = getCompletedSteps();
+		Optional<Integer> maxOrder = stepsToComplete.stream().map(QuestStep::getOrder).max(Comparator.comparingInt(i -> i));
+		if (maxOrder.isEmpty()) {
+			return List.of();
+		}
+
+		Integer order = maxOrder.get();
+		return stepsToComplete.stream().filter(s -> s.getOrder() == order).toList();
+	}
+
 	/**
 	 * Returns a list of QuestSteps which the player still needs to complete.
 	 *

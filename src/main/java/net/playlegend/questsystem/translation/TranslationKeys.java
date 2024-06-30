@@ -116,8 +116,11 @@ public class TranslationKeys {
 
 	public static final String QUESTS_COMMAND_ADMIN_NPC_USAGE = Q_COMMAND + "admin.npc.usage";
 	public static final String QUESTS_COMMAND_ADMIN_NPC_LIST_USAGE = Q_COMMAND + "admin.npc.list.usage";
-	public static final String QUESTS_COMMAND_ADMIN_NPC_TASK = Q_COMMAND + "admin.npc.list.task";
-	public static final String QUESTS_COMMAND_ADMIN_NPC_FIND = Q_COMMAND + "admin.npc.list.find";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_LIST_TASK = Q_COMMAND + "admin.npc.list.task.overview";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_LIST_TASK_ELEMENT = Q_COMMAND + "admin.npc.list.task.element.general";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_LIST_TASK_ELEMENT_STEP = Q_COMMAND + "admin.npc.list.task.element.questnstep";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_LIST_FIND = Q_COMMAND + "admin.npc.list.find.overview";
+	public static final String QUESTS_COMMAND_ADMIN_NPC_LIST_FIND_ELEMENT = Q_COMMAND + "admin.npc.list.find.element";
 	public static final String QUESTS_COMMAND_ADMIN_NPC_FIND_USAGE = Q_COMMAND + "admin.npc.find.usage";
 	public static final String QUESTS_COMMAND_ADMIN_NPC_FIND_SUCCESSFUL = Q_COMMAND + "admin.npc.find.successful";
 	public static final String QUESTS_COMMAND_ADMIN_NPC_FIND_DELETED = Q_COMMAND + "admin.npc.find.deleted";

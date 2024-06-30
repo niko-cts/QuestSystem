@@ -5,47 +5,90 @@ import lombok.Getter;
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This class only holds information about the current session of the player.
  * This is necessary to make sure the data gets inserted correct as soon as the QuestPlayer disconnects.
+ *
  * @author Niko
  */
 @Getter
 public class PlayerDatabaseInformationHolder {
-    private final Map<Integer, Timestamp> newFoundQuests;
-    private final Map<Integer, Timestamp> newCompletedQuests;
-    private final boolean needsInsertActiveDirty;
-    private boolean markLanguageDirty;
-    private boolean markActiveQuestDirty;
-    private boolean markCoinsDirty;
 
-    public PlayerDatabaseInformationHolder(boolean needsInsertActiveDirty) {
-        this.needsInsertActiveDirty = needsInsertActiveDirty;
-        this.newFoundQuests = new ConcurrentHashMap<>();
-        this.newCompletedQuests = new ConcurrentHashMap<>();
-        this.markActiveQuestDirty = false;
-        this.markLanguageDirty = false;
-    }
+	private final ReentrantLock lock;
 
-    protected void addFoundQuest(Integer questId, Timestamp foundAt) {
-        this.newFoundQuests.put(questId, foundAt);
-    }
+	private Map<Integer, Timestamp> newFoundQuests;
+	private Map<Integer, Timestamp> newCompletedQuests;
+	private boolean needsInsertActiveDirty;
+	private boolean markLanguageDirty;
+	private boolean markActiveQuestDirty;
+	private boolean markCoinsDirty;
 
-    protected void addCompletedQuest(Integer questId, Timestamp foundAt) {
-        this.newCompletedQuests.put(questId, foundAt);
-    }
+	public PlayerDatabaseInformationHolder(boolean needsInsertActiveDirty) {
+		this.lock = new ReentrantLock();
+		reset(needsInsertActiveDirty);
+	}
 
-    protected void markActiveQuestDirty() {
-        this.markActiveQuestDirty = true;
-    }
+	public void lockForDatabaseUpdate() {
+		this.lock.lock();
+	}
 
-    protected void markLanguageDirty() {
-        this.markLanguageDirty = true;
-    }
+	public void unlock() {
+		this.lock.unlock();
+	}
 
-    protected void markCoinsDirty() {
-        this.markCoinsDirty = true;
-    }
+	public void reset(boolean needsInsertActiveDirty) {
+		this.needsInsertActiveDirty = needsInsertActiveDirty;
+		this.newFoundQuests = new ConcurrentHashMap<>();
+		this.newCompletedQuests = new ConcurrentHashMap<>();
+		this.markActiveQuestDirty = false;
+		this.markLanguageDirty = false;
+	}
+
+	protected void addFoundQuest(Integer questId, Timestamp foundAt) {
+		this.lock.lock();
+		try {
+			this.newFoundQuests.put(questId, foundAt);
+		} finally {
+			this.lock.unlock();
+		}
+	}
+
+	protected void addCompletedQuest(Integer questId, Timestamp foundAt) {
+		this.lock.lock();
+		try {
+			this.newCompletedQuests.put(questId, foundAt);
+		} finally {
+			this.lock.unlock();
+		}
+	}
+
+	protected void markActiveQuestDirty() {
+		this.lock.lock();
+		try {
+			this.markActiveQuestDirty = true;
+		} finally {
+			this.lock.unlock();
+		}
+	}
+
+	protected void markLanguageDirty() {
+		this.lock.lock();
+		try {
+			this.markLanguageDirty = true;
+		} finally {
+			this.lock.unlock();
+		}
+	}
+
+	protected void markCoinsDirty() {
+		this.lock.lock();
+		try {
+			this.markCoinsDirty = true;
+		} finally {
+			this.lock.unlock();
+		}
+	}
 
 }

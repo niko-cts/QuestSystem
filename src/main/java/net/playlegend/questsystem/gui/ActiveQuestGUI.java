@@ -21,10 +21,15 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * This class holds methods to open the active quest menu.
+ *
+ * @author Niko
+ */
 public class ActiveQuestGUI {
 
 	private ActiveQuestGUI() {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException("Should not be instantiated.");
 	}
 
 
@@ -33,9 +38,9 @@ public class ActiveQuestGUI {
 		Language language = questPlayer.getLanguage();
 
 		menu.setItem(10, new ItemBuilder(Material.BOOK)
-						.setName(activeQuest.getQuest().name())
-						.setLore(activeQuest.getQuest().description().split(";"))
-						.craft());
+				.setName(activeQuest.getQuest().name())
+				.setLore(activeQuest.getQuest().description().split(";"))
+				.craft());
 
 		menu.setItem(11, getActivePlayerQuestItem(activeQuest, language));
 
@@ -78,15 +83,14 @@ public class ActiveQuestGUI {
 		long completeSeconds = activeQuest.getQuest().finishTimeInSeconds();
 		double timeFraction = (double) secondsLeft / completeSeconds;
 
-		for (double i = 0, j = 18; i < 1 && j < 27; i += 0.1, j++) {
+		for (double i = 0, j = 0; i < 1 && j < 9; i += 0.1, j++) {
 			boolean isInTime = timeFraction >= i;
 			menu.setItem((int) j, new ItemBuilder(
-					isInTime ? UsefulItems.BACKGROUND_GREEN : UsefulItems.BACKGROUND_GRAY
+					isInTime ? UsefulItems.BACKGROUND_GREEN : UsefulItems.BACKGROUND_YELLOW
 			).setName(timeLeftName).craft());
 		}
 
-		menu.fill(UsefulItems.BACKGROUND_BLACK);
-		questPlayer.openCustomInv(menu);
+		GUIHelper.fillInventoryWithBackAndOpen(questPlayer, menu, QuestOverviewGUI::openOverviewGUI);
 	}
 
 	private static ItemStack getActivePlayerQuestItem(ActivePlayerQuest quest, Language language) {

@@ -14,6 +14,8 @@ public class QuestNpcCommand extends APISubCommand {
 
 	@Override
 	public void onCommand(QuestPlayer questPlayer, String[] arguments) {
-		sendCommandUsage(questPlayer);
+		for (APISubCommand apiSubCommand : getSubCommandList()) {
+			apiSubCommand.sendCommandUsage(questPlayer);
+		}
 	}
 }

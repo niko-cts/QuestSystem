@@ -46,8 +46,8 @@ public class QuestPlayer {
 
 	private final Map<Quest, Timestamp> finishedQuests;
 	private final Map<Quest, Timestamp> foundQuests;
-	private final PlayerDatabaseInformationHolder playerDbInformationHolder;
 
+	private PlayerDatabaseInformationHolder playerDbInformationHolder;
 	private ActivePlayerQuest activePlayerQuest;
 
 	public QuestPlayer(@NonNull Player player, @NonNull Language language, @NonNull Timestamp lastLogout, int coins) {
@@ -59,19 +59,16 @@ public class QuestPlayer {
 		this.finishedQuests = questManager.loadCompletedQuestIdsByPlayer(player.getUniqueId());
 		this.foundQuests = questManager.loadFoundQuestIdsByPlayer(player.getUniqueId());
 
-		PlayerDatabaseInformationHolder playerDbInformationHolder;
 		try {
 			ActivePlayerQuest activePlayerQuest = questManager.loadActiveQuestIdByPlayer(player.getUniqueId(), lastLogout).orElse(null);
 			this.activePlayerQuest = activePlayerQuest;
-			playerDbInformationHolder = new PlayerDatabaseInformationHolder(activePlayerQuest == null);
+			this.playerDbInformationHolder = new PlayerDatabaseInformationHolder(activePlayerQuest == null);
 		} catch (QuestNotFoundException exception) {
-			playerDbInformationHolder = new PlayerDatabaseInformationHolder(false);
-			playerDbInformationHolder.markActiveQuestDirty();
+			this.playerDbInformationHolder = new PlayerDatabaseInformationHolder(false);
+			this.playerDbInformationHolder.markActiveQuestDirty();
 			this.activePlayerQuest = null;
 			QuestSystem.getInstance().getLogger().info("Player had active quest which could not be found: " + exception.getMessage());
 		}
-
-		this.playerDbInformationHolder = playerDbInformationHolder;
 
 		this.questTimer = new QuestTimerPlayer(this);
 		Bukkit.getScheduler().runTaskLater(QuestSystem.getInstance(), () -> {
@@ -102,7 +99,7 @@ public class QuestPlayer {
 		foundQuests.computeIfAbsent(quest, q -> {
 			Timestamp foundAt = Timestamp.from(Instant.now());
 			playerDbInformationHolder.addFoundQuest(q.id(), foundAt);
-			sendClickableMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, TranslationKeys.QUESTS_EVENT_FOUND_NEW_HOVER, "${name}", q.name(), "/quest");
+			sendClickableMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, TranslationKeys.QUESTS_EVENT_FOUND_NEW_HOVER, "${name}", q.name(), "/quest found");
 			sendEvent(PlayerQuestUpdateEvent.QuestUpdateType.FIND);
 			return foundAt;
 		});
@@ -120,7 +117,7 @@ public class QuestPlayer {
 		}
 	}
 
-	public void playerQuit() {
+	public void playerQuitServer() {
 		checkIfExpired();
 		this.questTimer.cancelTask();
 	}
@@ -165,6 +162,7 @@ public class QuestPlayer {
 		return isDone;
 	}
 
+
 	public void questUpdateEvent(@NonNull PlayerQuestUpdateEvent.QuestUpdateType type) {
 		ScoreboardUtil.updateScoreboard(this);
 		QuestSystem.getInstance().getQuestSignManager().updateSign(this);
@@ -199,6 +197,14 @@ public class QuestPlayer {
 		this.questTimer.startTimerIfActiveQuestPresent();
 	}
 
+	/**
+	 * Initializes a new {@link PlayerDatabaseInformationHolder}.
+	 * This should be called as soon as the player data was updated or newly retrieved.
+	 */
+	public void databaseUpdatedResetEntries() {
+		this.playerDbInformationHolder.reset(this.activePlayerQuest == null);
+	}
+
 	public UUID getUniqueId() {
 		return player.getUniqueId();
 	}
@@ -225,10 +231,6 @@ public class QuestPlayer {
 		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.UPDATE_STATS);
 	}
 
-
-	public Optional<ActivePlayerQuest> getActivePlayerQuest() {
-		return Optional.ofNullable(activePlayerQuest);
-	}
 
 	public void sendMessage(String translationKey) {
 		player.sendMessage(language.translateMessage(translationKey));
@@ -280,5 +282,17 @@ public class QuestPlayer {
 
 	public List<Quest> getUnfinishedPublicQuests() {
 		return QuestSystem.getInstance().getQuestManager().getPublicQuests().stream().filter(q -> !foundQuests.containsKey(q)).toList();
+	}
+
+	public Optional<ActivePlayerQuest> getActivePlayerQuest() {
+		return Optional.ofNullable(activePlayerQuest);
+	}
+
+	public void lockDatabaseUpdate() {
+		this.playerDbInformationHolder.lockForDatabaseUpdate();
+	}
+
+	public void unlockDatabaseUpdate() {
+		this.playerDbInformationHolder.unlock();
 	}
 }

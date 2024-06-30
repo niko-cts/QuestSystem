@@ -1,8 +1,8 @@
 package net.playlegend.questsystem.commands.admin;
 
 import net.playlegend.questsystem.commands.handler.APISubCommand;
+import net.playlegend.questsystem.gui.builder.QuestBuilder;
 import net.playlegend.questsystem.player.QuestPlayer;
-import net.playlegend.questsystem.quest.builder.QuestBuilder;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.ChatColor;
 

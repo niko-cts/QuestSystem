@@ -97,7 +97,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(SYSTEM_COMMAND_USAGE, "&7Execute the command with &e/${command}");
         add(QUESTS_COMMAND_NOT_FOUND, "&7This quest could &cnot &7be found.");
         add(QUESTS_COMMAND_ADMIN_USAGE, "questadmin create/list/remove/sign/npc");
-        add(QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE, "questadmin list (<questname>) - Shows all or a specific quest");
+        add(QUESTS_COMMAND_ADMIN_QUEST_LIST_USAGE, "questadmin list (<questname>) - Shows all or open a admin mode-GUI for a specific quest");
         add(QUESTS_COMMAND_ADMIN_QUEST_CREATE_USAGE, "questadmin create (description <description>)");
         add(QUESTS_COMMAND_ADMIN_QUEST_DELETE_USAGE, "questadmin delete <name>");
 
@@ -113,8 +113,11 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
 
         add(QUESTS_COMMAND_ADMIN_NPC_USAGE, "questadmin npc find/task/list - Create/Update a find or task NPC. Alternatively list every available NPC's");
         add(QUESTS_COMMAND_ADMIN_NPC_LIST_USAGE, "questadmin npc list - Lists every available NPC");
-        add(QUESTS_COMMAND_ADMIN_NPC_FIND, "&7All Find-NPC: ${npc}");
-        add(QUESTS_COMMAND_ADMIN_NPC_TASK, "&7All Task-NPC: ${npc}");
+        add(QUESTS_COMMAND_ADMIN_NPC_LIST_FIND, "&7All Find-NPC:");
+        add(QUESTS_COMMAND_ADMIN_NPC_LIST_FIND_ELEMENT, "&7- &c[&7Find quest ${questname} &7through ${name} &7at ${location}&c]");
+        add(QUESTS_COMMAND_ADMIN_NPC_LIST_TASK, "&7All Task-NPC:");
+        add(QUESTS_COMMAND_ADMIN_NPC_LIST_TASK_ELEMENT, "&c[&e${name} &7should be spoken to in &b(&7${queststeps}&b)&7. Located at ${location}&c]");
+        add(QUESTS_COMMAND_ADMIN_NPC_LIST_TASK_ELEMENT_STEP, "&7Quest: ${questname} &7at Task-ID: &e${stepid}&7");
         add(QUESTS_COMMAND_ADMIN_NPC_FIND_SUCCESSFUL, "&aFind-NPC was created/updated. &7A NPC will spawn at this location. Players can find the Quest through the NPC.");
         add(QUESTS_COMMAND_ADMIN_NPC_FIND_DELETED, "&7Find-NPC was deleted.");
         add(QUESTS_COMMAND_ADMIN_NPC_TASK_SUCCESSFUL, "&aTask-NPC was created/updated. &7A NPC will spawn at this location. Player have to speak to this NPC to trigger the Quest-Task 'talk'!");

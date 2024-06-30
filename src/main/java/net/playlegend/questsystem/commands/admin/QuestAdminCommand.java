@@ -3,6 +3,7 @@ package net.playlegend.questsystem.commands.admin;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.commands.admin.npc.QuestNpcCommand;
 import net.playlegend.questsystem.commands.handler.APICommand;
+import net.playlegend.questsystem.commands.handler.APISubCommand;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.TranslationKeys;
 
@@ -17,9 +18,10 @@ public class QuestAdminCommand extends APICommand {
 		addSubCommand(new QuestCreateSubCommand());
 		addSubCommand(new QuestDeleteSubCommand());
 		addSubCommand(new QuestListSubCommand());
-		if(QuestSystem.getInstance().getNpcManager() != null)
+		if (QuestSystem.getInstance().getNpcManager() != null)
 			addSubCommand(new QuestNpcCommand());
 		addSubCommand(QuestSystem.getInstance().getQuestSignManager());
+		addSubCommand(new QuestFindCommand());
 	}
 
 	/**
@@ -32,6 +34,8 @@ public class QuestAdminCommand extends APICommand {
 	@Override
 	public void onCommand(QuestPlayer questPlayer, String[] args) {
 		sendCommandUsage(questPlayer);
-		QuestSystem.getInstance().getQuestSignManager().updateSign(questPlayer);
+		for (APISubCommand apiSubCommand : getSubCommandList()) {
+			apiSubCommand.sendCommandUsage(questPlayer);
+		}
 	}
 }
