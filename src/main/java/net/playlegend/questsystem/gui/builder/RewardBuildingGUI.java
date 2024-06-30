@@ -33,7 +33,7 @@ public class RewardBuildingGUI {
 		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(builder.rewards.size() + 1));
 		for (QuestReward<?> reward : builder.rewards) {
 			menu.addItem(new ItemBuilder(reward.getRewardDisplayItem(builder.language))
-							.addLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_STEPS_REMOVE).split(";"))
+							.addLore(builder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_MODIFY_REWARD_REMOVE).split(";"))
 							.craft(),
 					new ClickAction() {
 						@Override

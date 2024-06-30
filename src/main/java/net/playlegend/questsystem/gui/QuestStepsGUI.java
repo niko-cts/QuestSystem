@@ -13,6 +13,11 @@ import net.playlegend.questsystem.translation.TranslationKeys;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+/**
+ * Class to open active and default quest tasks.
+ *
+ * @author Niko
+ */
 public class QuestStepsGUI {
 
 	private QuestStepsGUI() {

@@ -8,6 +8,7 @@ import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
 import lombok.NonNull;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.reward.QuestReward;
+import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import org.bukkit.ChatColor;
@@ -15,7 +16,10 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -92,4 +96,26 @@ public class GUIHelper {
 						.craft();
 	}
 
+	public static ItemStack getStepItem(@NonNull Language language, @NonNull List<QuestStep<?>> steps) {
+		return steps.size() == 1 ?
+				steps.get(0).getTaskItem(language) :
+				new ItemBuilder(Material.IRON_DOOR)
+						.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_STEPS_NAME))
+						.setLore(steps.stream().sorted(Comparator.comparingInt(QuestStep::getOrder)).map(s -> s.getTaskLine(language)).toList())
+						.craft();
+	}
+
+	public static ItemStack getActiveStepItem(@NonNull Language language, @NonNull Map<QuestStep<?>, Integer> steps) {
+		if (steps.size() == 1) {
+			QuestStep<?> questStep = new ArrayList<>(steps.keySet()).get(0);
+			Integer amount = steps.get(questStep);
+			return questStep.getActiveTask(language, amount);
+		}
+		return new ItemBuilder(Material.IRON_DOOR)
+				.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_STEPS_NAME))
+				.setLore(steps.entrySet().stream().sorted(Comparator.comparingInt(e -> e.getKey().getOrder())).map(e -> e.getKey().getActiveTaskLine(language, e.getValue()))
+						.toList())
+				.setAmount(Math.min(64, Math.max(1, steps.size())))
+				.craft();
+	}
 }

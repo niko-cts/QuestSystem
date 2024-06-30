@@ -44,10 +44,8 @@ public class ActiveQuestGUI {
 
 		menu.setItem(11, getActivePlayerQuestItem(activeQuest, language));
 
-		menu.setItem(13, new ItemBuilder(Material.CHEST)
-						.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_STEPS_PREVIEW_NAME))
-						.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_STEPS_PREVIEW_LORE).split(";"))
-						.setAmount(Math.min(64, Math.max(1, activeQuest.getStepsWithAmounts().size())))
+		menu.setItem(13, new ItemBuilder(GUIHelper.getActiveStepItem(language, activeQuest.getStepsWithAmounts()))
+						.addLore(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_STEPS_PREVIEW_LORE).split(";"))
 						.craft(),
 				new ClickAction(Sound.BLOCK_CHEST_OPEN) {
 					@Override
@@ -56,9 +54,8 @@ public class ActiveQuestGUI {
 					}
 				});
 
-		menu.setItem(14, new ItemBuilder(Material.GOLD_INGOT)
-						.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_REWARDS_PREVIEW_NAME))
-						.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_REWARDS_PREVIEW_LORE).split(";")).craft(),
+		menu.setItem(14, new ItemBuilder(GUIHelper.getRewardItem(language, activeQuest.getQuest().rewards()))
+						.addLore(language.translateMessage(TranslationKeys.QUESTS_GUI_REWARDS_PREVIEW_LORE).split(";")).craft(),
 				new ClickAction(Sound.BLOCK_CHEST_OPEN) {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {

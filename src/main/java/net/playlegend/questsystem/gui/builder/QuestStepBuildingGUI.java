@@ -3,7 +3,6 @@ package net.playlegend.questsystem.gui.builder;
 import chatzis.nikolas.mc.nikoapi.inventory.ClickAction;
 import chatzis.nikolas.mc.nikoapi.inventory.CustomInventory;
 import chatzis.nikolas.mc.nikoapi.item.ItemBuilder;
-import chatzis.nikolas.mc.nikoapi.item.UsefulItems;
 import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
 import chatzis.nikolas.mc.nikoapi.util.Utils;
 import net.playlegend.questsystem.QuestSystem;
@@ -128,28 +127,31 @@ public class QuestStepBuildingGUI {
 					}
 				});
 
-		menu.setItem(16, UsefulItems.HEAD_A()
-						.setName(questBuilder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ACCEPT)).craft(),
-				new ClickAction() {
-					@Override
-					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						if (parameter == null) return;
 
-						String newParameter = parameter.toString();
-						try {
-							if (type.getConstructorParameter() == ItemStack.class) {
-								newParameter = ItemToBase64ConverterUtil.toBase64((ItemStack) parameter);
+		if (parameter != null) {
+			String newParameter = parameter.toString();
+			try {
+				if (type.getConstructorParameter() == ItemStack.class) {
+					newParameter = ItemToBase64ConverterUtil.toBase64((ItemStack) parameter);
+				}
+				int newStepId = questBuilder.steps.stream().max(Comparator.comparingInt(QuestStep::getId))
+						                .map(QuestStep::getId).orElse(0) + 1;
+				QuestStep<?> stepToCreate = QuestObjectConverterUtil.instantiateQuestStepFromTypeAndParameter(type, newStepId, order, amount, newParameter);
+
+				menu.setItem(16, new ItemBuilder(stepToCreate.getTaskItem(questBuilder.language))
+								.addLore(questBuilder.language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ACCEPT_LORE)).craft(),
+						new ClickAction() {
+							@Override
+							public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
+								questBuilder.steps.add(stepToCreate);
+								questBuilder.openMenu();
 							}
-							int newStepId = questBuilder.steps.stream().max(Comparator.comparingInt(QuestStep::getId))
-									             .map(QuestStep::getId).orElse(0) + 1;
-							questBuilder.steps.add(QuestObjectConverterUtil.instantiateQuestStepFromTypeAndParameter(type, newStepId, order, amount, newParameter));
-						} catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
-							QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not add QuestStep in QuestBuilder", e);
-						}
-
-						questBuilder.openMenu();
-					}
-				});
+						});
+			} catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
+				QuestSystem.getInstance().getLogger().log(Level.SEVERE, "Could not create QuestTask in QuestBuilder", e);
+				questBuilder.questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_STEPS_CREATION_ERROR, "${message}", e.getMessage());
+			}
+		}
 
 		GUIHelper.fillInventoryWithBackAndOpen(questBuilder.questPlayer, menu, null,
 				(questPlayer, o) -> questBuilder.openMenu());

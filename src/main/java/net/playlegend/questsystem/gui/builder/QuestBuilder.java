@@ -159,9 +159,8 @@ public class QuestBuilder implements Listener {
 			}
 		});
 
-		menu.setItem(13, new ItemBuilder(Material.IRON_DOOR)
-				.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_STEPS_NAME))
-				.setLore(steps.stream().sorted(Comparator.comparingInt(QuestStep::getOrder)).map(s -> ChatColor.YELLOW + "" + s.getOrder() + ChatColor.GRAY + ". " + s.getTaskLine(language)).toList())
+		menu.setItem(13,
+				new ItemBuilder(GUIHelper.getStepItem(questPlayer.getLanguage(), steps))
 				.addLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_LORE).split(";"))
 				.craft(), new ClickAction() {
 			@Override

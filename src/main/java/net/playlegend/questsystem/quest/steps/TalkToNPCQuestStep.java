@@ -56,8 +56,8 @@ public class TalkToNPCQuestStep extends QuestStep<UUID> {
 	@Override
 	public String getActiveTaskLine(Language language, int currentAmount) {
 		return language.translateMessage(TranslationKeys.QUESTS_STEP_NPC_ACTIVE_LINE,
-				List.of("${name}", "${amount}", "${maxamount}"),
-				List.of(getNPCName().orElse("unknown"), currentAmount, getMaxAmount()));
+				List.of("${order}", "${name}", "${amount}", "${maxamount}"),
+				List.of(getOrder(), getNPCName().orElse("unknown"), currentAmount, getMaxAmount()));
 	}
 
 	/**
@@ -69,8 +69,8 @@ public class TalkToNPCQuestStep extends QuestStep<UUID> {
 	@Override
 	public String getTaskLine(Language language) {
 		return language.translateMessage(TranslationKeys.QUESTS_STEP_NPC_NORMAL_LINE,
-				List.of("${name}", "${maxamount}"),
-				List.of(getNPCName().orElse("unknown"), getMaxAmount()));
+				List.of("${order}", "${name}", "${maxamount}"),
+				List.of(getOrder(), getNPCName().orElse("unknown"), getMaxAmount()));
 	}
 
 	/**

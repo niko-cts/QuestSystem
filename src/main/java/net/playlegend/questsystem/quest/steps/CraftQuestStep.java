@@ -55,8 +55,8 @@ public class CraftQuestStep extends QuestStep<ItemStack> {
 	@Override
 	public String getActiveTaskLine(Language language, int currentAmount) {
 		return language.translateMessage(TranslationKeys.QUESTS_STEP_CRAFT_ACTIVE_LINE,
-				List.of("${item}", "${amount}", "${maxamount}"),
-				List.of(materialName, currentAmount, getMaxAmount()));
+				List.of("${order}", "${item}", "${amount}", "${maxamount}"),
+				List.of(getOrder(), materialName, currentAmount, getMaxAmount()));
 	}
 
 	/**
@@ -68,8 +68,8 @@ public class CraftQuestStep extends QuestStep<ItemStack> {
 	@Override
 	public String getTaskLine(Language language) {
 		return language.translateMessage(TranslationKeys.QUESTS_STEP_CRAFT_NORMAL_LINE,
-				List.of("${item}", "${maxamount}"),
-				List.of(materialName, getMaxAmount()));
+				List.of("${order}", "${item}", "${maxamount}"),
+				List.of(getOrder(), materialName, getMaxAmount()));
 	}
 
 	/**

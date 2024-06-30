@@ -53,8 +53,8 @@ public class KillQuestStep extends QuestStep<EntityType> {
 	@Override
 	public String getActiveTaskLine(Language language, int currentAmount) {
 		return language.translateMessage(TranslationKeys.QUESTS_STEP_KILL_ACTIVE_LINE,
-				List.of("${entity}", "${amount}", "${maxamount}"),
-				List.of(entityName, currentAmount, getMaxAmount()));
+				List.of("${order}", "${entity}", "${amount}", "${maxamount}"),
+				List.of(getOrder(), entityName, currentAmount, getMaxAmount()));
 	}
 
 	/**
@@ -66,8 +66,8 @@ public class KillQuestStep extends QuestStep<EntityType> {
 	@Override
 	public String getTaskLine(Language language) {
 		return language.translateMessage(TranslationKeys.QUESTS_STEP_KILL_NORMAL_LINE,
-				List.of("${entity}", "${maxamount}"),
-				List.of(entityName, getMaxAmount()));
+				List.of("${order}", "${entity}", "${maxamount}"),
+				List.of(getOrder(), entityName, getMaxAmount()));
 	}
 
 	/**

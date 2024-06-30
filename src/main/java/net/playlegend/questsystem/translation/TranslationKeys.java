@@ -67,7 +67,8 @@ public class TranslationKeys {
 	public static final String QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE = BUILDER + "steps.creation.amount.lore";
 	public static final String QUESTS_BUILDER_STEPS_CREATION_PARAMETER_NAME = BUILDER + "steps.creation.parameter.name";
 	public static final String QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE = BUILDER + "steps.creation.parameter.lore";
-	public static final String QUESTS_BUILDER_STEPS_CREATION_ACCEPT = BUILDER + "steps.accept";
+	public static final String QUESTS_BUILDER_STEPS_CREATION_ACCEPT_LORE = BUILDER + "steps.accept";
+	public static final String QUESTS_BUILDER_STEPS_CREATION_ERROR = BUILDER + "steps.error";
 
 
 

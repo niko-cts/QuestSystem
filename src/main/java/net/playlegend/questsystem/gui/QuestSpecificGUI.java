@@ -47,9 +47,7 @@ public class QuestSpecificGUI {
 					}
 				});
 
-		menu.setItem(14, quest.completionSteps().size() == 1 ?
-						quest.completionSteps().get(0).getTaskItem(language) :
-						quest.getStepItem(language),
+		menu.setItem(14, GUIHelper.getStepItem(language, quest.completionSteps()),
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
