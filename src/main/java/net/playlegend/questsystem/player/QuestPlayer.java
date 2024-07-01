@@ -46,7 +46,8 @@ public class QuestPlayer {
 	private final Map<Quest, Timestamp> finishedQuests;
 	private final Map<Quest, Timestamp> foundQuests;
 
-	private PlayerDatabaseInformationHolder playerDbInformationHolder;
+	@Getter
+	private final PlayerDatabaseInformationHolder playerDbInformationHolder;
 	private ActivePlayerQuest activePlayerQuest;
 
 	public QuestPlayer(@NonNull Player player, @NonNull Language language, @NonNull Timestamp lastLogout, int coins) {
@@ -58,17 +59,19 @@ public class QuestPlayer {
 		this.finishedQuests = questManager.loadCompletedQuestIdsByPlayer(player.getUniqueId());
 		this.foundQuests = questManager.loadFoundQuestIdsByPlayer(player.getUniqueId());
 
+		PlayerDatabaseInformationHolder tempDBInfo;
 		try {
 			ActivePlayerQuest activePlayerQuest = questManager.loadActiveQuestIdByPlayer(player.getUniqueId(), lastLogout).orElse(null);
 			this.activePlayerQuest = activePlayerQuest;
-			this.playerDbInformationHolder = new PlayerDatabaseInformationHolder(activePlayerQuest == null);
+			tempDBInfo = new PlayerDatabaseInformationHolder(activePlayerQuest == null);
 		} catch (QuestNotFoundException exception) {
-			this.playerDbInformationHolder = new PlayerDatabaseInformationHolder(false);
-			this.playerDbInformationHolder.markActiveQuestDirty();
+			tempDBInfo = new PlayerDatabaseInformationHolder(false);
+			tempDBInfo.markActiveQuestDirty();
 			this.activePlayerQuest = null;
 			QuestSystem.getInstance().getLogger().info("Player had active quest which could not be found: " + exception.getMessage());
 		}
 
+		this.playerDbInformationHolder = tempDBInfo;
 		this.questTimer = new QuestTimerPlayer(this);
 		Bukkit.getScheduler().runTaskLater(QuestSystem.getInstance(), () -> {
 			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.JOINED);
