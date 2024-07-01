@@ -22,6 +22,12 @@ import java.util.function.Consumer;
 
 import static net.playlegend.questsystem.translation.TranslationKeys.*;
 
+/**
+ * Class to open a GUI for a specific Quest.
+ * This is not an active quest just the normal view from the Found, Complete, Public List.
+ *
+ * @author Niko
+ */
 public class QuestSpecificGUI {
 
 	private QuestSpecificGUI() {
@@ -62,7 +68,7 @@ public class QuestSpecificGUI {
 			menu.setItem(20, new ItemBuilder(Material.IRON_HOE)
 							.setName(language.translateMessage(QUESTS_GUI_QUEST_ADMIN_MODIFY_NAME))
 							.setLore(language.translateMessage(QUESTS_GUI_QUEST_ADMIN_MODIFY_LORE).split(";"))
-					.addItemFlags(ItemFlag.HIDE_ATTRIBUTES).craft(),
+							.addItemFlags(ItemFlag.HIDE_ATTRIBUTES).craft(),
 					new ClickAction() {
 						@Override
 						public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
@@ -103,7 +109,7 @@ public class QuestSpecificGUI {
 					});
 
 
-			GUIHelper.fillInventoryWithBackAndOpen(questPlayer, menu, null, (backPlayer, o) -> goBack.accept(backPlayer));
+			GUIHelper.fillInventoryWithBackAndOpen(questPlayer, menu, goBack);
 		}
 	}
 }

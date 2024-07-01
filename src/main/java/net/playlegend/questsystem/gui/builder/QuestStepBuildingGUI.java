@@ -45,7 +45,7 @@ public class QuestStepBuildingGUI {
 					});
 		}
 
-		GUIHelper.fillInventoryWithBackAndOpen(builder.questPlayer, menu, null, (questPlayer, o) -> builder.openMenu());
+		GUIHelper.fillInventoryWithBackAndOpen(builder.questPlayer, menu, (questPlayer) -> builder.openMenu());
 	}
 
 
@@ -63,7 +63,7 @@ public class QuestStepBuildingGUI {
 					});
 		}
 
-		GUIHelper.fillInventoryWithBackAndOpen(builder.questPlayer, menu, null, (questPlayer, o) -> builder.openMenu());
+		GUIHelper.fillInventoryWithBackAndOpen(builder.questPlayer, menu, (questPlayer) -> builder.openMenu());
 	}
 
 	private static void openStepCreationMenu(QuestBuilder questBuilder, QuestStepType type,

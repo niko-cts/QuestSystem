@@ -31,17 +31,20 @@ public class QuestPlayerConnectionListener implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		Bukkit.getScheduler().runTaskAsynchronously(QuestSystem.getInstance(), () -> {
-			playerHandler.addPlayer(event.getPlayer()).ifPresent(questPlayer -> {
-				Optional<ActivePlayerQuest> activeQuest = questPlayer.getActivePlayerQuest();
-				if (activeQuest.isPresent()) {
-					ActivePlayerQuest activePlayerQuest = activeQuest.get();
-					questPlayer.sendMessage(TranslationKeys.QUESTS_EVENT_JOINED_HAS_ACTIVE,
-							List.of("${name}", "${duration}"),
-							List.of(activePlayerQuest.getQuest().name(), QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getLanguage(), activePlayerQuest.getSecondsLeft())));
-				} else {
-					questPlayer.sendClickableMessage(TranslationKeys.QUESTS_EVENT_JOINED_NO_ACTIVE_TEXT, TranslationKeys.QUESTS_EVENT_JOINED_NO_ACTIVE_HOVER, "/quest");
+			playerHandler.addPlayer(event.getPlayer()).ifPresent(questPlayer -> new BukkitRunnable() {
+				@Override
+				public void run() {
+					Optional<ActivePlayerQuest> activeQuest = questPlayer.getActivePlayerQuest();
+					if (activeQuest.isPresent()) {
+						ActivePlayerQuest activePlayerQuest = activeQuest.get();
+						questPlayer.sendMessage(TranslationKeys.QUESTS_EVENT_JOINED_HAS_ACTIVE,
+								List.of("${name}", "${duration}"),
+								List.of(activePlayerQuest.getQuest().name(), QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getLanguage(), activePlayerQuest.getSecondsLeft())));
+					} else {
+						questPlayer.sendClickableMessage(TranslationKeys.QUESTS_EVENT_JOINED_NO_ACTIVE_TEXT, TranslationKeys.QUESTS_EVENT_JOINED_NO_ACTIVE_HOVER, "/quest");
+					}
 				}
-			});
+			}.runTaskLater(QuestSystem.getInstance(), 20L));
 		});
 	}
 

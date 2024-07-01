@@ -1,6 +1,9 @@
 package net.playlegend.questsystem.player;
 
 import lombok.Getter;
+import net.playlegend.questsystem.QuestSystem;
+import net.playlegend.questsystem.util.PlayerQuestDataSaveTimer;
+import org.bukkit.Bukkit;
 
 import java.sql.Timestamp;
 import java.util.Map;
@@ -10,7 +13,9 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * This class only holds information about the current session of the player.
  * This is necessary to make sure the data gets inserted correct as soon as the QuestPlayer disconnects.
+ * <p>A {@link ReentrantLock} is implemented to ensure any data is not reset before updated.</p>
  *
+ * @see PlayerQuestDataSaveTimer
  * @author Niko
  */
 @Getter
@@ -47,48 +52,62 @@ public class PlayerDatabaseInformationHolder {
 	}
 
 	protected void addFoundQuest(Integer questId, Timestamp foundAt) {
-		this.lock.lock();
-		try {
-			this.newFoundQuests.put(questId, foundAt);
-		} finally {
-			this.lock.unlock();
-		}
+		runAsync(() -> {
+			this.lock.lock();
+			try {
+				this.newFoundQuests.put(questId, foundAt);
+			} finally {
+				this.lock.unlock();
+			}
+		});
 	}
 
+
 	protected void addCompletedQuest(Integer questId, Timestamp foundAt) {
-		this.lock.lock();
-		try {
-			this.newCompletedQuests.put(questId, foundAt);
-		} finally {
-			this.lock.unlock();
-		}
+		runAsync(() -> {
+			this.lock.lock();
+			try {
+				this.newCompletedQuests.put(questId, foundAt);
+			} finally {
+				this.lock.unlock();
+			}
+		});
 	}
 
 	protected void markActiveQuestDirty() {
-		this.lock.lock();
-		try {
-			this.markActiveQuestDirty = true;
-		} finally {
-			this.lock.unlock();
-		}
+		runAsync(() -> {
+			this.lock.lock();
+			try {
+				this.markActiveQuestDirty = true;
+			} finally {
+				this.lock.unlock();
+			}
+		});
 	}
 
 	protected void markLanguageDirty() {
-		this.lock.lock();
-		try {
-			this.markLanguageDirty = true;
-		} finally {
-			this.lock.unlock();
-		}
+		runAsync(() -> {
+			this.lock.lock();
+			try {
+				this.markLanguageDirty = true;
+			} finally {
+				this.lock.unlock();
+			}
+		});
 	}
 
 	protected void markCoinsDirty() {
-		this.lock.lock();
-		try {
-			this.markCoinsDirty = true;
-		} finally {
-			this.lock.unlock();
-		}
+		runAsync(() -> {
+			this.lock.lock();
+			try {
+				this.markCoinsDirty = true;
+			} finally {
+				this.lock.unlock();
+			}
+		});
 	}
 
+	private void runAsync(Runnable o) {
+		Bukkit.getScheduler().runTaskAsynchronously(QuestSystem.getInstance(), o);
+	}
 }

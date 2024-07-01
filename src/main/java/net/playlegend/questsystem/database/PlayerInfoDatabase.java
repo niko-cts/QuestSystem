@@ -15,6 +15,10 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
 
+/**
+ * Database interface to store basic information about a player.
+ * @author Niko
+ */
 public class PlayerInfoDatabase {
 
 	private static final String TABLE_PLAYER = "system_player";

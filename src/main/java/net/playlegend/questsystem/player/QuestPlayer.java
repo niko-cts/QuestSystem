@@ -25,23 +25,22 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Class which stores all important information about the player and the quest.
  *
  * @author Niko
  */
-@Getter
 public class QuestPlayer {
-
+	@Getter
 	private final Player player;
+	@Getter
 	private final Timestamp lastLogout;
 	private final QuestTimerPlayer questTimer;
+	@Getter
 	private Language language;
+	@Getter
 	private int coins;
 
 	private final Map<Quest, Timestamp> finishedQuests;
@@ -95,7 +94,7 @@ public class QuestPlayer {
 	}
 
 	public void foundQuest(Quest quest) {
-		if (quest.isPublic() || getFoundQuests().containsKey(quest)) return;
+		if (quest.isPublic()) return;
 		foundQuests.computeIfAbsent(quest, q -> {
 			Timestamp foundAt = Timestamp.from(Instant.now());
 			playerDbInformationHolder.addFoundQuest(q.id(), foundAt);
@@ -205,10 +204,6 @@ public class QuestPlayer {
 		this.playerDbInformationHolder.reset(this.activePlayerQuest == null);
 	}
 
-	public UUID getUniqueId() {
-		return player.getUniqueId();
-	}
-
 	/**
 	 * Changes the language and updates the scoreboard.
 	 *
@@ -252,6 +247,11 @@ public class QuestPlayer {
 		player.getInventory().addItem(item);
 	}
 
+	public UUID getUniqueId() {
+		return player.getUniqueId();
+	}
+
+
 	public void sendClickableMessage(String translationKey, String hoverKey, String command) {
 		TextComponent textComponent = new TextComponent(language.translateMessage(translationKey));
 		textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
@@ -294,5 +294,13 @@ public class QuestPlayer {
 
 	public void unlockDatabaseUpdate() {
 		this.playerDbInformationHolder.unlock();
+	}
+
+	public Map<Quest, Timestamp> getFoundQuests() {
+		return new HashMap<>(foundQuests);
+	}
+
+	public Map<Quest, Timestamp> getFinishedQuests() {
+		return new HashMap<>(finishedQuests);
 	}
 }

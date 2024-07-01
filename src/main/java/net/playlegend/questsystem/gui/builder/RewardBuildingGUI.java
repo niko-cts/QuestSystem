@@ -44,7 +44,7 @@ public class RewardBuildingGUI {
 					});
 		}
 
-		GUIHelper.fillInventoryWithBackAndOpen(builder.questPlayer, menu, null, (questPlayer, o) -> builder.openMenu());
+		GUIHelper.fillInventoryWithBackAndOpen(builder.questPlayer, menu, (questPlayer) -> builder.openMenu());
 	}
 
 	protected static void addNewRewardSelection(QuestBuilder builder) {
@@ -71,7 +71,7 @@ public class RewardBuildingGUI {
 					});
 		}
 
-		GUIHelper.fillInventoryWithBackAndOpen(builder.questPlayer, menu, null, (questPlayer, o) -> builder.openMenu());
+		GUIHelper.fillInventoryWithBackAndOpen(builder.questPlayer, menu, (questPlayer) -> builder.openMenu());
 	}
 
 	private static void openItemRewardMenu(QuestBuilder builder) {

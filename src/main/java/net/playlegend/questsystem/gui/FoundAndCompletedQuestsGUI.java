@@ -33,6 +33,8 @@ public class FoundAndCompletedQuestsGUI {
 
 	public static void openFoundQuestsGUI(QuestPlayer questPlayer) {
 		Map<Quest, Timestamp> foundQuests = questPlayer.getFoundQuests();
+		questPlayer.getFinishedQuests().keySet().forEach(foundQuests::remove);
+
 		fillItemsAndOpen(questPlayer, foundQuests, TranslationKeys.QUESTS_GUI_FOUND_INFO, TranslationKeys.QUESTS_GUI_QUEST_DETAILS_COMPLETED_LORE,
 				FoundAndCompletedQuestsGUI::openFoundQuestsGUI);
 	}
@@ -85,6 +87,6 @@ public class FoundAndCompletedQuestsGUI {
 					});
 		}
 
-		GUIHelper.fillInventoryWithBackAndOpen(questPlayer, menu, null, (goBackPlayer, o) -> QuestOverviewGUI.openOverviewGUI(questPlayer));
+		GUIHelper.fillInventoryWithBackAndOpen(questPlayer, menu, QuestOverviewGUI::openOverviewGUI);
 	}
 }

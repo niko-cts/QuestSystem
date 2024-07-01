@@ -5,7 +5,8 @@ import net.playlegend.questsystem.commands.LanguageCommand;
 import net.playlegend.questsystem.commands.QuestCommand;
 import net.playlegend.questsystem.commands.admin.QuestAdminCommand;
 import net.playlegend.questsystem.commands.handler.CommandHandler;
-import net.playlegend.questsystem.database.*;
+import net.playlegend.questsystem.database.DatabaseHandler;
+import net.playlegend.questsystem.database.PlayerInfoDatabase;
 import net.playlegend.questsystem.listener.QuestPlayerConnectionListener;
 import net.playlegend.questsystem.listener.QuestStepListener;
 import net.playlegend.questsystem.npc.NPCManager;
@@ -15,7 +16,7 @@ import net.playlegend.questsystem.quest.QuestSignManager;
 import net.playlegend.questsystem.translation.DefaultEnglishMessages;
 import net.playlegend.questsystem.translation.DefaultGermanMessages;
 import net.playlegend.questsystem.translation.LanguageHandler;
-import net.playlegend.questsystem.util.SaveTimerUtil;
+import net.playlegend.questsystem.util.PlayerQuestDataSaveTimer;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -44,23 +45,23 @@ public final class QuestSystem extends JavaPlugin {
 		if (getServer().getPluginManager().isPluginEnabled("NPCSystem")) {
 			this.npcManager = new NPCManager(this);
 		}
-		QuestDatabase.getInstance();
+
 		PlayerInfoDatabase.getInstance();
-		PlayerQuestDatabase.getInstance();
-		NPCDatabase.getInstance();
 
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new QuestPlayerConnectionListener(this, playerHandler), this);
 		pm.registerEvents(new QuestStepListener(playerHandler), this);
 		pm.registerEvents(questSignManager, this);
-		if (npcManager != null)
+		if (npcManager != null) {
 			pm.registerEvents(npcManager, this);
+		}
+
 		this.commandHandler.addCommands(new QuestAdminCommand(), new LanguageCommand(), new QuestCommand());
 
 		new DefaultGermanMessages();
 		new DefaultEnglishMessages();
 
-		SaveTimerUtil.startsSaveTimer(this);
+		PlayerQuestDataSaveTimer.startsSaveTimer(this);
 	}
 
 	@Override
