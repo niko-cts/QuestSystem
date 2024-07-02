@@ -26,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Class which stores all important information about the player and the quest.
@@ -68,7 +69,7 @@ public class QuestPlayer {
 			tempDBInfo = new PlayerDatabaseInformationHolder(false);
 			tempDBInfo.markActiveQuestDirty();
 			this.activePlayerQuest = null;
-			QuestSystem.getInstance().getLogger().info("Player had active quest which could not be found: " + exception.getMessage());
+			QuestSystem.getInstance().getLogger().log(Level.WARNING,"Player had active quest which could not be found: ", exception.getMessage());
 		}
 
 		this.playerDbInformationHolder = tempDBInfo;
@@ -76,7 +77,7 @@ public class QuestPlayer {
 		Bukkit.getScheduler().runTaskLater(QuestSystem.getInstance(), () -> {
 			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.JOINED);
 			this.questTimer.startTimerIfActiveQuestPresent();
-		}, 10L);
+		}, 10L); // sign is not updated with no schedueler
 	}
 
 	/**
@@ -92,17 +93,21 @@ public class QuestPlayer {
 			sendMessage(TranslationKeys.QUESTS_EVENT_FINISHED, "${name}", activePlayerQuest.getQuest().name());
 			playSound(Sound.ENTITY_ENDER_DRAGON_GROWL);
 			setActivePlayerQuest(null);
-			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.COMPLETED);
+			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.QUEST_ENDED);
 		}
 	}
 
+	/**
+	 * Adds the given quest to the found-quests list and sends a message to the player.
+	 * @param quest Quest - the quest the player found
+	 */
 	public void foundQuest(Quest quest) {
 		if (quest.isPublic()) return;
 		foundQuests.computeIfAbsent(quest, q -> {
 			Timestamp foundAt = Timestamp.from(Instant.now());
 			playerDbInformationHolder.addFoundQuest(q.id(), foundAt);
 			sendClickableMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, TranslationKeys.QUESTS_EVENT_FOUND_NEW_HOVER, "${name}", q.name(), "/quest found");
-			sendEvent(PlayerQuestUpdateEvent.QuestUpdateType.FIND);
+			sendEvent(PlayerQuestUpdateEvent.QuestUpdateType.FIND); // trigger find event to despawn NPC
 			return foundAt;
 		});
 	}

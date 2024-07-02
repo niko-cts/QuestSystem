@@ -75,7 +75,7 @@ public class PlayerHandler {
      * @param uuid UUID - the uuid of the player.
      */
     public void playerDisconnected(UUID uuid) {
-        this.questPlayerMap.computeIfPresent(uuid, (uuid1, questPlayer) -> {
+        this.questPlayerMap.computeIfPresent(uuid, (u, questPlayer) -> {
             questPlayer.playerQuitServer();
             playerDb.updateAllPlayerData(questPlayer, Instant.now());
             return null;

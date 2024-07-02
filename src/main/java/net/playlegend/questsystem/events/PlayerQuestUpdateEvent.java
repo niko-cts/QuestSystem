@@ -26,15 +26,13 @@ public class PlayerQuestUpdateEvent extends Event {
 		NEW_QUEST,
 		QUEST_ENDED,
 		STEP,
-		FIND,
-		COMPLETED;
+		FIND;
 
 		public boolean taskNPCNeedsUpdate() {
 			return this == JOINED ||
 			       this == NEW_QUEST ||
 			       this == QUEST_ENDED ||
-			       this == STEP ||
-			       this == COMPLETED;
+			       this == STEP;
 		}
 
 		public boolean needsFindUpdate() {
