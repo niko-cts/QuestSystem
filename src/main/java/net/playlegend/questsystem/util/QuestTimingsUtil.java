@@ -34,7 +34,7 @@ public class QuestTimingsUtil {
         if (secondsLeft > 600)
             return secondsLeft % 600; // every 10 min
         if (secondsLeft == 600)
-            return 300; // every 10 min
+            return 300; // 5 mins
         if (secondsLeft > 300)
             return secondsLeft % 300; // 5 minutes left
         if (secondsLeft >= 120 && secondsLeft % 60 == 0)
@@ -111,8 +111,6 @@ public class QuestTimingsUtil {
         // Calculate the new instant when the quest finishes
         return now.plusSeconds(secondsLeft);
     }
-
-    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     public static String formatDateTime(Instant time) {
         ZonedDateTime zonedDateTime = time.atZone(ZoneId.systemDefault());

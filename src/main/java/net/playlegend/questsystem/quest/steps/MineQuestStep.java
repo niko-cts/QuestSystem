@@ -5,21 +5,24 @@ import chatzis.nikolas.mc.nikoapi.util.MaterialConverterUtil;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
+import java.util.*;
 
 public class MineQuestStep extends QuestStep<Material> {
 
 	private final String materialName;
+	private final Map<UUID, Set<Location>> minedBlocks;
 
 	public MineQuestStep(int id, int order, int maxAmount, Material blockToBreak) {
 		super(QuestStepType.MINE, id, order, maxAmount, blockToBreak);
 		this.materialName = MaterialConverterUtil.convertMaterialToName(blockToBreak);
+		this.minedBlocks = new HashMap<>();
 	}
 
 	/**
@@ -32,7 +35,20 @@ public class MineQuestStep extends QuestStep<Material> {
 	@Override
 	public int checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof BlockBreakEvent blockBreak) {
-			return blockBreak.getBlock().getType() == getStepObject() ? 1 : 0;
+			if (blockBreak.getBlock().getType() == getStepObject()) {
+				Set<Location> minedBlocks = this.minedBlocks.compute(player.getUniqueId(), (uuid, locations) -> {
+					if (locations == null)
+						locations = new HashSet<>();
+					return locations;
+				});
+				if (minedBlocks.contains(blockBreak.getBlock().getLocation())) {
+					player.sendMessage(TranslationKeys.QUESTS_STEP_MINE_ALREADY_MINED);
+					return 0;
+				}
+
+				minedBlocks.add(blockBreak.getBlock().getLocation());
+				return 1;
+			}
 		}
 		return 0;
 	}

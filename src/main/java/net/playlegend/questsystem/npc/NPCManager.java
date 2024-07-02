@@ -71,7 +71,7 @@ public class NPCManager implements Listener {
 					log.log(Level.WARNING, "Task NPC '{0}'was not added because there were no messages", uuid);
 				}
 			}
-			log.log(Level.INFO, "Loaded {0} task-NPC", taskNPCs.size());
+			Bukkit.getScheduler().runTaskLaterAsynchronously(questSystem, () -> log.log(Level.INFO, "Loaded {0} task-NPC", taskNPCs.size()), 10L);
 		} catch (SQLException exception) {
 			log.log(Level.SEVERE, "Could not load NPC from database", exception);
 		}
@@ -90,7 +90,7 @@ public class NPCManager implements Listener {
 						() -> log.log(Level.WARNING, "Could not find a quest but is inserted in npc id=" + questId)
 				);
 			}
-			log.log(Level.INFO, "Loaded {0} find-NPC", findNPCs.size());
+			Bukkit.getScheduler().runTaskLaterAsynchronously(questSystem, () -> log.log(Level.INFO, "Loaded {0} find-NPC", findNPCs.size()), 10L);
 		} catch (SQLException exception) {
 			log.log(Level.SEVERE, "Could not load find NPCs from database", exception);
 		}

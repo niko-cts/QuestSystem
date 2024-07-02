@@ -19,6 +19,7 @@ import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import net.playlegend.questsystem.util.ScoreboardUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -69,14 +70,14 @@ public class QuestPlayer {
 			tempDBInfo = new PlayerDatabaseInformationHolder(false);
 			tempDBInfo.markActiveQuestDirty();
 			this.activePlayerQuest = null;
-			QuestSystem.getInstance().getLogger().log(Level.WARNING,"Player had active quest which could not be found: ", exception.getMessage());
+			QuestSystem.getInstance().getLogger().log(Level.WARNING, "Player had active quest which could not be found: ", exception.getMessage());
 		}
 
 		this.playerDbInformationHolder = tempDBInfo;
 		this.questTimer = new QuestTimerPlayer(this);
 		Bukkit.getScheduler().runTaskLater(QuestSystem.getInstance(), () -> {
 			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.JOINED);
-			this.questTimer.startTimerIfActiveQuestPresent();
+			this.questTimer.checkExpiredAndStartTimerIfPresent();
 		}, 10L); // sign is not updated with no schedueler
 	}
 
@@ -85,31 +86,30 @@ public class QuestPlayer {
 	 * Rewards the player and updates the scoreboard.
 	 */
 	public void checkAndFinishActiveQuest() {
-		if (activePlayerQuest != null && activePlayerQuest.isQuestFinished()) {
-			activePlayerQuest.getQuest().rewards().forEach(r -> r.rewardPlayer(this));
-			Timestamp completedAt = Timestamp.from(Instant.now());
-			finishedQuests.put(activePlayerQuest.getQuest(), completedAt);
-			playerDbInformationHolder.addCompletedQuest(activePlayerQuest.getQuest().id(), completedAt);
-			sendMessage(TranslationKeys.QUESTS_EVENT_FINISHED, "${name}", activePlayerQuest.getQuest().name());
-			playSound(Sound.ENTITY_ENDER_DRAGON_GROWL);
-			setActivePlayerQuest(null);
-			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.QUEST_ENDED);
-		}
+		if (activePlayerQuest == null || !activePlayerQuest.isQuestFinished()) return;
+		activePlayerQuest.getQuest().rewards().forEach(r -> r.rewardPlayer(this));
+		Timestamp completedAt = Timestamp.from(Instant.now());
+		finishedQuests.put(activePlayerQuest.getQuest(), completedAt);
+		playerDbInformationHolder.addCompletedQuest(activePlayerQuest.getQuest().id(), completedAt);
+		sendClickableMessage(TranslationKeys.QUESTS_EVENT_FINISHED, TranslationKeys.QUESTS_EVENT_CLICK_TO_OPEN_HOVER, "${name}", activePlayerQuest.getQuest().name(),
+				"/quest completed " + ChatColor.translateAlternateColorCodes('&', activePlayerQuest.getQuest().name()));
+		playSound(Sound.ENTITY_ENDER_DRAGON_GROWL);
+		setActivePlayerQuest(null);
+		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.QUEST_ENDED);
 	}
 
 	/**
 	 * Adds the given quest to the found-quests list and sends a message to the player.
+	 *
 	 * @param quest Quest - the quest the player found
 	 */
 	public void foundQuest(Quest quest) {
-		if (quest.isPublic()) return;
-		foundQuests.computeIfAbsent(quest, q -> {
-			Timestamp foundAt = Timestamp.from(Instant.now());
-			playerDbInformationHolder.addFoundQuest(q.id(), foundAt);
-			sendClickableMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, TranslationKeys.QUESTS_EVENT_FOUND_NEW_HOVER, "${name}", q.name(), "/quest found");
-			sendEvent(PlayerQuestUpdateEvent.QuestUpdateType.FIND); // trigger find event to despawn NPC
-			return foundAt;
-		});
+		if (quest.isPublic() || foundQuests.containsKey(quest)) return;
+		Timestamp foundAt = Timestamp.from(Instant.now());
+		playerDbInformationHolder.addFoundQuest(quest.id(), foundAt);
+		sendClickableQuestMessage(TranslationKeys.QUESTS_EVENT_FOUND_NEW, quest);
+		foundQuests.put(quest, foundAt);
+		sendEvent(PlayerQuestUpdateEvent.QuestUpdateType.FIND); // trigger find event to despawn NPC}
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class QuestPlayer {
 	public void checkIfExpired() {
 		checkAndFinishActiveQuest();
 		if (activePlayerQuest != null && activePlayerQuest.getSecondsLeft() <= 0) {
-			sendMessage(TranslationKeys.QUESTS_EVENT_TIMER_EXPIRED, "${name}", activePlayerQuest.getQuest().name());
+			sendClickableQuestMessage(TranslationKeys.QUESTS_EVENT_TIMER_EXPIRED, activePlayerQuest.getQuest());
 			setActivePlayerQuest(null);
 			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.QUEST_ENDED);
 		}
@@ -136,13 +136,13 @@ public class QuestPlayer {
 	 */
 	public void switchActiveQuest(@NonNull Quest quest) {
 		createAndSetPlayerQuest(quest);
-		sendMessage(TranslationKeys.QUESTS_EVENT_SWITCHED, "${name}", quest.name());
+		sendClickableMessage(TranslationKeys.QUESTS_EVENT_SWITCHED, TranslationKeys.QUESTS_EVENT_CLICK_TO_OPEN_HOVER, "${name}", quest.name(), "/quest");
 		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.NEW_QUEST);
 	}
 
 	public void startActiveQuest(@NonNull Quest quest) {
 		createAndSetPlayerQuest(quest);
-		sendMessage(TranslationKeys.QUESTS_EVENT_STARTED, "${name}", quest.name());
+		sendClickableMessage(TranslationKeys.QUESTS_EVENT_STARTED, TranslationKeys.QUESTS_EVENT_CLICK_TO_OPEN_HOVER, "${name}", quest.name(), "/quest");
 		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.NEW_QUEST);
 	}
 
@@ -164,6 +164,7 @@ public class QuestPlayer {
 		boolean isDone = quest.playerDidQuestStep(step, amountToAdd);
 		if (isDone) {
 			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.STEP);
+			sendMessage(TranslationKeys.QUESTS_EVENT_STEP_FINISHED, "${task}", step.getActiveTaskLine(language, quest.getStepAmount(step)));
 			playSound(Sound.ENTITY_PLAYER_LEVELUP);
 		}
 		return isDone;
@@ -187,7 +188,7 @@ public class QuestPlayer {
 	 * @param quest Quest - the quest to create from
 	 */
 	private void createAndSetPlayerQuest(@NonNull Quest quest) {
-		setActivePlayerQuest(new ActivePlayerQuest(quest, Instant.now().plusSeconds(quest.finishTimeInSeconds())));
+		setActivePlayerQuest(new ActivePlayerQuest(quest, Instant.now().plusSeconds(quest.finishTimeInSeconds() + 1)));
 	}
 
 	/**
@@ -201,7 +202,7 @@ public class QuestPlayer {
 		this.questTimer.cancelTask();
 		this.activePlayerQuest = activePlayerQuest;
 		this.playerDbInformationHolder.markActiveQuestDirty();
-		this.questTimer.startTimerIfActiveQuestPresent();
+		this.questTimer.checkExpiredAndStartTimerIfPresent();
 	}
 
 	/**
@@ -234,6 +235,16 @@ public class QuestPlayer {
 		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.UPDATE_STATS);
 	}
 
+	/**
+	 * Sends a clickable message with the command "/quest public/found <questname>"
+	 *
+	 * @param messageKey String - the message to translate
+	 * @param quest      Quest - the quest to open on click
+	 */
+	public void sendClickableQuestMessage(String messageKey, Quest quest) {
+		sendClickableMessage(messageKey, TranslationKeys.QUESTS_EVENT_CLICK_TO_OPEN_HOVER, "${name}", quest.name(),
+				"/quest " + (quest.isPublic() ? "public " : "found ") + ChatColor.translateAlternateColorCodes('&', quest.name()));
+	}
 
 	public void sendMessage(String translationKey) {
 		player.sendMessage(language.translateMessage(translationKey));

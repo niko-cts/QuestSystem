@@ -16,41 +16,44 @@ import java.util.List;
  */
 public class QuestTimerPlayer {
 
-    private final QuestPlayer questPlayer;
-    private BukkitTask bukkitTask;
+	private final QuestPlayer questPlayer;
+	private BukkitTask bukkitTask;
 
-    public QuestTimerPlayer(QuestPlayer questPlayer) {
-        this.questPlayer = questPlayer;
-    }
+	public QuestTimerPlayer(QuestPlayer questPlayer) {
+		this.questPlayer = questPlayer;
+	}
 
-    protected void startTimerIfActiveQuestPresent() {
-        questPlayer.checkIfExpired();
-        questPlayer.getActivePlayerQuest().ifPresent(this::startTimer);
-    }
+	protected void checkExpiredAndStartTimerIfPresent() {
+		questPlayer.checkIfExpired();
+		questPlayer.getActivePlayerQuest().ifPresent(this::startTimer);
+	}
 
-    private void startTimer(ActivePlayerQuest activePlayerQuest) {
-        long secondsLeft = activePlayerQuest.getSecondsLeft();
-        if (secondsLeft < 1) {
-            return;
-        }
-        cancelTask();
+	private void startTimer(ActivePlayerQuest activePlayerQuest) {
+		long secondsLeft = activePlayerQuest.getSecondsLeft();
+		if (secondsLeft < 1) {
+			return;
+		}
+		cancelTask();
 
-        long delay = QuestTimingsUtil.calculateNextDuration(secondsLeft);
+		long delay = QuestTimingsUtil.calculateNextDuration(secondsLeft);
+		System.out.println(delay + " for " + secondsLeft);
 
-        bukkitTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                long currentSeconds = activePlayerQuest.getSecondsLeft();
-                questPlayer.sendMessage(TranslationKeys.QUESTS_EVENT_COUNTDOWN,
-                        List.of("${name}", "${duration}"),
-                        List.of(activePlayerQuest.getQuest().name(), QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getLanguage(), currentSeconds)));
-                startTimerIfActiveQuestPresent();
-            }
-        }.runTaskLater(QuestSystem.getInstance(), 20L * delay);
-    }
+		bukkitTask = new BukkitRunnable() {
+			@Override
+			public void run() {
+				long currentSeconds = activePlayerQuest.getSecondsLeft();
+				if (currentSeconds >= 0) {
+					questPlayer.sendMessage(TranslationKeys.QUESTS_EVENT_COUNTDOWN,
+							List.of("${name}", "${duration}"),
+							List.of(activePlayerQuest.getQuest().name(), QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getLanguage(), currentSeconds)));
+				}
+				checkExpiredAndStartTimerIfPresent();
+			}
+		}.runTaskLater(QuestSystem.getInstance(), 20L * delay);
+	}
 
-    public void cancelTask() {
-        if (bukkitTask != null && !bukkitTask.isCancelled())
-            bukkitTask.cancel();
-    }
+	public void cancelTask() {
+		if (bukkitTask != null && !bukkitTask.isCancelled())
+			bukkitTask.cancel();
+	}
 }

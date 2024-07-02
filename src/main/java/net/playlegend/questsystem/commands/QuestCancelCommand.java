@@ -17,7 +17,7 @@ public class QuestCancelCommand extends APISubCommand {
 		Optional<ActivePlayerQuest> activePlayerQuest = questPlayer.getActivePlayerQuest();
 		if (activePlayerQuest.isPresent()) {
 			questPlayer.cancelActiveQuest();
-			questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_QUEST_CANCEL_SUCCESS);
+			questPlayer.sendClickableQuestMessage(TranslationKeys.QUESTS_COMMAND_QUEST_CANCEL_SUCCESS, activePlayerQuest.get().getQuest());
 		} else {
 			questPlayer.sendMessage(TranslationKeys.QUESTS_COMMAND_QUEST_CANCEL_NOACTIVE);
 		}

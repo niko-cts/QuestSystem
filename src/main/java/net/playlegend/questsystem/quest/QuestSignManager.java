@@ -6,6 +6,8 @@ import net.playlegend.questsystem.player.ActivePlayerQuest;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
+import net.playlegend.questsystem.util.ColorConverterUtil;
+import net.playlegend.questsystem.util.QuestTimingsUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -70,7 +72,7 @@ public class QuestSignManager extends APISubCommand implements Listener {
 				}
 				if (!toDelete.isEmpty()) {
 					questSystem.getLogger().log(Level.INFO, "Deleting illegal sign-positions {0}", toDelete.size());
-					toDelete.forEach(this::deleteSignIfExists);
+					toDelete.forEach(this::deleteSign);
 				}
 			}
 		} catch (IOException exception) {
@@ -83,10 +85,11 @@ public class QuestSignManager extends APISubCommand implements Listener {
 		Language lang = questPlayer.getLanguage();
 		Optional<ActivePlayerQuest> activeQuest = questPlayer.getActivePlayerQuest();
 		String[] lines = activeQuest.map(activePlayerQuest -> new String[]{
-				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_1, "${name}", activePlayerQuest.getQuest().name()),
-				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_2, "${task}",
+				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_1, "${name}", ColorConverterUtil.convertToBlackColors(activePlayerQuest.getQuest().name())),
+				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_2),
+				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_3, "${task}",
 						activePlayerQuest.getNextUncompletedStep().map(entry -> entry.getKey().getActiveTaskLine(lang, entry.getValue())).orElse("unknown")),
-				"", ""
+				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_4, "${date}", QuestTimingsUtil.formatDateTime(activePlayerQuest.getTimeLeft()))
 		}).orElseGet(() -> new String[]{"", lang.translateMessage(TranslationKeys.QUESTS_SIGN_NO_ACTIVE_LINE_1), "", ""});
 
 		for (Location sign : signs) {
@@ -104,7 +107,7 @@ public class QuestSignManager extends APISubCommand implements Listener {
 		}
 	}
 
-	private void deleteSignIfExists(Location location) {
+	private void deleteSign(Location location) {
 		signs.remove(location);
 
 		try {
@@ -127,7 +130,7 @@ public class QuestSignManager extends APISubCommand implements Listener {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					deleteSignIfExists(location);
+					deleteSign(location);
 				}
 			}.runTaskAsynchronously(questSystem);
 		}
@@ -139,6 +142,7 @@ public class QuestSignManager extends APISubCommand implements Listener {
 		if (!WHITELISTED_SIGNS.contains(event.getClickedBlock().getType())) return;
 		if (!signs.contains(event.getClickedBlock().getLocation())) return;
 		event.setCancelled(true);
+		Bukkit.dispatchCommand(event.getPlayer(), "quest");
 	}
 
 	/**

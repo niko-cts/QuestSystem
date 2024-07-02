@@ -29,7 +29,9 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_SIGN_NO_ACTIVE_LINE_1, "No active quest");
         add(QUESTS_SIGN_NO_ACTIVE_LINE_2, "Execute /quest");
         add(QUESTS_SIGN_ACTIVE_LINE_1, "Quest &6${name}");
-        add(QUESTS_SIGN_ACTIVE_LINE_2, "Next task: &e${task}");
+        add(QUESTS_SIGN_ACTIVE_LINE_2, "Next task:");
+        add(QUESTS_SIGN_ACTIVE_LINE_3, "${task}");
+        add(QUESTS_SIGN_ACTIVE_LINE_4, "Ends on ${date}");
         // builder
         add(QUESTS_BUILDER_NOT_VALID_NUMBER, "&cYou inserted a invalid number");
         add(QUESTS_BUILDER_NOT_VALID_UUID, "&cYou inserted a invalid uuid");
@@ -76,11 +78,12 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         // events
         add(QUESTS_EVENT_TIMER_EXPIRED, "&e${name} &7has &cexpired&7! &7Restart it via /quest");
         add(QUESTS_EVENT_FINISHED, "&aYou finished &e${name}&a!");
+        add(QUESTS_EVENT_STEP_FINISHED, "&7You completed task '&e${task}&7'");
         add(QUESTS_EVENT_SWITCHED, "&7You &aswitched &7your active quest to &e${name}&7.");
         add(QUESTS_EVENT_STARTED, "&7The Quest &e${name}&7 has been started!");
         add(QUESTS_EVENT_COUNTDOWN, "&7You have &e${duration} &7left for the Quest &e${name}");
         add(QUESTS_EVENT_FOUND_NEW, "&7You found the quest &e'${name}&7' - You can start it via /quest");
-        add(QUESTS_EVENT_FOUND_NEW_HOVER, "&7Click to open the Quest menu and start the Quest");
+        add(QUESTS_EVENT_CLICK_TO_OPEN_HOVER, "&7Click to open the Quest menu");
         add(QUESTS_EVENT_JOINED_HAS_ACTIVE, "&7You have an active quest &e'${name}' &7running! Time left: &e${duration}");
         add(QUESTS_EVENT_JOINED_NO_ACTIVE_TEXT, "&7You have no active quest running. Begin a new quest with &e/quest");
         add(QUESTS_EVENT_JOINED_NO_ACTIVE_HOVER, "&7Click to open your quest menu");
@@ -132,8 +135,8 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_LANGUAGE_ILLEGAL, "&7This language is &cnot &7available. Languages are: ${languages}");
         add(QUESTS_COMMAND_QUEST_USAGE, "quest");
         add(QUESTS_COMMAND_QUEST_CANCEL_USAGE, "quest cancel");
-        add(QUESTS_COMMAND_QUEST_CANCEL_SUCCESS, "&7Your active quest has been &acanceled&7. You can restart it via the /quest GUI");
-        add(QUESTS_COMMAND_QUEST_CANCEL_NOACTIVE, "&7There is no active quest which you can cancel.");
+        add(QUESTS_COMMAND_QUEST_CANCEL_SUCCESS, "&7Your active quest has been &acanceled&7. Click here to open the Quest menu");
+        add(QUESTS_COMMAND_QUEST_CANCEL_NOACTIVE, "&7There is &cno &7active quest which you can cancel.");
         add(QUESTS_COMMAND_QUEST_INFO_USAGE, "quest info - Information about your active quest");
         add(QUESTS_COMMAND_QUEST_INFO_DISPLAY, "&7Quest &e${name} &7will exceed in &e${duration}&7. Your current task is: &e${todo}");
         add(QUESTS_COMMAND_QUEST_INFO_NOACTIVE, "&7There is &cno active quest&7. &aStart &7one using the GUI with /quest");
@@ -205,6 +208,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_STEP_CRAFT_ACTIVE_LORE, "&7You need to craft;&7this item &e${amount}&7/&e${maxamount} &7more times");
         add(QUESTS_STEP_MINE_NORMAL_LINE, "&e${order}&7. &7Mine &e${item} &a${maxamount} &7time(s)");
         add(QUESTS_STEP_MINE_ACTIVE_LINE, "&e${order}&7. &7Mine &e${item} &7- &a${amount}&7/&a${maxamount}");
+        add(QUESTS_STEP_MINE_ALREADY_MINED, "&7You already &cmined &7this block at the same location!");
         add(QUESTS_STEP_MINE_NORMAL_LORE, "&7You need to mine;&7this block &e${maxamount} &7times.");
         add(QUESTS_STEP_MINE_ACTIVE_LORE, "&7You need to mine;&7this block &e&e${amount}&7/&e${maxamount} &7more times");
         add(QUESTS_STEP_KILL_NORMAL_LINE, "&e${order}&7. &7Kill &e${entity} &a${maxamount} &7time(s)");
@@ -221,14 +225,14 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_REWARD_COINS_PREVIEW, "&e${amount} coins");
         add(QUESTS_REWARD_COINS_NAME, "&eCoins");
         add(QUESTS_REWARD_COINS_LORE, "&7You receive &e${amount} coins;&7on finishing the quest");
-        add(QUESTS_REWARD_COINS_MESSAGE, "&7You &ereceive &e${amount} coins");
+        add(QUESTS_REWARD_COINS_MESSAGE, "&7You receive &e${amount} coins");
         add(QUESTS_REWARD_LVL_PREVIEW, "&e${amount} level");
         add(QUESTS_REWARD_LVL_NAME, "&eLevel");
         add(QUESTS_REWARD_LVL_LORE, "&7You receive &e${amount} level;&7on finishing the quest");
-        add(QUESTS_REWARD_LVL_MESSAGE, "&7You &ereceive &e${amount} level");
+        add(QUESTS_REWARD_LVL_MESSAGE, "&7You receive &e${amount} level");
         add(QUESTS_REWARD_ITEM_PREVIEW, "1 Item");
         add(QUESTS_REWARD_ITEM_LORE, "&7You will receive this item;&7on finishing the quest");
-        add(QUESTS_REWARD_ITEM_MESSAGE, "&7You &ereceive the Item: &e${name}");
+        add(QUESTS_REWARD_ITEM_MESSAGE, "&7You receive the Item: &e${name}");
 
         save();
     }

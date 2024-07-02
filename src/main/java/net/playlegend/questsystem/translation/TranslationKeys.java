@@ -29,6 +29,8 @@ public class TranslationKeys {
 	public static final String QUESTS_SIGN_NO_ACTIVE_LINE_2 = QUEST + "sign.noactive.2";
 	public static final String QUESTS_SIGN_ACTIVE_LINE_1 = QUEST + "sign.active.1";
 	public static final String QUESTS_SIGN_ACTIVE_LINE_2 = QUEST + "sign.active.2";
+	public static final String QUESTS_SIGN_ACTIVE_LINE_3 = QUEST + "sign.active.3";
+	public static final String QUESTS_SIGN_ACTIVE_LINE_4 = QUEST + "sign.active.4";
 
 	private static final String BUILDER = QUEST + "builder.";
 	public static final String QUESTS_BUILDER_NOT_VALID_NUMBER = BUILDER + "input.invalid.number";
@@ -75,12 +77,13 @@ public class TranslationKeys {
 	private static final String Q_COMMAND = QUEST + "command.";
 	private static final String QUEST_EVENT = QUEST + "event";
 	public static final String QUESTS_EVENT_TIMER_EXPIRED = QUEST_EVENT + "timer.expired";
-	public static final String QUESTS_EVENT_FINISHED = QUEST_EVENT + "finished";
+	public static final String QUESTS_EVENT_FINISHED = QUEST_EVENT + "finished.quest";
+	public static final String QUESTS_EVENT_STEP_FINISHED = QUEST_EVENT + "finished.task";
 	public static final String QUESTS_EVENT_SWITCHED = QUEST_EVENT + "switched";
 	public static final String QUESTS_EVENT_STARTED = QUEST_EVENT + "started";
 	public static final String QUESTS_EVENT_COUNTDOWN = QUEST_EVENT + "timer.left";
 	public static final String QUESTS_EVENT_FOUND_NEW = QUEST_EVENT + "found.text";
-	public static final String QUESTS_EVENT_FOUND_NEW_HOVER = QUEST_EVENT + "found.hover";
+	public static final String QUESTS_EVENT_CLICK_TO_OPEN_HOVER = QUEST_EVENT + "message.hover";
 
 	public static final String QUESTS_EVENT_JOINED_HAS_ACTIVE = QUEST_EVENT + "join.has";
 	public static final String QUESTS_EVENT_JOINED_NO_ACTIVE_TEXT = QUEST_EVENT + "join.none.text";
@@ -227,6 +230,7 @@ public class TranslationKeys {
 	public static final String QUESTS_STEP_CRAFT_ACTIVE_LORE = QUEST + "step.craft.active.lore";
 	public static final String QUESTS_STEP_MINE_NORMAL_LINE = QUEST + "step.mine.preview.line";
 	public static final String QUESTS_STEP_MINE_ACTIVE_LINE = QUEST + "step.mine.active.line";
+	public static final String QUESTS_STEP_MINE_ALREADY_MINED = QUEST + "step.mine.active.alreadymined";
 	public static final String QUESTS_STEP_MINE_NORMAL_LORE = QUEST + "step.mine.preview.lore";
 	public static final String QUESTS_STEP_MINE_ACTIVE_LORE = QUEST + "step.mine.active.lore";
 	public static final String QUESTS_STEP_KILL_NORMAL_LINE = QUEST + "step.kill.preview.line";
