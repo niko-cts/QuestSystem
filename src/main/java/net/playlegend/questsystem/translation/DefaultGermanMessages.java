@@ -183,7 +183,7 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_FOUND_INFO, "&6Gefundene Quests");
         add(QUESTS_GUI_COMPLETED_INFO, "&6Abgeschlossene Quests");
         add(QUESTS_GUI_PUBLIC_INFO_NAME, "&eÖffentliche Quests");
-        add(QUESTS_GUI_PUBLIC_INFO_LORE, "&7Hier ist jede öffentliche Quest;&7die du noch nicht absolviert hast.");
+        add(QUESTS_GUI_PUBLIC_INFO_LORE, "&7Hier ist jede öffentliche Quest;&7die du noch nicht absolviert hast.;;&7Eine öffentliche Quest könnte;&7wieder entfernt werden");
         add(QUESTS_GUI_PUBLIC_LORE, " ;&7Diese Quest ist öffentlich.;&7Sie kann ablaufen.;&eKlicken, um Details zu sehen.");
         add(QUESTS_GUI_QUEST_DETAILS_FOUND_LORE, " ;&7Du hast diese Quest am &e${time} &7gefunden;&eKlicken, um Details zu sehen.");
         add(QUESTS_GUI_QUEST_DETAILS_COMPLETED_LORE, " ;&7Du hast diese Quest am &e${time} &7absolviert;&eKlicken, um Details zu sehen.");

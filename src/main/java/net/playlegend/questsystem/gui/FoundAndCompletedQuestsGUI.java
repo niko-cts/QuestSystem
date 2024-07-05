@@ -74,7 +74,7 @@ public class FoundAndCompletedQuestsGUI {
 		CustomInventory menu = new CustomInventory(Utils.getPerfectInventorySize(publicQuests.size() + 2));
 		menu.addItem(new ItemBuilder(Material.PAPER)
 				.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_PUBLIC_INFO_NAME))
-				.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_PUBLIC_INFO_LORE)).craft());
+				.setLore(language.translateMessage(TranslationKeys.QUESTS_GUI_PUBLIC_INFO_LORE).split(";")).craft());
 		for (Quest publicQuest : publicQuests) {
 
 			menu.addItem(new ItemBuilder(publicQuest.getQuestItem(language))

@@ -180,7 +180,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_FOUND_INFO, "&6Found quests");
         add(QUESTS_GUI_COMPLETED_INFO, "&6Completed quests");
         add(QUESTS_GUI_PUBLIC_INFO_NAME, "&ePublic quests");
-        add(QUESTS_GUI_PUBLIC_INFO_LORE, "&7Here are every public quests listed;&7you have not completed yet");
+        add(QUESTS_GUI_PUBLIC_INFO_LORE, "&7A list of every public quest;&7you have not completed yet;;&7Public quests may expire;&7and can not be started");
         add(QUESTS_GUI_PUBLIC_LORE, " ;&7This quest is public.;&7It may exceed.;&eClick to see details.");
         add(QUESTS_GUI_QUEST_DETAILS_FOUND_LORE, " ;&7You found this quest on &e${time};&eClick to see details.");
         add(QUESTS_GUI_QUEST_DETAILS_COMPLETED_LORE, " ;&7You completed this quest on &e${time};&eClick to see details.");

@@ -306,7 +306,7 @@ public class QuestPlayer {
 	}
 
 	public List<Quest> getUnfinishedPublicQuests() {
-		return QuestSystem.getInstance().getQuestManager().getPublicQuests().stream().filter(q -> !foundQuests.containsKey(q)).toList();
+		return QuestSystem.getInstance().getQuestManager().getPublicQuests().stream().filter(q -> !finishedQuests.containsKey(q)).toList();
 	}
 
 	public Optional<ActivePlayerQuest> getActivePlayerQuest() {

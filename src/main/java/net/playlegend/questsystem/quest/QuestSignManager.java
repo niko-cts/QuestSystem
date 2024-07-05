@@ -9,6 +9,7 @@ import net.playlegend.questsystem.translation.TranslationKeys;
 import net.playlegend.questsystem.util.ColorUtil;
 import net.playlegend.questsystem.util.QuestTimingsUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -88,7 +89,7 @@ public class QuestSignManager extends APISubCommand implements Listener {
 				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_1, "${name}", ColorUtil.convertToBlackColors(activePlayerQuest.getQuest().name())),
 				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_2),
 				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_3, "${task}",
-						activePlayerQuest.getNextUncompletedStep().map(entry -> entry.getKey().getActiveTaskLine(lang, entry.getValue())).orElse("unknown")),
+						activePlayerQuest.getNextUncompletedStep().map(entry -> ChatColor.stripColor(entry.getKey().getTaskLine(lang))).orElse("unknown")),
 				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_4, "${date}", QuestTimingsUtil.formatDateTime(activePlayerQuest.getTimeLeft()))
 		}).orElseGet(() -> new String[]{"", lang.translateMessage(TranslationKeys.QUESTS_SIGN_NO_ACTIVE_LINE_1), "", ""});
 
