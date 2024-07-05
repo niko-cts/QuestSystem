@@ -10,6 +10,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class CraftQuestStep extends QuestStep<ItemStack> {
@@ -107,5 +108,11 @@ public class CraftQuestStep extends QuestStep<ItemStack> {
 						.split(";"))
 				.setAmount(Math.max(1, Math.min(getMaxAmount(), 64)))
 				.craft();
+	}
+
+	@Override
+	public String getTaskName(Language language) {
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_CRAFT_NAME,
+				Arrays.asList("${item}", "${maxamount}"), Arrays.asList(materialName, getMaxAmount()));
 	}
 }

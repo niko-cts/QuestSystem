@@ -36,7 +36,6 @@ public class QuestTimerPlayer {
 		cancelTask();
 
 		long delay = QuestTimingsUtil.calculateNextDuration(secondsLeft);
-		System.out.println(delay + " for " + secondsLeft);
 
 		bukkitTask = new BukkitRunnable() {
 			@Override

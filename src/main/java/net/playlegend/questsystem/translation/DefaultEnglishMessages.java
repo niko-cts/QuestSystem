@@ -31,7 +31,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_SIGN_ACTIVE_LINE_1, "Quest &6${name}");
         add(QUESTS_SIGN_ACTIVE_LINE_2, "Next task:");
         add(QUESTS_SIGN_ACTIVE_LINE_3, "${task}");
-        add(QUESTS_SIGN_ACTIVE_LINE_4, "Ends on ${date}");
+        add(QUESTS_SIGN_ACTIVE_LINE_4, "${date}");
         // builder
         add(QUESTS_BUILDER_TITLE, "&6Quest builder");
         add(QUESTS_BUILDER_NOT_VALID_NUMBER, "&cYou inserted a invalid number");
@@ -193,7 +193,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_QUEST_REWARD_NAME_HAS, "&eAll quest rewards");
         add(QUESTS_GUI_QUEST_REWARD_NAME_NONE, "&eNo quest rewards");
         add(QUESTS_GUI_QUEST_DETAILS_ITEM_LORE, ";&7Finish this quest in under &e${duration};&7There are/is &e${rewards} reward(s);&7and &e${tasks} task(s).");
-        add(QUESTS_GUI_ACCEPT_REWARD, " ;&7Click to open a;&7detailed reward menu");
+        add(QUESTS_GUI_QUEST_TITLE, "&6Quest ${quest}");
         add(QUESTS_GUI_QUEST_ADMIN_MODIFY_NAME, "&eModify Quest");
         add(QUESTS_GUI_QUEST_ADMIN_MODIFY_LORE, "&7Click here;&7to change the Quest");
         add(QUESTS_GUI_QUEST_ADMIN_DELETE_NAME, "&cDelete Quest");
@@ -206,20 +206,27 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_REWARDS_TITLE, "&6Quest rewards");
 
         // STEPS
+        add(QUESTS_STEP_CRAFT_NAME, "&7Craft &e${maxamount} ${item}");
         add(QUESTS_STEP_CRAFT_NORMAL_LINE, "&e${order}&7. &7Craft &e${item} &a${maxamount} &7time(s)");
         add(QUESTS_STEP_CRAFT_ACTIVE_LINE, "&e${order}&7. &7Craft &e${item} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_CRAFT_NORMAL_LORE, "&7You need to craft;&7this item &e${maxamount} &7times.");
         add(QUESTS_STEP_CRAFT_ACTIVE_LORE, "&7You need to craft;&7this item &e${amount}&7/&e${maxamount} &7more times");
+
+        add(QUESTS_STEP_MINE_NAME, "&7Mine &e${maxamount} ${item}");
         add(QUESTS_STEP_MINE_NORMAL_LINE, "&e${order}&7. &7Mine &e${item} &a${maxamount} &7time(s)");
         add(QUESTS_STEP_MINE_ACTIVE_LINE, "&e${order}&7. &7Mine &e${item} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_MINE_ALREADY_MINED, "&7You already &cmined &7this block at the same location!");
         add(QUESTS_STEP_MINE_NORMAL_LORE, "&7You need to mine;&7this block &e${maxamount} &7times.");
         add(QUESTS_STEP_MINE_ACTIVE_LORE, "&7You need to mine;&7this block &e&e${amount}&7/&e${maxamount} &7more times");
+
+        add(QUESTS_STEP_KILL_NAME, "&7Kill &e${maxamount} ${entity}");
         add(QUESTS_STEP_KILL_NORMAL_LINE, "&e${order}&7. &7Kill &e${entity} &a${maxamount} &7time(s)");
         add(QUESTS_STEP_KILL_ACTIVE_LINE, "&e${order}&7. &7Kill &e${entity} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_KILL_NORMAL_LORE, "&7Kill &e${entity} &a${maxamount} &7time(s)");
         add(QUESTS_STEP_KILL_ACTIVE_LORE, "&7You need to kill;&7this entity &e&e${amount}&7/&e${maxamount} &7more time(s)");
-        add(QUESTS_STEP_NPC_NORMAL_LINE, "&e${order}&7. &7Speak to &e${name} &a${maxamount} &7time(s)");
+
+        add(QUESTS_STEP_NPC_NAME, "&7Speak to &e${name}");
+        add(QUESTS_STEP_NPC_NORMAL_LINE, "&e${order}&7. &7Speak to &e${name}");
         add(QUESTS_STEP_NPC_ACTIVE_LINE, "&e${order}&7. &7Speak to &e${name} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_NPC_NORMAL_NAME, "&eSpeak to ${name}");
         add(QUESTS_STEP_NPC_NORMAL_LORE, "&7Speak to &e${name} &a${maxamount} &7time(s);&7${name} &7is at &e${location}");

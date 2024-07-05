@@ -101,7 +101,7 @@ public class GUIHelper {
 				steps.get(0).getTaskItem(language) :
 				new ItemBuilder(Material.IRON_DOOR)
 						.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_STEPS_NAME))
-						.setLore(steps.stream().sorted(Comparator.comparingInt(QuestStep::getOrder)).map(s -> s.getTaskLine(language)).toList())
+						.setLore(steps.stream().sorted(Comparator.comparingInt(QuestStep::getOrder)).map(s -> s.getTaskName(language)).toList())
 						.craft();
 	}
 

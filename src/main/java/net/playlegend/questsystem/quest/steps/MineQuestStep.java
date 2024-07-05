@@ -115,4 +115,16 @@ public class MineQuestStep extends QuestStep<Material> {
 				.setAmount(Math.max(1, Math.min(getMaxAmount(), 64)))
 				.craft();
 	}
+
+	/**
+	 * Returns a short description like "Mine 10 Stones"
+	 *
+	 * @param language Language - the language to translate
+	 * @return String - the task name
+	 */
+	@Override
+	public String getTaskName(Language language) {
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_MINE_NAME,
+				Arrays.asList("${item}", "${maxamount}"), Arrays.asList(materialName, getMaxAmount()));
+	}
 }

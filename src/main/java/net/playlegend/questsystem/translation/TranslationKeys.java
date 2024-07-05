@@ -211,7 +211,6 @@ public class TranslationKeys {
 	public static final String QUESTS_GUI_QUEST_REWARD_NAME_HAS = GUI + "quest.reward.name.has";
 	public static final String QUESTS_GUI_QUEST_REWARD_NAME_NONE = GUI + "quest.reward.name.none";
 	public static final String QUESTS_GUI_QUEST_DETAILS_ITEM_LORE = GUI + "quest.details.lore";
-	public static final String QUESTS_GUI_ACCEPT_REWARD = GUI + "accept.reward";
 	public static final String QUESTS_GUI_QUEST_TITLE = GUI + "quest.title";
 	public static final String QUESTS_GUI_QUEST_ADMIN_MODIFY_NAME = GUI + "quest.modify.name";
 	public static final String QUESTS_GUI_QUEST_ADMIN_MODIFY_LORE = GUI + "quest.modify.lore";
@@ -229,19 +228,26 @@ public class TranslationKeys {
 
 
 	// STEPS
+	public static final String QUESTS_STEP_CRAFT_NAME = QUEST + "step.craft.name";
 	public static final String QUESTS_STEP_CRAFT_NORMAL_LINE = QUEST + "step.craft.preview.line";
 	public static final String QUESTS_STEP_CRAFT_ACTIVE_LINE = QUEST + "step.craft.active.line";
 	public static final String QUESTS_STEP_CRAFT_NORMAL_LORE = QUEST + "step.craft.normal.lore";
 	public static final String QUESTS_STEP_CRAFT_ACTIVE_LORE = QUEST + "step.craft.active.lore";
+
+	public static final String QUESTS_STEP_MINE_NAME = QUEST + "step.mine.name";
 	public static final String QUESTS_STEP_MINE_NORMAL_LINE = QUEST + "step.mine.preview.line";
 	public static final String QUESTS_STEP_MINE_ACTIVE_LINE = QUEST + "step.mine.active.line";
 	public static final String QUESTS_STEP_MINE_ALREADY_MINED = QUEST + "step.mine.active.alreadymined";
 	public static final String QUESTS_STEP_MINE_NORMAL_LORE = QUEST + "step.mine.preview.lore";
 	public static final String QUESTS_STEP_MINE_ACTIVE_LORE = QUEST + "step.mine.active.lore";
+
+	public static final String QUESTS_STEP_KILL_NAME = QUEST + "step.kill.name";
 	public static final String QUESTS_STEP_KILL_NORMAL_LINE = QUEST + "step.kill.preview.line";
 	public static final String QUESTS_STEP_KILL_ACTIVE_LINE = QUEST + "step.kill.active.line";
 	public static final String QUESTS_STEP_KILL_NORMAL_LORE = QUEST + "step.kill.preview.lore";
 	public static final String QUESTS_STEP_KILL_ACTIVE_LORE = QUEST + "step.kill.active.lore";
+
+	public static final String QUESTS_STEP_NPC_NAME = QUEST + "step.npc.name";
 	public static final String QUESTS_STEP_NPC_NORMAL_LINE = QUEST + "step.npc.preview.line";
 	public static final String QUESTS_STEP_NPC_ACTIVE_LINE = QUEST + "step.npc.active.line";
 	public static final String QUESTS_STEP_NPC_NORMAL_NAME = QUEST + "step.npc.preview.name";

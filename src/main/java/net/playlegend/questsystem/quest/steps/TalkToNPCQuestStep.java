@@ -147,6 +147,17 @@ public class TalkToNPCQuestStep extends QuestStep<UUID> {
 		}
 	}
 
+	/**
+	 * Returns a short description like "Mine 10 Stones"
+	 *
+	 * @param language Language - the language to translate
+	 * @return String - the task name
+	 */
+	@Override
+	public String getTaskName(Language language) {
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_NPC_NAME, "${name}", getNPCName().orElse("unknown"));
+	}
+
 	private Optional<String> getNPCName() {
 		return NPC.getByUUID(getStepObject()).map(NPC::getName);
 	}

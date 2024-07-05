@@ -53,7 +53,6 @@ public class TaskNPC extends NPC {
 			}
 		}
 
-		System.out.println(getUniqueID());
 		return language.translateMessage(TranslationKeys.QUESTS_COMMAND_ADMIN_NPC_LIST_TASK_ELEMENT,
 				List.of("${uuid]", "${name}", "${location}", "${queststeps}"),
 				List.of(getUniqueID(), getName(), LocationUtil.locationToString(getLocation()), questAndStepsNPCIsIn));

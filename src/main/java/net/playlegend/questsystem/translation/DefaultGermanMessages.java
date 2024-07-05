@@ -33,7 +33,7 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_SIGN_ACTIVE_LINE_1, "Quest &6${name}");
         add(QUESTS_SIGN_ACTIVE_LINE_2, "Nächste Aufgabe:");
         add(QUESTS_SIGN_ACTIVE_LINE_3, "${task}");
-        add(QUESTS_SIGN_ACTIVE_LINE_4, "Endet am ${date}");
+        add(QUESTS_SIGN_ACTIVE_LINE_4, "${date}");
 
         // builder
         add(QUESTS_BUILDER_TITLE, "&6Quest builder");
@@ -196,7 +196,7 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_QUEST_REWARD_NAME_HAS, "&eAlle Questbelohnungen");
         add(QUESTS_GUI_QUEST_REWARD_NAME_NONE, "&eKeine Questbelohnungen");
         add(QUESTS_GUI_QUEST_DETAILS_ITEM_LORE, ";&7Beende diese Quest in &e${duration};&7Es gibt &e${rewards} Belohnung(en);&7und &e${tasks} Aufgab(en).");
-        add(QUESTS_GUI_ACCEPT_REWARD, " ;&7Klicken, um ein;&7detailliertes Belohnungsmenü zu öffnen");
+        add(QUESTS_GUI_QUEST_TITLE, "&6Quest ${quest}");
         add(QUESTS_GUI_QUEST_ADMIN_MODIFY_NAME, "&eQuest verändern");
         add(QUESTS_GUI_QUEST_ADMIN_MODIFY_LORE, "&7Klicken, um Quest;&7zu verändern");
         add(QUESTS_GUI_QUEST_ADMIN_DELETE_NAME, "&cQuest löschen");
@@ -208,20 +208,27 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_REWARDS_TITLE, "&6Quest Belohnungen");
 
 // STEPS
+        add(QUESTS_STEP_CRAFT_NAME, "&7Crafte &e${maxamount} ${item}");
         add(QUESTS_STEP_CRAFT_NORMAL_LINE, "&e${order}&7. &7Stelle &e${item} &a${maxamount} &7Mal her");
         add(QUESTS_STEP_CRAFT_ACTIVE_LINE, "&e${order}&7. &7Stelle &e${item} &7her - &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_CRAFT_NORMAL_LORE, "&7Du musst;&7dieses Item &e${maxamount} &7Mal herstellen.");
         add(QUESTS_STEP_CRAFT_ACTIVE_LORE, "&7Du musst;&7dieses Item noch &e${amount}&7/&e${maxamount} &7mal herstellen");
+
+        add(QUESTS_STEP_MINE_NAME, "&7Mine &e${maxamount} ${item}");
         add(QUESTS_STEP_MINE_NORMAL_LINE, "&e${order}&7. &7Baue &e${item} &a${maxamount} &7Mal ab");
         add(QUESTS_STEP_MINE_ACTIVE_LINE, "&e${order}&7. &7Baue &e${item} &7ab - &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_MINE_ALREADY_MINED, "&cDu hast an dieser Stelle bereits den Block abgebaut!");
         add(QUESTS_STEP_MINE_NORMAL_LORE, "&7Du musst;&7diesen Block &e${maxamount} &7Mal abbauen.");
         add(QUESTS_STEP_MINE_ACTIVE_LORE, "&7Du musst;&7diesen Block noch &e${amount}&7/&e${maxamount} &7mal abbauen");
+
+        add(QUESTS_STEP_KILL_NAME, "&7Töte &e${maxamount} ${entity}");
         add(QUESTS_STEP_KILL_NORMAL_LINE, "&e${order}&7. &7Töte &e${entity} &a${maxamount} &7Mal");
         add(QUESTS_STEP_KILL_ACTIVE_LINE, "&e${order}&7. &7Töte &e${entity} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_KILL_NORMAL_LORE, "&7Töte &e${entity} &a${maxamount} &7Mal");
         add(QUESTS_STEP_KILL_ACTIVE_LORE, "&7Du musst;&7diese Entität noch &e${amount}&7/&e${maxamount} &7mal töten");
-        add(QUESTS_STEP_NPC_NORMAL_LINE, "&e${order}&7. &7Sprich mit &e${name} &a${maxamount} &7Mal");
+
+        add(QUESTS_STEP_NPC_NAME, "&7Sprich mit &e${name}");
+        add(QUESTS_STEP_NPC_NORMAL_LINE, "&e${order}&7. &7Sprich mit &e${name}");
         add(QUESTS_STEP_NPC_ACTIVE_LINE, "&e${order}&7. &7Sprich mit &e${name} &7- &a${amount}&7/&a${maxamount}");
         add(QUESTS_STEP_NPC_NORMAL_NAME, "&eSprich mit ${name}");
         add(QUESTS_STEP_NPC_NORMAL_LORE, "&7Sprich mit &e${name} &a${maxamount} &7Mal;&7${name} &7ist bei &e${location}");

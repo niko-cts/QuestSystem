@@ -164,7 +164,7 @@ public class QuestPlayer {
 		boolean isDone = quest.playerDidQuestStep(step, amountToAdd);
 		if (isDone) {
 			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.STEP);
-			sendMessage(TranslationKeys.QUESTS_EVENT_STEP_FINISHED, "${task}", step.getActiveTaskLine(language, quest.getStepAmount(step)));
+			sendMessage(TranslationKeys.QUESTS_EVENT_STEP_FINISHED, "${task}", step.getTaskName(language));
 			playSound(Sound.ENTITY_PLAYER_LEVELUP);
 		} else {
 			updateSignAndScoreboard();

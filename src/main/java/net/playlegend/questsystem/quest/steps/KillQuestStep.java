@@ -10,6 +10,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -104,5 +105,17 @@ public class KillQuestStep extends QuestStep<EntityType> {
 						.split(";"))
 				.setAmount(Math.max(1, Math.min(getMaxAmount(), 64)))
 				.craft();
+	}
+
+	/**
+	 * Returns a short description like "Mine 10 Stones"
+	 *
+	 * @param language Language - the language to translate
+	 * @return String - the task name
+	 */
+	@Override
+	public String getTaskName(Language language) {
+		return language.translateMessage(TranslationKeys.QUESTS_STEP_KILL_NAME,
+				Arrays.asList("${entity}", "${maxamount}"), Arrays.asList(entityName, getMaxAmount()));
 	}
 }
