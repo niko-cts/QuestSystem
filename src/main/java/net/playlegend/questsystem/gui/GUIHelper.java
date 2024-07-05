@@ -113,7 +113,14 @@ public class GUIHelper {
 		}
 		return new ItemBuilder(Material.IRON_DOOR)
 				.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_STEPS_NAME))
-				.setLore(steps.entrySet().stream().sorted(Comparator.comparingInt(e -> e.getKey().getOrder())).map(e -> e.getKey().getActiveTaskLine(language, e.getValue()))
+				.setLore(steps.entrySet().stream().sorted(Comparator.comparingInt(e -> e.getKey().getOrder()))
+						.map(e ->{
+							if (e.getKey().isStepComplete(e.getValue()))
+								return language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_LORE_STEP_COMPLETED,
+										List.of("${task}"),
+										List.of(ChatColor.stripColor(e.getKey().getActiveTaskLine(language, e.getValue()))));
+							return e.getKey().getActiveTaskLine(language, e.getValue());
+						})
 						.toList())
 				.setAmount(Math.min(64, Math.max(1, steps.size())))
 				.craft();

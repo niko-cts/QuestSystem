@@ -6,7 +6,7 @@ import net.playlegend.questsystem.player.ActivePlayerQuest;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
-import net.playlegend.questsystem.util.ColorConverterUtil;
+import net.playlegend.questsystem.util.ColorUtil;
 import net.playlegend.questsystem.util.QuestTimingsUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -85,7 +85,7 @@ public class QuestSignManager extends APISubCommand implements Listener {
 		Language lang = questPlayer.getLanguage();
 		Optional<ActivePlayerQuest> activeQuest = questPlayer.getActivePlayerQuest();
 		String[] lines = activeQuest.map(activePlayerQuest -> new String[]{
-				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_1, "${name}", ColorConverterUtil.convertToBlackColors(activePlayerQuest.getQuest().name())),
+				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_1, "${name}", ColorUtil.convertToBlackColors(activePlayerQuest.getQuest().name())),
 				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_2),
 				lang.translateMessage(TranslationKeys.QUESTS_SIGN_ACTIVE_LINE_3, "${task}",
 						activePlayerQuest.getNextUncompletedStep().map(entry -> entry.getKey().getActiveTaskLine(lang, entry.getValue())).orElse("unknown")),

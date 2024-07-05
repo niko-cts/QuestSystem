@@ -20,6 +20,8 @@ public class ScoreboardUtil {
 		throw new UnsupportedOperationException("ScoreboardUtil cannot be instantiated");
 	}
 
+	private static final long TASK_LIMIT_TO_SHOW = 5;
+
 	/**
 	 * Updates the scoreboard from the player.
 	 *
@@ -36,9 +38,9 @@ public class ScoreboardUtil {
 			scoreboard.addTranslatableLine(TranslationKeys.QUESTS_SCOREBOARD_ACTIVE_QUESTNAME);
 			scoreboard.addLine(APIScoreboard.START_COL + " " + ChatColor.YELLOW + activeQuest.getQuest().name());
 			scoreboard.addEmptyLine();
-			activeQuest.getNextUncompletedStep().ifPresent(nextStep -> {
+			activeQuest.getNextUncompletedSteps().stream().limit(TASK_LIMIT_TO_SHOW).forEach(nextStep -> {
 				scoreboard.addTranslatableLine(TranslationKeys.QUESTS_SCOREBOARD_ACTIVE_CURRENT_STEP);
-				scoreboard.addLine(APIScoreboard.START_COL + " " + nextStep.getKey().getActiveTaskLine(language, nextStep.getValue()));
+				scoreboard.addLine(APIScoreboard.START_COL + " " + ChatColor.YELLOW + nextStep.getActiveTaskLine(language, activeQuest.getStepAmount(nextStep)));
 			});
 			scoreboard.addEmptyLine();
 			scoreboard.addTranslatableLine(TranslationKeys.QUESTS_SCOREBOARD_ACTIVE_FINISH_AT);

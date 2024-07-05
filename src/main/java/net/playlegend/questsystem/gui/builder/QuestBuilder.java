@@ -117,7 +117,7 @@ public class QuestBuilder implements Listener {
 	}
 
 	public void openMenu() {
-		CustomInventory menu = new CustomInventory(27);
+		CustomInventory menu = new CustomInventory(language.translateMessage(TranslationKeys.QUESTS_BUILDER_TITLE), 27);
 
 		menu.setItem(10, new ItemBuilder(Material.PAPER)
 						.setName(name == null ? ChatColor.YELLOW + "?" : name)
@@ -139,7 +139,7 @@ public class QuestBuilder implements Listener {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 						TextComponent textComponent = new TextComponent(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_CLICK_TEXT));
-						textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/questadmin create description " + (description != null ? description.replace("§", "&") : "")));
+						textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/questadmin create description " + (description != null ? ChatColor.translateAlternateColorCodes('&', description) : "")));
 						textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_CLICK_HOVER))));
 						apiPlayer.getPlayer().spigot().sendMessage(textComponent);
 					}
@@ -161,18 +161,18 @@ public class QuestBuilder implements Listener {
 
 		menu.setItem(13,
 				new ItemBuilder(GUIHelper.getStepItem(questPlayer.getLanguage(), steps))
-				.addLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_LORE).split(";"))
-				.craft(), new ClickAction() {
-			@Override
-			public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-				QuestStepBuildingGUI.openStepCreationSelection(QuestBuilder.this);
-			}
+						.addLore(language.translateMessage(TranslationKeys.QUESTS_BUILDER_STEPS_LORE).split(";"))
+						.craft(), new ClickAction() {
+					@Override
+					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
+						QuestStepBuildingGUI.openStepCreationSelection(QuestBuilder.this);
+					}
 
-			@Override
-			public void onShiftClick(APIPlayer apiPlayer, ItemStack itemStack, int slot) {
-				QuestStepBuildingGUI.openAllSetSteps(QuestBuilder.this);
-			}
-		});
+					@Override
+					public void onShiftClick(APIPlayer apiPlayer, ItemStack itemStack, int slot) {
+						QuestStepBuildingGUI.openAllSetSteps(QuestBuilder.this);
+					}
+				});
 
 		menu.setItem(14, new ItemBuilder(Material.REDSTONE)
 						.setName(language.translateMessage(TranslationKeys.QUESTS_BUILDER_TIMER_OFFLINE_NAME, "${active}", timerRunsOffline))
@@ -218,33 +218,37 @@ public class QuestBuilder implements Listener {
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						if (name != null && description != null && !steps.isEmpty()) {
-							if (questId == null && QuestSystem.getInstance().getQuestManager().getQuestByName(name).isPresent()) {
-								questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS);
-								return;
-							}
-							new BukkitRunnable() {
-								@Override
-								public void run() {
-									if (questId == null) {
-										if (QuestSystem.getInstance().getQuestManager().addQuest(
-												name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline))
-											questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_CREATED, "${name}", name);
-										else
-											questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_CREATED_ERROR, "${name}", name);
-									} else {
-										if (QuestSystem.getInstance().getQuestManager().updateQuest(
-												questId, name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline))
-											questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_UPDATED, "${name}", name);
-										else
-											questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_UPDATED_ERROR, "${name}", name);
-									}
-								}
-							}.runTaskAsynchronously(QuestSystem.getInstance());
-
-							setCloseInventory(true);
-							removePlayer(apiPlayer.getUniqueId());
+						if (name == null || description == null || steps.isEmpty()) {
+							questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_CREATE_UN_FINISHED);
+							return;
 						}
+
+						if (questId == null && QuestSystem.getInstance().getQuestManager().getQuestByName(name).isPresent()) {
+							questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS);
+							return;
+						}
+
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								if (questId == null) {
+									if (QuestSystem.getInstance().getQuestManager().addQuest(
+											name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline))
+										questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_CREATED, "${name}", name);
+									else
+										questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_CREATED_ERROR, "${name}", name);
+								} else {
+									if (QuestSystem.getInstance().getQuestManager().updateQuest(
+											questId, name, description, rewards, steps, finishTimeInSeconds, isPublic, timerRunsOffline))
+										questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_UPDATED, "${name}", name);
+									else
+										questPlayer.sendMessage(TranslationKeys.QUESTS_BUILDER_SUCCESSFUL_UPDATED_ERROR, "${name}", name);
+								}
+							}
+						}.runTaskAsynchronously(QuestSystem.getInstance());
+
+						setCloseInventory(true);
+						removePlayer(apiPlayer.getUniqueId());
 					}
 				});
 		menu.fill(UsefulItems.BACKGROUND_BLACK);

@@ -22,7 +22,6 @@ public class PlayerQuestUpdateEvent extends Event {
 
 	public enum QuestUpdateType {
 		JOINED,
-		UPDATE_STATS,
 		NEW_QUEST,
 		QUEST_ENDED,
 		STEP,

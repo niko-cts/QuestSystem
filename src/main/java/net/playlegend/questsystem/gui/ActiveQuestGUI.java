@@ -7,19 +7,22 @@ import chatzis.nikolas.mc.nikoapi.item.UsefulItems;
 import chatzis.nikolas.mc.nikoapi.player.APIPlayer;
 import net.playlegend.questsystem.player.ActivePlayerQuest;
 import net.playlegend.questsystem.player.QuestPlayer;
+import net.playlegend.questsystem.quest.reward.QuestReward;
+import net.playlegend.questsystem.quest.steps.QuestStep;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import net.playlegend.questsystem.util.QuestTimingsUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+
+import static net.playlegend.questsystem.translation.TranslationKeys.QUESTS_GUI_REWARDS_PREVIEW_LORE;
+import static net.playlegend.questsystem.translation.TranslationKeys.QUESTS_GUI_STEPS_PREVIEW_LORE;
 
 /**
  * This class holds methods to open the active quest menu.
@@ -44,22 +47,31 @@ public class ActiveQuestGUI {
 
 		menu.setItem(11, getActivePlayerQuestItem(activeQuest, language));
 
-		menu.setItem(13, new ItemBuilder(GUIHelper.getActiveStepItem(language, activeQuest.getStepsWithAmounts()))
-						.addLore(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_STEPS_PREVIEW_LORE).split(";"))
-						.craft(),
+		List<QuestReward<?>> rewards = activeQuest.getQuest().rewards();
+		ItemStack rewardItem = GUIHelper.getRewardItem(language, rewards);
+		if (rewards.size() > 1)
+			rewardItem = new ItemBuilder(rewardItem).addLore(language.translateMessage(QUESTS_GUI_REWARDS_PREVIEW_LORE).split(";")).craft();
+
+		menu.setItem(13, rewardItem,
 				new ClickAction(Sound.BLOCK_CHEST_OPEN) {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						QuestStepsGUI.openActiveQuestSteps(questPlayer, activeQuest, ActiveQuestGUI::openActiveGUI);
+						if (rewards.size() > 1)
+							QuestRewardsGUI.openRewardsWithBack(questPlayer, activeQuest.getQuest(), activeQuest, ActiveQuestGUI::openActiveGUI);
 					}
 				});
 
-		menu.setItem(14, new ItemBuilder(GUIHelper.getRewardItem(language, activeQuest.getQuest().rewards()))
-						.addLore(language.translateMessage(TranslationKeys.QUESTS_GUI_REWARDS_PREVIEW_LORE).split(";")).craft(),
+		Map<QuestStep<?>, Integer> stepsWithAmounts = activeQuest.getStepsWithAmounts();
+		ItemStack stepItem = GUIHelper.getActiveStepItem(language, stepsWithAmounts);
+		if (stepsWithAmounts.size() > 1)
+			stepItem = new ItemBuilder(stepItem).addLore(language.translateMessage(QUESTS_GUI_STEPS_PREVIEW_LORE).split(";")).craft();
+
+		menu.setItem(14, stepItem,
 				new ClickAction(Sound.BLOCK_CHEST_OPEN) {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-						QuestRewardsGUI.openRewardsWithBack(questPlayer, activeQuest.getQuest(), activeQuest, ActiveQuestGUI::openActiveGUI);
+						if (stepsWithAmounts.size() > 1)
+							QuestStepsGUI.openActiveQuestSteps(questPlayer, activeQuest, ActiveQuestGUI::openActiveGUI);
 					}
 				});
 
@@ -102,17 +114,15 @@ public class ActiveQuestGUI {
 		quest.getStepsWithAmounts().entrySet().stream().sorted(Comparator.comparingInt(e -> e.getKey().getOrder())).forEach(entry -> {
 			if (entry.getKey().isStepComplete(entry.getValue())) {
 				lore.addAll(Arrays.asList(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_LORE_STEP_COMPLETED,
-						List.of("${order}", "${task}"),
-						List.of(entry.getKey().getOrder(), entry.getKey().getActiveTaskLine(language, entry.getValue()))).split(";")));
+						List.of("${task}"),
+						List.of(ChatColor.stripColor(entry.getKey().getActiveTaskLine(language, entry.getValue())))).split(";")));
 			} else {
-				lore.addAll(Arrays.asList(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_LORE_STEP_TODO,
-						List.of("${order}", "${task}"),
-						List.of(entry.getKey().getOrder(), entry.getKey().getActiveTaskLine(language, entry.getValue()))).split(";")));
+				lore.addAll(Arrays.asList(entry.getKey().getActiveTaskLine(language, entry.getValue()).split(";")));
 			}
 		});
 
 		return new ItemBuilder(Material.IRON_SWORD).addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS)
-				.setName(quest.getQuest().name())
+				.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_OVERVIEW_NAME))
 				.setDamageByMultiply((float) quest.getCompletedSteps().size() / quest.getStepsWithAmounts().size())
 				.setLore(lore).craft();
 	}

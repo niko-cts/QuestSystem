@@ -36,6 +36,7 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_SIGN_ACTIVE_LINE_4, "Endet am ${date}");
 
         // builder
+        add(QUESTS_BUILDER_TITLE, "&6Quest builder");
         add(QUESTS_BUILDER_NOT_VALID_NUMBER, "&cDu hast eine ungültige Zahl eingegeben.");
         add(QUESTS_BUILDER_NOT_VALID_UUID, "&cDu hast eine ungültige UUID eingegeben.");
         add(QUESTS_BUILDER_NOT_VALID_MATERIAL, "&cDu hast ein ungültiges Material eingegeben.");
@@ -61,6 +62,7 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_TIMER_LORE, "&7Die Sekunden, die der Spieler hat;&7um die Quest abzuschließen;&7Aktuelle Dauer: &e${duration}");
         add(QUESTS_BUILDER_CREATE_NAME, "&aQuest erstellen");
         add(QUESTS_BUILDER_CREATE_LORE, "&7Klicken, um die Quest zu erstellen.;&7Um die Quest zu erstellen,;&7musst du folgendes gesetzt habeN:;&7- Einen Namen;&7- Eine Beschreibung;&7- Mindestens eine Aufgabe");
+        add(QUESTS_BUILDER_CREATE_UN_FINISHED, "&cUnvollständige Eingabe! &7Es muss mindestens der Name, die Beschreibung und eine Aufgabe eingerichtet sein.");
         add(QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS, "&cDieser Questname existent bereits.");
 
         add(QUESTS_BUILDER_SUCCESSFUL_CREATED, "&aQuest &e${name} &awurde erstellt.");
@@ -139,6 +141,8 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_QUEST_USAGE, "quest");
         add(QUESTS_COMMAND_QUEST_CANCEL_USAGE, "quest cancel");
         add(QUESTS_COMMAND_QUEST_CANCEL_SUCCESS, "&7Deine aktive Quest wurde &aabgebrochen&7. Klicke hier, um sie zu öffnen");
+        add(QUESTS_COMMAND_QUEST_CANCEL_CONFIRM_TEXT, "&7[&eKLICK&7] &7und bestätige den &cAbbruch &7der aktiven Quest! Der ganze Fortschritt wird gelöscht!");
+        add(QUESTS_COMMAND_QUEST_CANCEL_CONFIRM_HOVER, "&7Klicken, um Quest abzubrechen");
         add(QUESTS_COMMAND_QUEST_CANCEL_NOACTIVE, "&7Es gibt &ckeine &7aktive Quest, die du abbrechen kannst.");
         add(QUESTS_COMMAND_QUEST_INFO_USAGE, "quest info - Informationen über deine aktive Quest");
         add(QUESTS_COMMAND_QUEST_INFO_DISPLAY, "&7Die Quest &e${name} &7läuft noch &e${duration}&7. Deine aktuelle Aufgabe ist: &e${todo}");
@@ -161,14 +165,14 @@ public class DefaultGermanMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_OVERVIEW_COMPLETED_LORE, "&7Klicken, um alle Quests zu sehen;&7die du bereits abgeschlossen hast.;&7Diese Quests können nicht erneut gemacht werden.");
 
 // GUI active
-        add(QUESTS_GUI_ACTIVE_OVERVIEW, "&7Die Quest läuft noch: &e${duration};&7Du hast &e${done} &7Aufgaben abgeschlossen;&7Du musst noch &e${todo} &7weitere Aufgaben erledigen");
-        add(QUESTS_GUI_ACTIVE_LORE_STEP_COMPLETED, "&7&m${order}. ${task}");
-        add(QUESTS_GUI_ACTIVE_LORE_STEP_TODO, "&e${order}. ${task}");
+        add(QUESTS_GUI_ACTIVE_OVERVIEW_NAME, "&aQuest info");
+        add(QUESTS_GUI_ACTIVE_OVERVIEW, "&7Die Quest läuft noch: &e${duration};;&7Du hast &e${done} &7Aufgaben abgeschlossen;&e${todo} &7Aufgaben sind noch offen:; ");
+        add(QUESTS_GUI_ACTIVE_LORE_STEP_COMPLETED, "&7&m${task}");
         add(QUESTS_GUI_ACTIVE_CANCEL_NAME, "&cQuest abbrechen");
-        add(QUESTS_GUI_ACTIVE_CANCEL_LORE, "&7Klicken, um die Quest abzubrechen.;&7Alle Fortschritte gehen verloren!;&7Du wirst die Quest neu starten können.;&cDies kann nicht rückgängig gemacht werden");
-        add(QUESTS_GUI_ACTIVE_TIME_LEFT_NAME, "&eVerbleibende Zeit: ${duration}");
+        add(QUESTS_GUI_ACTIVE_CANCEL_LORE, "&7Klicken, um die Quest abzubrechen.;&7Alle Fortschritte gehen verloren!;&7Du kannst die Quest anschließend neu starten.");
+        add(QUESTS_GUI_ACTIVE_TIME_LEFT_NAME, "&7Verbleibende Zeit: &e${duration}");
         add(QUESTS_GUI_ACTIVE_STEPS_PREVIEW_NAME, "&eQuest Aufgaben");
-        add(QUESTS_GUI_ACTIVE_STEPS_PREVIEW_LORE, ";&7Klicken, um alle Aufgaben der Quest zu sehen");
+        add(QUESTS_GUI_STEPS_PREVIEW_LORE, ";&7Klicken, um alle Aufgaben der Quest zu sehen");
         add(QUESTS_GUI_ACTIVE_STEPS_TITLE, "&6Aktive Quest Aufgaben");
         add(QUESTS_GUI_ACTIVE_STEPS_UNCOMPLETED, "&7Alle verbleibenden Aufgaben ->");
         add(QUESTS_GUI_ACTIVE_STEPS_COMPLETED, "&7Alle abgeschlossenen Aufgaben ->");

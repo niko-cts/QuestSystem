@@ -2,9 +2,9 @@ package net.playlegend.questsystem.util;
 
 import org.bukkit.ChatColor;
 
-public class ColorConverterUtil {
+public class ColorUtil {
 
-	private ColorConverterUtil() {
+	private ColorUtil() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -23,5 +23,4 @@ public class ColorConverterUtil {
 				.replace(ChatColor.AQUA.toString(), ChatColor.DARK_AQUA.toString())
 				.replace(ChatColor.RED.toString(), ChatColor.DARK_RED.toString());
 	}
-
 }

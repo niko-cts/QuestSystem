@@ -33,6 +33,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_SIGN_ACTIVE_LINE_3, "${task}");
         add(QUESTS_SIGN_ACTIVE_LINE_4, "Ends on ${date}");
         // builder
+        add(QUESTS_BUILDER_TITLE, "&6Quest builder");
         add(QUESTS_BUILDER_NOT_VALID_NUMBER, "&cYou inserted a invalid number");
         add(QUESTS_BUILDER_NOT_VALID_UUID, "&cYou inserted a invalid uuid");
         add(QUESTS_BUILDER_NOT_VALID_MATERIAL, "&cYou inserted a invalid material");
@@ -58,6 +59,7 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_TIMER_LORE, "&7The seconds the player;&7needs to complete the quest;&7Current duration: &e${duration}");
         add(QUESTS_BUILDER_CREATE_NAME, "&aCreate the quest");
         add(QUESTS_BUILDER_CREATE_LORE, "&7Click to create the quest;&7You have to set the following:;&7- Set a name;&7- Set a description;&7- Set at least one task");
+        add(QUESTS_BUILDER_CREATE_UN_FINISHED, "&cInvalid input! &7You have to set a quest name, description and at least one task!");
         add(QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS, "&cThis quest name already exists!");
 
         add(QUESTS_BUILDER_SUCCESSFUL_CREATED, "&aQuest &e${name}&a was created");
@@ -66,11 +68,11 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_BUILDER_SUCCESSFUL_UPDATED_ERROR, "&cThere was an error updating Quest &e${name}&7! Please take a look in the console.");
 
         add(QUESTS_BUILDER_STEPS_CREATION_ORDER_NAME, "&7Current order: &e${order}");
-        add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7Change the order of this task;&7All tasks with the same order;&7can be done at the same time;&7Click to change");
+        add(QUESTS_BUILDER_STEPS_CREATION_ORDER_LORE, "&7The order of a task;&7determines when it can be done;&7Tasks have to be completed in chronological order;&7A quest can have multiple;&7tasks with the same order;;&7Click to change the order");
         add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_NAME, "&7Current amount: &e${amount}");
         add(QUESTS_BUILDER_STEPS_CREATION_AMOUNT_LORE, "&7The amount to complete the task;&7This is e.g.:;&7'mine <amount> of blocks';&7Click to change");
         add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_NAME,"&eCurrent parameter: &6${parameter}");
-        add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, "&7Input the parameter of the step;&7This depends on the step;&7E.g. for Mining requires a material name;&7This step requires: &e${input};&7Click to insert parameter");
+        add(QUESTS_BUILDER_STEPS_CREATION_PARAMETER_LORE, "&7Insert the parameter of the task;&7For the Mining-Task it requires a material name;;&7This task requires the type: &e${input};;&7Click to insert parameter");
         add(QUESTS_BUILDER_STEPS_CREATION_ACCEPT_LORE, " ; ;&aClick to add");
         add(QUESTS_BUILDER_STEPS_CREATION_ERROR, "&cThere was an error creating the task item! &7Error is: &e${message}");
 
@@ -136,6 +138,8 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_COMMAND_QUEST_USAGE, "quest");
         add(QUESTS_COMMAND_QUEST_CANCEL_USAGE, "quest cancel");
         add(QUESTS_COMMAND_QUEST_CANCEL_SUCCESS, "&7Your active quest has been &acanceled&7. Click here to open the Quest menu");
+        add(QUESTS_COMMAND_QUEST_CANCEL_CONFIRM_TEXT, "&7[&eCLICK&7] &7Here to confirm the &ccancellation &7of the current active Quest. All progress will be lost!");
+        add(QUESTS_COMMAND_QUEST_CANCEL_CONFIRM_HOVER, "&7Click to cancel the active quest");
         add(QUESTS_COMMAND_QUEST_CANCEL_NOACTIVE, "&7There is &cno &7active quest which you can cancel.");
         add(QUESTS_COMMAND_QUEST_INFO_USAGE, "quest info - Information about your active quest");
         add(QUESTS_COMMAND_QUEST_INFO_DISPLAY, "&7Quest &e${name} &7will exceed in &e${duration}&7. Your current task is: &e${todo}");
@@ -158,14 +162,14 @@ public class DefaultEnglishMessages extends AbstractDefaultMessages {
         add(QUESTS_GUI_OVERVIEW_COMPLETED_LORE, "&7Click to see all quests;&7you have already completed.;&7These quests can not be redone.");
 
         // GUI active
-        add(QUESTS_GUI_ACTIVE_OVERVIEW, "&7Quest will exceed in: &e${duration};&7You completed &e${done} &7tasks;&7You need to complete &e${todo} &7more tasks");
-        add(QUESTS_GUI_ACTIVE_LORE_STEP_COMPLETED, "&7&m${order}. ${task}");
-        add(QUESTS_GUI_ACTIVE_LORE_STEP_TODO, "&e${order}&7. ${task}");
+        add(QUESTS_GUI_ACTIVE_OVERVIEW_NAME, "&aQuest info");
+        add(QUESTS_GUI_ACTIVE_OVERVIEW, "&7Quest will exceed in: &e${duration};;&7You completed &e${done} &7tasks;&7You need to complete &e${todo} &7more tasks:;");
+        add(QUESTS_GUI_ACTIVE_LORE_STEP_COMPLETED, "&7&m${task}");
         add(QUESTS_GUI_ACTIVE_CANCEL_NAME, "&cCancel the quest");
-        add(QUESTS_GUI_ACTIVE_CANCEL_LORE, "&7Click to cancel the quest.;&7All progress will be lost!;&7You will be able to restart the quest.;&cThis can not be undone");
-        add(QUESTS_GUI_ACTIVE_TIME_LEFT_NAME, "&eTime left: ${duration}");
+        add(QUESTS_GUI_ACTIVE_CANCEL_LORE, "&7Click to cancel the quest.;&7All progress will be lost!;&7You will be able to restart the quest.");
+        add(QUESTS_GUI_ACTIVE_TIME_LEFT_NAME, "&7Time left: &e${duration}");
         add(QUESTS_GUI_ACTIVE_STEPS_PREVIEW_NAME, "&eQuest tasks");
-        add(QUESTS_GUI_ACTIVE_STEPS_PREVIEW_LORE, ";&7Click to see all tasks to complete the quest");
+        add(QUESTS_GUI_STEPS_PREVIEW_LORE, ";&7Click to see task details");
         add(QUESTS_GUI_ACTIVE_STEPS_TITLE, "&6Active quest tasks");
         add(QUESTS_GUI_ACTIVE_STEPS_UNCOMPLETED, "&7All remaining tasks ->");
         add(QUESTS_GUI_ACTIVE_STEPS_COMPLETED, "&7All completed tasks ->");

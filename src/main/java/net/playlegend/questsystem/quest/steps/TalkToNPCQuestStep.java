@@ -9,7 +9,7 @@ import net.playlegend.questsystem.events.PlayerClickedOnQuestNPCEvent;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
-import net.playlegend.questsystem.util.ColorConverterUtil;
+import net.playlegend.questsystem.util.ColorUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -37,7 +37,7 @@ public class TalkToNPCQuestStep extends QuestStep<UUID> {
 	public int checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof PlayerClickedOnQuestNPCEvent npcEvent && npcEvent.getNpcUUID().equals(getStepObject())) {
 			player.openBook(new ItemBuilder(Material.WRITTEN_BOOK)
-					.addPage(ColorConverterUtil.convertToBlackColors(player.getLanguage().translateMessage(npcEvent.getMessages().getOrDefault(
+					.addPage(ColorUtil.convertToBlackColors(player.getLanguage().translateMessage(npcEvent.getMessages().getOrDefault(
 							player.getLanguage().getLanguageKey(),
 							QuestSystem.getInstance().getLanguageHandler().getFallbackLanguage().getLanguageKey()))
 					).split(";")).craft());

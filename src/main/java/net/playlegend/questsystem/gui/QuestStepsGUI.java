@@ -32,30 +32,30 @@ public class QuestStepsGUI {
 
 		CustomInventory menu = new CustomInventory(
 				language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_STEPS_TITLE),
-				Utils.getPerfectInventorySize(uncompletedSteps.size() + 9 - uncompletedSteps.size() % 9 +
+				Utils.getPerfectInventorySize(uncompletedSteps.size() + 18 - uncompletedSteps.size() % 9 +
 				                              completedSteps.size() + 4));
 
-		int i = 0;
+
+		menu.addItem(UsefulItems.ARROW_RIGHT()
+				.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_STEPS_COMPLETED))
+				.setAmount(Math.min(64, Math.max(1, completedSteps.size())))
+				.craft());
+
+		int i = 1;
+		for (QuestStep<?> step : completedSteps) {
+			menu.setItem(i, step.getActiveTask(language, activePlayerQuest.getStepAmount(step)));
+			i++;
+		}
+
+		i += 18 - i % 9;
+
 		menu.setItem(i, UsefulItems.ARROW_RIGHT()
 				.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_STEPS_UNCOMPLETED))
 				.setAmount(Math.min(64, Math.max(1, uncompletedSteps.size())))
 				.craft());
-
 		i++;
 
 		for (QuestStep<?> step : uncompletedSteps) {
-			menu.setItem(i, step.getActiveTask(language, activePlayerQuest.getStepAmount(step)));
-			i++;
-		}
-		i += 9 - i % 9;
-
-		menu.setItem(i, UsefulItems.ARROW_RIGHT()
-				.setName(language.translateMessage(TranslationKeys.QUESTS_GUI_ACTIVE_STEPS_COMPLETED))
-				.setAmount(Math.min(64, Math.max(1, completedSteps.size())))
-				.craft());
-		i++;
-
-		for (QuestStep<?> step : completedSteps) {
 			menu.setItem(i, step.getActiveTask(language, activePlayerQuest.getStepAmount(step)));
 			i++;
 		}

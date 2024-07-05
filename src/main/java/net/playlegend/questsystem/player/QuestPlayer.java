@@ -166,15 +166,21 @@ public class QuestPlayer {
 			questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.STEP);
 			sendMessage(TranslationKeys.QUESTS_EVENT_STEP_FINISHED, "${task}", step.getActiveTaskLine(language, quest.getStepAmount(step)));
 			playSound(Sound.ENTITY_PLAYER_LEVELUP);
+		} else {
+			updateSignAndScoreboard();
 		}
 		return isDone;
 	}
 
 
 	public void questUpdateEvent(@NonNull PlayerQuestUpdateEvent.QuestUpdateType type) {
+		updateSignAndScoreboard();
+		sendEvent(type);
+	}
+
+	private void updateSignAndScoreboard() {
 		ScoreboardUtil.updateScoreboard(this);
 		QuestSystem.getInstance().getQuestSignManager().updateSign(this);
-		sendEvent(type);
 	}
 
 	private void sendEvent(@NonNull PlayerQuestUpdateEvent.QuestUpdateType type) {
@@ -221,7 +227,7 @@ public class QuestPlayer {
 	public void setLanguage(Language language) {
 		this.language = language;
 		this.playerDbInformationHolder.markLanguageDirty();
-		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.UPDATE_STATS);
+		updateSignAndScoreboard();
 	}
 
 	/**
@@ -232,7 +238,7 @@ public class QuestPlayer {
 	public void setCoins(int coins) {
 		this.coins = coins;
 		this.playerDbInformationHolder.markCoinsDirty();
-		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.UPDATE_STATS);
+		updateSignAndScoreboard();
 	}
 
 	/**

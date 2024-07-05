@@ -10,6 +10,7 @@ import net.playlegend.questsystem.gui.builder.QuestBuilder;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.translation.Language;
+import net.playlegend.questsystem.translation.TranslationKeys;
 import net.playlegend.questsystem.util.QuestTimingsUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -36,14 +37,17 @@ public class QuestSpecificGUI {
 
 	public static void openQuestGUI(@NonNull QuestPlayer questPlayer, @NonNull Quest quest, boolean adminMode, @NonNull Consumer<QuestPlayer> goBack) {
 		Language language = questPlayer.getLanguage();
-		CustomInventory menu = new CustomInventory(quest.name(), adminMode ? 9 * 4 : 9 * 3);
+		CustomInventory menu = new CustomInventory(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_TITLE,
+				"${quest}", quest.name()),
+				adminMode ? 9 * 4 : 9 * 3);
 		ItemStack questItem = quest.getQuestItem(language);
 		menu.setItem(10, questItem);
 
-		menu.setItem(12,
-				quest.rewards().size() == 1 ?
-						quest.rewards().get(0).getRewardDisplayItem(language)
-						: quest.getRewardItem(language),
+		ItemStack rewardItem = GUIHelper.getRewardItem(language, quest.rewards());
+		if (quest.rewards().size() > 1)
+			rewardItem = new ItemBuilder(rewardItem).addLore(language.translateMessage(QUESTS_GUI_REWARDS_PREVIEW_LORE).split(";")).craft();
+
+		menu.setItem(12, rewardItem,
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
@@ -53,7 +57,11 @@ public class QuestSpecificGUI {
 					}
 				});
 
-		menu.setItem(14, GUIHelper.getStepItem(language, quest.completionSteps()),
+		ItemStack stepItem = GUIHelper.getStepItem(language, quest.completionSteps());
+		if (quest.completionSteps().size() > 1)
+			stepItem = new ItemBuilder(stepItem).addLore(language.translateMessage(QUESTS_GUI_STEPS_PREVIEW_LORE).split(";")).craft();
+
+		menu.setItem(14, stepItem,
 				new ClickAction() {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {

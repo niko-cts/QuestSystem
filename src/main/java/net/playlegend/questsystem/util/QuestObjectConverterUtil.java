@@ -1,7 +1,6 @@
 package net.playlegend.questsystem.util;
 
 import lombok.NonNull;
-import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.quest.reward.RewardType;
 import net.playlegend.questsystem.quest.steps.*;
 import org.bukkit.Material;
@@ -10,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.util.UUID;
-import java.util.logging.Level;
 
 /**
  * This is a helper class to parse a given string from the database into the needed object.
@@ -44,8 +42,7 @@ public class QuestObjectConverterUtil {
 			case CRAFT ->
 					new CraftQuestStep(stepId, order, maxAmount, ItemToBase64ConverterUtil.fromBase64(objectAsString));
 			default -> {
-				QuestSystem.getInstance().getLogger().log(Level.WARNING, "{0} is not implemented in converter!", type);
-				throw new IllegalStateException(type + " is not implemented in converter!");
+				throw new IllegalStateException(type + " is not implemented in instantiateQuestStepFromTypeAndParameter!");
 			}
 		};
 	}
@@ -69,8 +66,7 @@ public class QuestObjectConverterUtil {
 		if (ItemStack.class == type.getConstructorParameter())
 			return ItemToBase64ConverterUtil.fromBase64(objectAsString);
 
-		QuestSystem.getInstance().getLogger().log(Level.WARNING, "{0} is not implemented in converter!", type);
-		throw new IllegalStateException(type + " is not implemented in converter!");
+		throw new IllegalStateException(type + " is not implemented in convertDatabaseStringToQuestRewardObject!");
 	}
 
 	/**

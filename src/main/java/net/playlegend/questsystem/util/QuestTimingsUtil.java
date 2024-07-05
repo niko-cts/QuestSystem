@@ -22,39 +22,33 @@ public class QuestTimingsUtil {
      *
      * @param secondsLeft long - the total seconds left.
      * @return long - the next interval in seconds
+     * @see net.playlegend.questsystem.player.QuestTimerPlayer
      */
     public static long calculateNextDuration(long secondsLeft) {
-        if (secondsLeft >= 3600 && secondsLeft % 1800 == 0)
-            return 1800; // every 30 min
-        if (secondsLeft > 1800)
-            return secondsLeft % 1800; // every 30 min
+        if (secondsLeft >= 3600 && secondsLeft % 1800 == 0) return 1800; // every 30 min
+        if (secondsLeft > 1800) return secondsLeft % 1800; // remainder of 30 min
 
-        if (secondsLeft >= 1200 && secondsLeft % 600 == 0)
-            return 600; // every 10 min
-        if (secondsLeft > 600)
-            return secondsLeft % 600; // every 10 min
-        if (secondsLeft == 600)
-            return 300; // 5 mins
-        if (secondsLeft > 300)
-            return secondsLeft % 300; // 5 minutes left
-        if (secondsLeft >= 120 && secondsLeft % 60 == 0)
-            return 60;
-        if (secondsLeft > 60)
-            return secondsLeft % 60; // 1 minute left
-        if (secondsLeft == 60)
-            return 30; // 30 seconds
-        if (secondsLeft > 30)
-            return secondsLeft % 30; // 30 seconds left
-        if (secondsLeft == 30)
-            return 15; // 30 seconds left
-        if (secondsLeft > 15)
-            return secondsLeft % 15; // 15 seconds left
-        if(secondsLeft == 15)
-            return 5;
-        if (secondsLeft > 10)
-            return secondsLeft % 10; // 10 seconds left
-        return 1; // Last 15 seconds, run every second
+        if (secondsLeft >= 1200 && secondsLeft % 600 == 0) return 600; // every 10 min
+        if (secondsLeft > 600) return secondsLeft % 600; // remainder of 10 min
+
+        if (secondsLeft == 600) return 300; // 5 mins
+        if (secondsLeft > 300) return secondsLeft % 300; // remainder of 5 min
+
+        if (secondsLeft >= 120 && secondsLeft % 60 == 0) return 60; // every 1 min
+        if (secondsLeft > 60) return secondsLeft % 60; // remainder of 1 min
+
+        if (secondsLeft == 60) return 30; // 30 seconds
+        if (secondsLeft > 30) return secondsLeft % 30; // remainder of 30 seconds
+
+        if (secondsLeft == 30) return 15; // 15 seconds
+        if (secondsLeft > 15) return secondsLeft % 15; // remainder of 15 seconds
+
+        if (secondsLeft == 15) return 5; // 5 seconds
+        if (secondsLeft > 10) return secondsLeft % 10; // remainder of 10 seconds
+
+        return 1; // last 10 seconds, run every second
     }
+
 
     /**
      * Converts the given seconds into a String splitting up to days till seconds.

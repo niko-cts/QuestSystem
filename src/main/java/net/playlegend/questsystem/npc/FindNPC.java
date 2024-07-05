@@ -10,7 +10,7 @@ import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
-import net.playlegend.questsystem.util.ColorConverterUtil;
+import net.playlegend.questsystem.util.ColorUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -33,7 +33,7 @@ public class FindNPC extends NPC {
 			if (player == null) return;
 			String foundBook = player.getLanguage().translateMessage(TranslationKeys.QUESTS_NPC_FOUNDBOOK,
 							List.of("${name}", "${description}"),
-							List.of(ColorConverterUtil.convertToBlackColors(quest.name()), ColorConverterUtil.convertToBlackColors(quest.description())))
+							List.of(ColorUtil.convertToBlackColors(quest.name()), ColorUtil.convertToBlackColors(quest.description())))
 					.replace("/n", "\n");
 			if (player.getFoundQuests().containsKey(quest)) {
 				foundBook = player.getLanguage().translateMessage(TranslationKeys.QUESTS_NPC_FOUNDBOOK_ALREADY)

@@ -33,6 +33,7 @@ public class TranslationKeys {
 	public static final String QUESTS_SIGN_ACTIVE_LINE_4 = QUEST + "sign.active.4";
 
 	private static final String BUILDER = QUEST + "builder.";
+	public static final String QUESTS_BUILDER_TITLE = BUILDER + "title";
 	public static final String QUESTS_BUILDER_NOT_VALID_NUMBER = BUILDER + "input.invalid.number";
 	public static final String QUESTS_BUILDER_NOT_VALID_UUID = BUILDER + "input.invalid.uuid";
 	public static final String QUESTS_BUILDER_NOT_VALID_MATERIAL = BUILDER + "input.invalid.material";
@@ -58,6 +59,7 @@ public class TranslationKeys {
 	public static final String QUESTS_BUILDER_TIMER_LORE = BUILDER + "timer.amount.lore";
 	public static final String QUESTS_BUILDER_CREATE_NAME = BUILDER + "create.name";
 	public static final String QUESTS_BUILDER_CREATE_LORE = BUILDER + "create.lore";
+	public static final String QUESTS_BUILDER_CREATE_UN_FINISHED = BUILDER + "create.unfinished";
 	public static final String QUESTS_BUILDER_CREATE_NAME_ALREADY_EXISTS = BUILDER + "create.namealreadyexists";
 	public static final String QUESTS_BUILDER_SUCCESSFUL_CREATED = BUILDER + "successful.created.success";
 	public static final String QUESTS_BUILDER_SUCCESSFUL_CREATED_ERROR = BUILDER + "successful.created.error";
@@ -142,6 +144,8 @@ public class TranslationKeys {
 
 	public static final String QUESTS_COMMAND_QUEST_CANCEL_USAGE = Q_COMMAND + "quest.cancel.usage";
 	public static final String QUESTS_COMMAND_QUEST_CANCEL_SUCCESS = Q_COMMAND + "quest.cancel.canceled";
+	public static final String QUESTS_COMMAND_QUEST_CANCEL_CONFIRM_TEXT = Q_COMMAND + "quest.cancel.confirm.text";
+	public static final String QUESTS_COMMAND_QUEST_CANCEL_CONFIRM_HOVER = Q_COMMAND + "quest.cancel.confirm.hover";
 	public static final String QUESTS_COMMAND_QUEST_CANCEL_NOACTIVE = Q_COMMAND + "quest.cancel.noactivequest";
 
 	public static final String QUESTS_COMMAND_QUEST_INFO_USAGE = Q_COMMAND + "quest.info.usage";
@@ -171,15 +175,15 @@ public class TranslationKeys {
 
 
 	public static final String QUESTS_GUI_ACTIVE_OVERVIEW = GUI + "active.overview";
+	public static final String QUESTS_GUI_ACTIVE_OVERVIEW_NAME = GUI + "active.name";
 	public static final String QUESTS_GUI_ACTIVE_LORE_STEP_COMPLETED = GUI + "active.step.completed";
-	public static final String QUESTS_GUI_ACTIVE_LORE_STEP_TODO = GUI + "active.step.todo";
 	public static final String QUESTS_GUI_ACTIVE_CANCEL_NAME = GUI + "active.cancel.name";
 	public static final String QUESTS_GUI_ACTIVE_CANCEL_LORE = GUI + "active.cancel.lore";
 	public static final String QUESTS_GUI_ACTIVE_TIME_LEFT_NAME = GUI + "active.time.name";
 
 	// ACTIVE QUEST STEPS
 	public static final String QUESTS_GUI_ACTIVE_STEPS_PREVIEW_NAME = GUI + "active.steps.preview.name";
-	public static final String QUESTS_GUI_ACTIVE_STEPS_PREVIEW_LORE = GUI + "active.steps.preview.lore";
+	public static final String QUESTS_GUI_STEPS_PREVIEW_LORE = GUI + "active.steps.preview.lore";
 	public static final String QUESTS_GUI_ACTIVE_STEPS_TITLE = GUI + "active.steps.title.name";
 	public static final String QUESTS_GUI_ACTIVE_STEPS_UNCOMPLETED = GUI + "active.steps.uncompleted";
 	public static final String QUESTS_GUI_ACTIVE_STEPS_COMPLETED = GUI + "active.steps.completed";
@@ -208,6 +212,7 @@ public class TranslationKeys {
 	public static final String QUESTS_GUI_QUEST_REWARD_NAME_NONE = GUI + "quest.reward.name.none";
 	public static final String QUESTS_GUI_QUEST_DETAILS_ITEM_LORE = GUI + "quest.details.lore";
 	public static final String QUESTS_GUI_ACCEPT_REWARD = GUI + "accept.reward";
+	public static final String QUESTS_GUI_QUEST_TITLE = GUI + "quest.title";
 	public static final String QUESTS_GUI_QUEST_ADMIN_MODIFY_NAME = GUI + "quest.modify.name";
 	public static final String QUESTS_GUI_QUEST_ADMIN_MODIFY_LORE = GUI + "quest.modify.lore";
 	public static final String QUESTS_GUI_QUEST_ADMIN_DELETE_NAME = GUI + "quest.delete.name";
