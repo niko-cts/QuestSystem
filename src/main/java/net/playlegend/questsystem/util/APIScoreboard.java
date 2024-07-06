@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ import java.util.Objects;
  */
 public class APIScoreboard {
 
-    public static final String START_COL = "&8» ";
+    public static final String START_COL = ChatColor.DARK_GRAY + "»  ";
 
     private final String objectiveName;
     private TranslationMessageHolder displayName;
@@ -47,18 +48,6 @@ public class APIScoreboard {
         return this;
     }
 
-    /**
-     * Adds multiple empty lines to the scoreboard.
-     * @param amount int - the amount of empty lines to add.
-     * @return APIScoreboard - instance of this scoreboard.
-     * @since 1.0.2
-     */
-    public APIScoreboard addEmptyLines(int amount) {
-        for (int i = 0; i < amount; i++) {
-            addEmptyLine();
-        }
-        return this;
-    }
 
     /**
      * Adds an empty line to the scoreboard.
@@ -77,9 +66,7 @@ public class APIScoreboard {
      * @since 1.0.2
      */
     public APIScoreboard addLine(String... lines) {
-        for (String line : lines) {
-            scores.add(ChatColor.translateAlternateColorCodes('&', line));
-        }
+	    scores.addAll(Arrays.asList(lines));
         return this;
     }
 
@@ -93,32 +80,6 @@ public class APIScoreboard {
         for (String line : lineKeys) {
             scores.add(new TranslationMessageHolder(line));
         }
-        return this;
-    }
-
-    /**
-     * Adds a new translatable line to the scoreboard.
-     * @param lineKey String - the translation key for the line.
-     * @param placeholder String - the placeholder for the line.
-     * @param replacement String - the replacement for the line.
-     * @return APIScoreboard - instance of this scoreboard.
-     * @since 1.0.2
-     */
-    public APIScoreboard addTranslatableLine(String lineKey, String placeholder, String replacement) {
-        scores.add(new TranslationMessageHolder(lineKey, placeholder, replacement));
-        return this;
-    }
-
-    /**
-     * Adds a new translatable line to the scoreboard.
-     * @param lineKey String - the translation key for the line.
-     * @param placeholder List<String> - the placeholders for the line.
-     * @param replacement List<String> - the replacements for the line.
-     * @return APIScoreboard - instance of this scoreboard.
-     * @since 1.0.2
-     */
-    public APIScoreboard addTranslatableLine(String lineKey, List<String> placeholder, List<Object> replacement) {
-        scores.add(new TranslationMessageHolder(lineKey, placeholder, replacement));
         return this;
     }
 

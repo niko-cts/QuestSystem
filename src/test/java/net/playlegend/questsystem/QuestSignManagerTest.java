@@ -121,7 +121,7 @@ public class QuestSignManagerTest {
 
         assertTrue(locations.contains(location));
 
-        Method method = QuestSignManager.class.getDeclaredMethod("deleteSignIfExists", Location.class);
+        Method method = QuestSignManager.class.getDeclaredMethod("deleteSign", Location.class);
         method.setAccessible(true);
         method.invoke(questSignManager, location);
 

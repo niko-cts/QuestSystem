@@ -92,7 +92,7 @@ public class QuestPlayer {
 		finishedQuests.put(activePlayerQuest.getQuest(), completedAt);
 		playerDbInformationHolder.addCompletedQuest(activePlayerQuest.getQuest().id(), completedAt);
 		sendClickableMessage(TranslationKeys.QUESTS_EVENT_FINISHED, TranslationKeys.QUESTS_EVENT_CLICK_TO_OPEN_HOVER, "${name}", activePlayerQuest.getQuest().name(),
-				"/quest completed " + ChatColor.translateAlternateColorCodes('&', activePlayerQuest.getQuest().name()));
+				"/quest completed " + activePlayerQuest.getQuest().name().replace(ChatColor.COLOR_CHAR + "", "&"));
 		playSound(Sound.ENTITY_ENDER_DRAGON_GROWL);
 		setActivePlayerQuest(null);
 		questUpdateEvent(PlayerQuestUpdateEvent.QuestUpdateType.QUEST_ENDED);
@@ -178,7 +178,7 @@ public class QuestPlayer {
 		sendEvent(type);
 	}
 
-	private void updateSignAndScoreboard() {
+	public void updateSignAndScoreboard() {
 		ScoreboardUtil.updateScoreboard(this);
 		QuestSystem.getInstance().getQuestSignManager().updateSign(this);
 	}
@@ -249,7 +249,7 @@ public class QuestPlayer {
 	 */
 	public void sendClickableQuestMessage(String messageKey, Quest quest) {
 		sendClickableMessage(messageKey, TranslationKeys.QUESTS_EVENT_CLICK_TO_OPEN_HOVER, "${name}", quest.name(),
-				"/quest " + (quest.isPublic() ? "public " : "found ") + ChatColor.translateAlternateColorCodes('&', quest.name()));
+				"/quest " + (quest.isPublic() ? "public " : "found ") + quest.name().replace(ChatColor.COLOR_CHAR + "", "&"));
 	}
 
 	public void sendMessage(String translationKey) {

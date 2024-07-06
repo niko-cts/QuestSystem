@@ -12,10 +12,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.HangingSign;
+import org.bukkit.block.data.type.Sign;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -36,8 +38,8 @@ import java.util.stream.Collectors;
  */
 public class QuestSignManager extends APISubCommand implements Listener {
 
-	private static final Set<Material> WHITELISTED_SIGNS = Arrays.stream(Material.values()).filter(m -> m.name().contains("SIGN"))
-			.collect(Collectors.toSet());
+	private static final Set<Material> WHITELISTED_SIGNS =
+			Arrays.stream(Material.values()).filter(m -> Sign.class == m.data || m.data == HangingSign.class || m.data == WallSign.class).collect(Collectors.toSet());
 
 	private final QuestSystem questSystem;
 	private final File signFile;
@@ -138,7 +140,7 @@ public class QuestSignManager extends APISubCommand implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInteract(PlayerInteractEvent event) {
-		if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null) return;
+		if (event.getClickedBlock() == null) return;
 		if (!WHITELISTED_SIGNS.contains(event.getClickedBlock().getType())) return;
 		if (!signs.contains(event.getClickedBlock().getLocation())) return;
 		event.setCancelled(true);

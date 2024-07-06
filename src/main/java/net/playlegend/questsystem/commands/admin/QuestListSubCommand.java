@@ -10,7 +10,6 @@ import net.playlegend.questsystem.gui.QuestSpecificGUI;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.quest.Quest;
 import net.playlegend.questsystem.translation.TranslationKeys;
-import org.bukkit.ChatColor;
 
 import java.util.Iterator;
 import java.util.List;
@@ -46,8 +45,7 @@ public class QuestListSubCommand extends APISubCommand {
 				questPlayer.getPlayer().spigot().sendMessage(textComponent);
 			}
 		} else {
-			String name = ChatColor.translateAlternateColorCodes('&', arguments[0]);
-			Quest quest = getQuestByNameOrMessageError(questPlayer, name);
+			Quest quest = getQuestByNameOrMessageError(questPlayer, arguments[0]);
 			if (quest != null) {
 				QuestSpecificGUI.openQuestGUI(questPlayer, quest, true, goBackPlayer -> goBackPlayer.getPlayer().closeInventory());
 			}

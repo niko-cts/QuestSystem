@@ -28,6 +28,7 @@ public class QuestTimingsTest {
         assertEquals(2, QuestTimingsUtil.calculateNextDuration(12));
         assertEquals(1, QuestTimingsUtil.calculateNextDuration(5));
 
+        assertEquals(1, QuestTimingsUtil.calculateNextDuration(601));
         assertEquals(300, QuestTimingsUtil.calculateNextDuration(600));
         assertEquals(1800, QuestTimingsUtil.calculateNextDuration(3600));
     }
@@ -71,11 +72,12 @@ public class QuestTimingsTest {
 
     @Test
     public void calculatedInstantLeftAfterLogin_shouldBeCorrect() {
-        assertEquals(Instant.now().plusSeconds(600),
+        Instant now = Instant.now();
+        assertEquals(now.plusSeconds(601),
                 QuestTimingsUtil.calculatedInstantLeftAfterLogin(600, false,
-                        Timestamp.from(Instant.now().minusSeconds(300))));
-        assertEquals(Instant.now().plusSeconds(300),
+                        Timestamp.from(now.minusSeconds(300))));
+        assertEquals(now.plusSeconds(301),
                 QuestTimingsUtil.calculatedInstantLeftAfterLogin(600, true,
-                        Timestamp.from(Instant.now().minusSeconds(300))));
+                        Timestamp.from(now.minusSeconds(300))));
     }
 }

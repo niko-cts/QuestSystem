@@ -29,11 +29,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 
@@ -139,7 +137,7 @@ public class QuestBuilder implements Listener {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 						TextComponent textComponent = new TextComponent(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_CLICK_TEXT));
-						textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/questadmin create description " + (description != null ? ChatColor.translateAlternateColorCodes('&', description) : "")));
+						textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/questadmin create description " + (description != null ? description.replace(ChatColor.COLOR_CHAR + "", "&") : "")));
 						textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(language.translateMessage(TranslationKeys.QUESTS_BUILDER_DESCRIPTION_CLICK_HOVER))));
 						apiPlayer.getPlayer().spigot().sendMessage(textComponent);
 					}
@@ -253,15 +251,6 @@ public class QuestBuilder implements Listener {
 				});
 		menu.fill(UsefulItems.BACKGROUND_BLACK);
 		questPlayer.openCustomInv(menu);
-	}
-
-	@EventHandler
-	public void onFinishBook(PlayerEditBookEvent event) {
-		if (!event.getPlayer().getUniqueId().equals(questPlayer.getUniqueId())) return;
-		BookMeta newBookMeta = event.getNewBookMeta();
-		description = ChatColor.translateAlternateColorCodes('&',
-				String.join(";", newBookMeta.getPages()));
-		openMenu();
 	}
 
 	@EventHandler

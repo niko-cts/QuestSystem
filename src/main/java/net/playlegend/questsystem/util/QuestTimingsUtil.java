@@ -103,7 +103,7 @@ public class QuestTimingsUtil {
         }
 
         // Calculate the new instant when the quest finishes
-        return now.plusSeconds(secondsLeft);
+        return now.plusSeconds(secondsLeft + 1);
     }
 
     public static String formatDateTime(Instant time) {
