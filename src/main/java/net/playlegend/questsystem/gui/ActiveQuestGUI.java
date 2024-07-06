@@ -35,8 +35,13 @@ public class ActiveQuestGUI {
 		throw new UnsupportedOperationException("Should not be instantiated.");
 	}
 
+	public static void openActiveGUI(QuestPlayer questPlayer) {
+		questPlayer.getActivePlayerQuest().ifPresentOrElse(
+				q -> openActiveGUI(questPlayer, q),
+				() -> QuestOverviewGUI.openOverviewGUI(questPlayer));
+	}
 
-	public static void openActiveGUI(QuestPlayer questPlayer, ActivePlayerQuest activeQuest) {
+	private static void openActiveGUI(QuestPlayer questPlayer, ActivePlayerQuest activeQuest) {
 		CustomInventory menu = new CustomInventory(27);
 		Language language = questPlayer.getLanguage();
 
@@ -57,7 +62,7 @@ public class ActiveQuestGUI {
 					@Override
 					public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
 						if (rewards.size() > 1)
-							QuestRewardsGUI.openRewardsWithBack(questPlayer, activeQuest.getQuest(), activeQuest, ActiveQuestGUI::openActiveGUI);
+							QuestRewardsGUI.openRewardsWithBack(questPlayer, activeQuest.getQuest(), activeQuest, (player, b) -> openActiveGUI(player));
 					}
 				});
 

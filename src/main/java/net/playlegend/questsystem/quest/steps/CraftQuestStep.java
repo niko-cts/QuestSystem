@@ -5,6 +5,7 @@ import chatzis.nikolas.mc.nikoapi.util.MaterialConverterUtil;
 import net.playlegend.questsystem.player.QuestPlayer;
 import net.playlegend.questsystem.translation.Language;
 import net.playlegend.questsystem.translation.TranslationKeys;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -32,19 +33,45 @@ public class CraftQuestStep extends QuestStep<ItemStack> {
 	@Override
 	public int checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof CraftItemEvent crafEvent) {
-			ItemStack result = crafEvent.getRecipe().getResult();
+			ItemStack result = getCraftedItem(crafEvent);
 			if (result.equals(getStepObject()))
 				return result.getAmount();
 
-			if (result.getAmount() > getStepObject().getAmount()) {
-				// extra check,
-				// if player crafted more than the necessary amount at once
-				ItemStack clone = getStepObject().clone();
-				clone.setAmount(result.getAmount());
-				return result.equals(clone) ? result.getAmount() : 0;
+			if (result.getAmount() != getStepObject().getAmount() && result.getType() == getStepObject().getType()) {
+				// extra check,if player crafted another amount of task object
+				ItemStack taskItemClone = getStepObject().clone();
+				taskItemClone.setAmount(result.getAmount());
+				return result.equals(taskItemClone) ? result.getAmount() : 0;
 			}
 		}
 		return 0;
+	}
+
+	/**
+	 * Returns the real item stack of the crafted item with shift click
+	 * <a href="https://www.spigotmc.org/threads/get-accurate-crafting-result-from-shift-clicking.446520/">Source: spigot resource</a>
+	 *
+	 * @param evt CraftItemEvent - the event
+	 * @return ItemStack - the item stack with accurate amount
+	 */
+	private ItemStack getCraftedItem(CraftItemEvent evt) {
+		if (evt.isShiftClick()) {
+			final ItemStack recipeResult = evt.getRecipe().getResult();
+			final int resultAmt = recipeResult.getAmount(); // Bread = 1, Cookie = 8, etc.
+			int leastIngredient = -1;
+			for (ItemStack item : evt.getInventory().getMatrix()) {
+				if (item != null && !item.getType().equals(Material.AIR)) {
+					final int re = item.getAmount() * resultAmt;
+					if (leastIngredient == -1 || re < leastIngredient) {
+						leastIngredient = item.getAmount() * resultAmt;
+					}
+				}
+			}
+			ItemStack itemStack = new ItemStack(recipeResult);
+			itemStack.setAmount(leastIngredient);
+			return itemStack;
+		}
+		return evt.getCurrentItem();
 	}
 
 	/**

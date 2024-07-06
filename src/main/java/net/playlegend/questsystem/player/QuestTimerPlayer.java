@@ -3,7 +3,7 @@ package net.playlegend.questsystem.player;
 import net.playlegend.questsystem.QuestSystem;
 import net.playlegend.questsystem.translation.TranslationKeys;
 import net.playlegend.questsystem.util.QuestTimingsUtil;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
@@ -36,19 +36,17 @@ public class QuestTimerPlayer {
 		cancelTask();
 
 		long delay = QuestTimingsUtil.calculateNextDuration(secondsLeft);
+		System.out.println(delay + " from " + secondsLeft);
 
-		bukkitTask = new BukkitRunnable() {
-			@Override
-			public void run() {
-				long currentSeconds = activePlayerQuest.getSecondsLeft();
-				if (currentSeconds >= 0) {
-					questPlayer.sendMessage(TranslationKeys.QUESTS_EVENT_COUNTDOWN,
-							List.of("${name}", "${duration}"),
-							List.of(activePlayerQuest.getQuest().name(), QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getLanguage(), currentSeconds)));
-				}
-				checkExpiredAndStartTimerIfPresent();
+		this.bukkitTask = Bukkit.getScheduler().runTaskLater(QuestSystem.getInstance(), () -> {
+			long currentSeconds = activePlayerQuest.getSecondsLeft();
+			if (currentSeconds >= 0) {
+				questPlayer.sendMessage(TranslationKeys.QUESTS_EVENT_COUNTDOWN,
+						List.of("${name}", "${duration}"),
+						List.of(activePlayerQuest.getQuest().name(), QuestTimingsUtil.convertSecondsToDHMS(questPlayer.getLanguage(), currentSeconds)));
 			}
-		}.runTaskLater(QuestSystem.getInstance(), 20L * delay);
+			checkExpiredAndStartTimerIfPresent();
+		}, 20L * delay + 1);
 	}
 
 	public void cancelTask() {

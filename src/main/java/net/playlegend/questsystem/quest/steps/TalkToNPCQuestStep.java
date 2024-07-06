@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class TalkToNPCQuestStep extends QuestStep<UUID> {
 
@@ -36,11 +37,20 @@ public class TalkToNPCQuestStep extends QuestStep<UUID> {
 	@Override
 	public int checkIfEventExecutesQuestStep(QuestPlayer player, Event event) {
 		if (event instanceof PlayerClickedOnQuestNPCEvent npcEvent && npcEvent.getNpcUUID().equals(getStepObject())) {
-			player.openBook(new ItemBuilder(Material.WRITTEN_BOOK)
-					.addPage(ColorUtil.convertToBlackColors(player.getLanguage().translateMessage(npcEvent.getMessages().getOrDefault(
-							player.getLanguage().getLanguageKey(),
-							QuestSystem.getInstance().getLanguageHandler().getFallbackLanguage().getLanguageKey()))
-					).split(";")).craft());
+			String message = npcEvent.getMessages().get(player.getLanguage().getLanguageKey());
+			if (message == null) {
+				message = npcEvent.getMessages().get(QuestSystem.getInstance().getLanguageHandler().getFallbackLanguage().getLanguageKey());
+				QuestSystem.getInstance().getLogger().log(Level.WARNING, "There was no npc-message for language {0} in speak-task {1} of quest {2}",
+						new Object[]{player.getLanguage().getLanguageKey(), getId(), player.getActivePlayerQuest().map(a -> a.getQuest().name()).orElse("unknown")});
+			}
+			if (message != null) {
+				player.openBook(new ItemBuilder(Material.WRITTEN_BOOK)
+						.addPage(ColorUtil.convertToBlackColors(message).split(";")).craft());
+			} else {
+				QuestSystem.getInstance().getLogger().log(Level.WARNING, "There was no npc-message for default language {0} in speak-task {1} of quest {2}",
+						new Object[]{QuestSystem.getInstance().getLanguageHandler().getFallbackLanguage().getLanguageKey(),
+								getId(), player.getActivePlayerQuest().map(a -> a.getQuest().name()).orElse("unknown")});
+			}
 			return 1;
 		}
 		return 0;

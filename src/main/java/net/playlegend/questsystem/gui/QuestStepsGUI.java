@@ -12,6 +12,7 @@ import net.playlegend.questsystem.translation.TranslationKeys;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Class to open active and default quest tasks.
@@ -24,7 +25,7 @@ public class QuestStepsGUI {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void openActiveQuestSteps(QuestPlayer questPlayer, ActivePlayerQuest activePlayerQuest, BiConsumer<QuestPlayer, ActivePlayerQuest> goBack) {
+	public static void openActiveQuestSteps(QuestPlayer questPlayer, ActivePlayerQuest activePlayerQuest, Consumer<QuestPlayer> goBack) {
 		Language language = questPlayer.getLanguage();
 
 		List<? extends QuestStep<?>> uncompletedSteps = activePlayerQuest.getUncompletedSteps();
@@ -60,7 +61,7 @@ public class QuestStepsGUI {
 			i++;
 		}
 
-		GUIHelper.fillInventoryWithBackAndOpen(questPlayer, menu, activePlayerQuest, goBack);
+		GUIHelper.fillInventoryWithBackAndOpen(questPlayer, menu, goBack);
 	}
 
 	public static void openQuestSteps(QuestPlayer questPlayer, Quest quest, BiConsumer<QuestPlayer, Quest> goBack) {

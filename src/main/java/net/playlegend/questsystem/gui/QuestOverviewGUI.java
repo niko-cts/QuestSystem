@@ -50,7 +50,7 @@ public class QuestOverviewGUI {
 					new ClickAction(Sound.BLOCK_CHEST_OPEN) {
 						@Override
 						public void onClick(APIPlayer apiPlayer, ItemStack itemStack, int i) {
-							ActiveQuestGUI.openActiveGUI(questPlayer, activeQuest);
+							ActiveQuestGUI.openActiveGUI(questPlayer);
 						}
 					});
 		}

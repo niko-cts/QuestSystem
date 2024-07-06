@@ -1,5 +1,6 @@
 package net.playlegend.questsystem.util;
 
+import lombok.NonNull;
 import org.bukkit.ChatColor;
 
 public class ColorUtil {
@@ -14,7 +15,7 @@ public class ColorUtil {
 	 * @param text String - text to transform
 	 * @return String - text with darker chat colors
 	 */
-	public static String convertToBlackColors(String text) {
+	public static String convertToBlackColors(@NonNull String text) {
 		return text.replace(ChatColor.YELLOW.toString(), ChatColor.GOLD.toString())
 				.replace(ChatColor.GRAY.toString(), ChatColor.DARK_GRAY.toString())
 				.replace(ChatColor.LIGHT_PURPLE.toString(), ChatColor.DARK_PURPLE.toString())

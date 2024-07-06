@@ -36,6 +36,11 @@ public class QuestSpecificGUI {
 	}
 
 	public static void openQuestGUI(@NonNull QuestPlayer questPlayer, @NonNull Quest quest, boolean adminMode, @NonNull Consumer<QuestPlayer> goBack) {
+		if (questPlayer.getActivePlayerQuest().isPresent() && questPlayer.getActivePlayerQuest().get().getQuest().equals(quest)) {
+			ActiveQuestGUI.openActiveGUI(questPlayer);
+			return;
+		}
+
 		Language language = questPlayer.getLanguage();
 		CustomInventory menu = new CustomInventory(language.translateMessage(TranslationKeys.QUESTS_GUI_QUEST_TITLE,
 				"${quest}", quest.name()),

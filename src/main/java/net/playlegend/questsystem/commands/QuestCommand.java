@@ -62,7 +62,7 @@ public class QuestCommand extends APICommand {
 
 		Optional<ActivePlayerQuest> activePlayerQuest = questPlayer.getActivePlayerQuest();
 		if (activePlayerQuest.isPresent()) {
-			ActiveQuestGUI.openActiveGUI(questPlayer, activePlayerQuest.get());
+			ActiveQuestGUI.openActiveGUI(questPlayer);
 			return;
 		}
 
