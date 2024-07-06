@@ -82,6 +82,7 @@ public class QuestSignManagerTest {
 
         Field signs = QuestSignManager.class.getDeclaredField("signs");
         signs.setAccessible(true);
+        @SuppressWarnings("unchecked")
         Set<Location> locations = (Set<Location>) signs.get(questSignManager);
         assertEquals(2, locations.size());
         assertEquals(2, Files.readAllLines(SIGN_FILE.toPath()).size());
@@ -98,6 +99,7 @@ public class QuestSignManagerTest {
 
         Field signs = QuestSignManager.class.getDeclaredField("signs");
         signs.setAccessible(true);
+        @SuppressWarnings("unchecked")
         Set<Location> locations = (Set<Location>) signs.get(questSignManager);
         assertEquals(1, locations.size());
         assertEquals(1, Files.readAllLines(SIGN_FILE.toPath()).size());
@@ -116,6 +118,7 @@ public class QuestSignManagerTest {
 
         Field signs = QuestSignManager.class.getDeclaredField("signs");
         signs.setAccessible(true);
+        @SuppressWarnings("unchecked")
         Set<Location> locations = (Set<Location>) signs.get(questSignManager);
         assertEquals(2, locations.size());
 
@@ -140,6 +143,7 @@ public class QuestSignManagerTest {
 
         Field signs = QuestSignManager.class.getDeclaredField("signs");
         signs.setAccessible(true);
+        @SuppressWarnings("unchecked")
         Set<Location> locations = (Set<Location>) signs.get(questSignManager);
         assertEquals(2, locations.size());
         assertEquals(2, Files.readAllLines(SIGN_FILE.toPath()).size());
@@ -153,7 +157,7 @@ public class QuestSignManagerTest {
         assertEquals(List.of("world,0,0,0", "world,0,0,1", "world,0,0,2"), newLocations);
     }
     @Test
-    public void fillTxt_instantiate_deleteEvent() throws IOException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InvocationTargetException {
+    public void fillTxt_instantiate_deleteEvent() throws IOException, IllegalAccessException, NoSuchFieldException {
         Files.write(SIGN_FILE.toPath(), List.of("world,0,0,0", "world,0,0,1"));
         worldMock.getBlockAt(0, 0, 0).setType(Material.ACACIA_SIGN);
         worldMock.getBlockAt(0, 0, 1).setType(Material.ACACIA_SIGN);
@@ -164,6 +168,7 @@ public class QuestSignManagerTest {
 
         Field signs = QuestSignManager.class.getDeclaredField("signs");
         signs.setAccessible(true);
+        @SuppressWarnings("unchecked")
         Set<Location> locations = (Set<Location>) signs.get(questSignManager);
         assertEquals(2, locations.size());
         assertEquals(2, Files.readAllLines(SIGN_FILE.toPath()).size());
