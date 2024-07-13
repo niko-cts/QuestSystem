@@ -1,6 +1,8 @@
 package net.playlegend.questsystem.database;
 
-import net.playlegend.questsystem.QuestSystem;
+import chatzis.nikolas.questsystem.QuestSystem;
+import chatzis.nikolas.questsystem.database.DatabaseHandler;
+import chatzis.nikolas.questsystem.database.QuestDatabase;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

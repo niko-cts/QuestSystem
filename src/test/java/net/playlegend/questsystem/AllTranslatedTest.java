@@ -1,10 +1,11 @@
 package net.playlegend.questsystem;
 
+import chatzis.nikolas.questsystem.QuestSystem;
+import chatzis.nikolas.questsystem.translation.DefaultEnglishMessages;
+import chatzis.nikolas.questsystem.translation.DefaultGermanMessages;
+import chatzis.nikolas.questsystem.translation.LanguageHandler;
+import chatzis.nikolas.questsystem.translation.TranslationKeys;
 import net.minecraft.util.Tuple;
-import net.playlegend.questsystem.translation.DefaultEnglishMessages;
-import net.playlegend.questsystem.translation.DefaultGermanMessages;
-import net.playlegend.questsystem.translation.LanguageHandler;
-import net.playlegend.questsystem.translation.TranslationKeys;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

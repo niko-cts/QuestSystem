@@ -1,8 +1,8 @@
 package net.playlegend.questsystem;
 
-import net.playlegend.questsystem.translation.Language;
-import net.playlegend.questsystem.translation.TranslationKeys;
-import net.playlegend.questsystem.util.QuestTimingsUtil;
+import chatzis.nikolas.questsystem.translation.Language;
+import chatzis.nikolas.questsystem.translation.TranslationKeys;
+import chatzis.nikolas.questsystem.util.QuestTimingsUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

@@ -1,8 +1,10 @@
 package net.playlegend.questsystem.database;
 
-import net.playlegend.questsystem.player.PlayerDatabaseInformationHolder;
-import net.playlegend.questsystem.player.QuestPlayer;
-import net.playlegend.questsystem.translation.Language;
+import chatzis.nikolas.questsystem.database.DatabaseHandler;
+import chatzis.nikolas.questsystem.database.PlayerInfoDatabase;
+import chatzis.nikolas.questsystem.player.PlayerDatabaseInformationHolder;
+import chatzis.nikolas.questsystem.player.QuestPlayer;
+import chatzis.nikolas.questsystem.translation.Language;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,9 +71,6 @@ public class PlayerQuestUpdateSQLTests {
 
 	@Test
 	public void deleteActiveQuest_correctSQL() {
-		Map<Integer, Timestamp> map = new HashMap<>();
-		map.put(1, timestamp);
-
 		when(playerDatabaseInformationHolder.isMarkActiveQuestDirty()).thenReturn(true);
 		when(fakePlayer.getActivePlayerQuest()).thenReturn(Optional.empty());
 

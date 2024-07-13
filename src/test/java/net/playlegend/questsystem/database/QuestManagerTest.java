@@ -1,11 +1,12 @@
 package net.playlegend.questsystem.database;
 
-import net.playlegend.questsystem.quest.Quest;
-import net.playlegend.questsystem.quest.QuestManager;
-import net.playlegend.questsystem.quest.reward.CoinsReward;
-import net.playlegend.questsystem.quest.reward.LevelReward;
-import net.playlegend.questsystem.quest.steps.KillQuestStep;
-import net.playlegend.questsystem.quest.steps.TalkToNPCQuestStep;
+import chatzis.nikolas.questsystem.database.QuestDatabase;
+import chatzis.nikolas.questsystem.quest.Quest;
+import chatzis.nikolas.questsystem.quest.QuestManager;
+import chatzis.nikolas.questsystem.quest.reward.CoinsReward;
+import chatzis.nikolas.questsystem.quest.reward.LevelReward;
+import chatzis.nikolas.questsystem.quest.steps.KillQuestStep;
+import chatzis.nikolas.questsystem.quest.steps.TalkToNPCQuestStep;
 import org.bukkit.entity.EntityType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

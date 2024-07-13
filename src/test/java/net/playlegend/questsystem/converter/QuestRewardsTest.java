@@ -1,9 +1,9 @@
 package net.playlegend.questsystem.converter;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
-import net.playlegend.questsystem.quest.reward.*;
-import net.playlegend.questsystem.util.ItemToBase64ConverterUtil;
-import net.playlegend.questsystem.util.QuestObjectConverterUtil;
+import chatzis.nikolas.questsystem.quest.reward.*;
+import chatzis.nikolas.questsystem.util.ItemToBase64ConverterUtil;
+import chatzis.nikolas.questsystem.util.QuestObjectConverterUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.AfterEach;

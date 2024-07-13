@@ -1,7 +1,7 @@
 package net.playlegend.questsystem.database;
 
-import net.playlegend.questsystem.quest.reward.CoinsReward;
-import net.playlegend.questsystem.quest.steps.MineQuestStep;
+import chatzis.nikolas.questsystem.quest.reward.CoinsReward;
+import chatzis.nikolas.questsystem.quest.steps.MineQuestStep;
 import org.bukkit.Material;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
