@@ -52,26 +52,32 @@ Welcome to the Quest System plugin for Minecraft! This plugin provides an engagi
 13. **Multiple Tasks per Quest**
    - Different tasks to complete a quest.
    - Current task-types are: Speak to NPC, Mine a block, Kill an entity, Craft an item
+
+14. **NPC in Quests**
+   - NPC will spawn to find a certain Quests
+   - NPC will spawn to complete the task 'Speak to NPC'
    
 
 ## Commands
 
 - `/quest`: Quest GUI
 - `/quest cancel`: Cancel a quest.
-- `/quest find <quest_name>`: Find a quest.
 - `/quest info`: View the current quest status and remaining time.
-- `/questadmin create/remove/list/sign`: Admin commands to manage the quests and signs.
+- `/questadmin create/remove/list/sign/find/npc ...`: Admin commands to manage the quests, signs and NPC.
+
 
 ## Permissions
 
-- `command.quest.admin`: Access to all admin commands.
-- `command.quest.find`: Find a quest via a command
+- `command.quest.admin.<subcommand>`: Access to all admin commands.
 
 ## Configuration
 
 Customize the plugin settings and messages in the `config.yml` file. Example configuration:
 
 ```yaml
+npc:
+  vanish-delay: 3
+
 database:
   host: "localhost"
   port: 3306
@@ -85,6 +91,7 @@ Messages are under the plugin folder "messages".
 
 ## Development Notes
 
+- **Requirements**: This plugin requires NikoAPI and for NPC support my NPCSystem plugin. 
 - **Code Style**: Adheres to Java conventions and Google Codestyle.
 - **Performance**: Designed to handle a large number of players efficiently.
 - **Asynchronous I/O**: Ensures smooth performance and user experience.
