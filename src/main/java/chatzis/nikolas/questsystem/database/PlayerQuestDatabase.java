@@ -69,15 +69,15 @@ public class PlayerQuestDatabase {
 
 	public ResultSet getPlayerActiveQuest(UUID uuid) {
 		return dbHandler.select(TABLE_PLAYER_ACTIVE_QUEST, List.of("quest_id", "time_left"),
-				"WHERE uuid='" + uuid + "' LIMIT 1");
+				"WHERE uuid=? LIMIT 1", List.of(uuid.toString()));
 	}
 
 	public ResultSet getPlayerActiveQuestSteps(UUID uuid) {
 		return dbHandler.select(TABLE_PLAYER_ACTIVE_QUEST_STEPS, List.of("step_id", "amount"),
-				"WHERE uuid='" + uuid + "' ORDER BY step_id");
+				"WHERE uuid=? ORDER BY step_id", List.of(uuid.toString()));
 	}
 
 	private ResultSet getPlayerQuests(String table, UUID uuid) {
-		return dbHandler.select(table, List.of("*"), "WHERE uuid='" + uuid + "'");
+		return dbHandler.select(table, List.of("*"), "WHERE uuid=?", List.of(uuid.toString()));
 	}
 }

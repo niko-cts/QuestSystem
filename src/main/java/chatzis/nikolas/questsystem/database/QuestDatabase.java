@@ -75,7 +75,7 @@ public class QuestDatabase {
 	 * @return ResultSet - All quest infos
 	 */
 	public ResultSet getAllQuests() {
-		return this.dbHandler.select(TABLE_QUESTS, List.of("*"), "");
+		return this.dbHandler.selectAll(TABLE_QUESTS);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class QuestDatabase {
 	 * @return ResultSet - All quest steps for the quest
 	 */
 	public ResultSet getAllQuestSteps(int questId) {
-		return this.dbHandler.select(TABLE_QUEST_STEPS_INFO, List.of("*"), "WHERE quest_id=" + questId);
+		return this.dbHandler.select(TABLE_QUEST_STEPS_INFO, List.of("*"), "WHERE quest_id=?", List.of(questId));
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class QuestDatabase {
 	 * @return ResultSet - All quest rewards with the quest_id's
 	 */
 	public ResultSet getAllQuestRewards(int questId) {
-		return this.dbHandler.select(TABLE_QUEST_REWARD_INFO, List.of("type", "reward_object"), "WHERE quest_id=" + questId);
+		return this.dbHandler.select(TABLE_QUEST_REWARD_INFO, List.of("type", "reward_object"), "WHERE quest_id=?", List.of(questId));
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class QuestDatabase {
 	 * @param id int - quest id
 	 */
 	public void deleteQuest(int id) {
-		this.dbHandler.delete(List.of(TABLE_QUESTS), List.of("WHERE id=" + id + " LIMIT 1"));
+		this.dbHandler.delete(List.of(TABLE_QUESTS), List.of("WHERE id=" + id));
 	}
 
 	/**
@@ -192,6 +192,7 @@ public class QuestDatabase {
 		List<List<String>> updateColumns = new ArrayList<>();
 		List<List<Object>> updateValues = new ArrayList<>();
 		List<String> updateWhereClauses = new ArrayList<>();
+		List<List<Object>> updateWhereObjects = new ArrayList<>();
 
 		List<String> insertTableNames = new ArrayList<>();
 		List<List<Object>> insertValues = new ArrayList<>();
@@ -227,7 +228,8 @@ public class QuestDatabase {
 			updateTableNames.add(TABLE_QUESTS);
 			updateColumns.add(questColumns);
 			updateValues.add(questValues);
-			updateWhereClauses.add("WHERE id=" + newQuest.id() + " LIMIT 1");
+			updateWhereClauses.add("WHERE id=?");
+			updateWhereObjects.add(List.of(newQuest.id()));
 		}
 
 
@@ -270,8 +272,13 @@ public class QuestDatabase {
 			updateTableNames.add(TABLE_QUEST_STEPS_INFO);
 			updateColumns.add(stepsUpdateColumn);
 			updateValues.add(stepsUpdateValues);
-			updateWhereClauses.add("WHERE quest_id=" + newQuest.id() +
-			                       " AND id in(" + stepsIdWheres.stream().map(String::valueOf).collect(Collectors.joining(",")) + ") LIMIT " + stepsIdWheres.size());
+			updateWhereClauses.add("WHERE quest_id=? AND id in("+
+					stepsIdWheres.stream().map(s -> "?").collect(Collectors.joining(","))
+					+ ") LIMIT ?");
+			List<Object> stepsUpdateWhereObjs = new ArrayList<>(List.of(newQuest.id()));
+			stepsUpdateWhereObjs.addAll(stepsIdWheres);
+			stepsUpdateWhereObjs.add(stepsIdWheres.size());
+			updateWhereObjects.add(stepsUpdateWhereObjs);
 		}
 		if (!newSteps.isEmpty()) {
 			insertTableNames.add(TABLE_QUEST_STEPS_INFO);
@@ -314,7 +321,7 @@ public class QuestDatabase {
 			}
 
 			deleteWheres.add("WHERE type in ('" + String.join("','", types) + "') AND reward_object in ('" +
-			                 String.join("','", objects) + "') AND quest_id=" + newQuest.id() + " LIMIT 1");
+			                 String.join("','", objects) + "') AND quest_id=" + newQuest.id() + "");
 		}
 
 		// FINISH

@@ -55,15 +55,15 @@ public class NPCDatabase {
 	}
 
 	public ResultSet getAllTaskNPCs() {
-		return databaseHandler.select(TABLE_NPC_STEPS_INFO, List.of("*"), "");
+		return databaseHandler.selectAll(TABLE_NPC_STEPS_INFO);
 	}
 
 	public ResultSet getAllFindings() {
-		return databaseHandler.select(TABLE_NPC_FINDINGS, List.of("*"), "");
+		return databaseHandler.selectAll(TABLE_NPC_FINDINGS);
 	}
 
 	public ResultSet getNPCTaskMessages(UUID npcUUID) {
-		return databaseHandler.select(TABLE_NPC_STEPS_CONTENT, List.of("*"), "WHERE uuid='" + npcUUID + "'");
+		return databaseHandler.select(TABLE_NPC_STEPS_CONTENT, List.of("*"), "WHERE uuid=?", List.of(npcUUID.toString()));
 	}
 
 	public void updateTaskNPCAll(UUID uuid, String npcName, Location location, String language, String content) {
@@ -73,7 +73,8 @@ public class NPCDatabase {
 				List.of(List.of(npcName, Objects.requireNonNull(location.getWorld()).getName(),
 						location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch()),
 						List.of(language, content)),
-				List.of("WHERE uuid='" + uuid + "' LIMIT 1", "WHERE uuid='" + uuid + "' LIMIT 1"));
+				List.of("WHERE uuid=?", "WHERE uuid=?"),
+				List.of(List.of(uuid.toString()), List.of(uuid.toString())));
 	}
 
 
@@ -93,7 +94,8 @@ public class NPCDatabase {
 				List.of(List.of("name", "world", "x", "y", "z", "yaw", "pitch")),
 				List.of(List.of(npcName, Objects.requireNonNull(location.getWorld()).getName(),
 						location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch())),
-				List.of("WHERE quest_id=" + questId));
+				List.of("WHERE quest_id=?"),
+				List.of(List.of(questId)));
 	}
 
 	public void createFindNPC(int id, String npcName, Location location) {
@@ -103,10 +105,10 @@ public class NPCDatabase {
 	}
 
 	public void deleteFindNPC(int id) {
-		this.databaseHandler.delete(List.of(TABLE_NPC_FINDINGS), List.of("WHERE quest_id=" + id + " LIMIT 1"));
+		this.databaseHandler.delete(List.of(TABLE_NPC_FINDINGS), List.of("WHERE quest_id=" + id));
 	}
 
 	public void deleteTaskNPC(UUID uuid) {
-		this.databaseHandler.delete(List.of(TABLE_NPC_STEPS_INFO), List.of("WHERE uuid='" + uuid + "' LIMIT 1"));
+		this.databaseHandler.delete(List.of(TABLE_NPC_STEPS_INFO), List.of("WHERE uuid='" + uuid + "'"));
 	}
 }

@@ -48,7 +48,7 @@ public class PlayerInfoDatabase {
 	}
 
 	public ResultSet getPlayerInfos(UUID uuid) {
-		return this.databaseHandler.select(TABLE_PLAYER, List.of("*"), "WHERE uuid='" + uuid + "' LIMIT 1");
+		return this.databaseHandler.select(TABLE_PLAYER, List.of("*"), "WHERE uuid=?", List.of(uuid.toString()));
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class PlayerInfoDatabase {
 		if (dbInfo.isMarkActiveQuestDirty()) {
 			if (activePlayerQuest.isEmpty()) {
 				// DELETE ACTIVE PLAYER QUEST
-				sql.append(String.format("DELETE FROM %s WHERE uuid='%s' LIMIT 1;",
+				sql.append(String.format("DELETE FROM %s WHERE uuid='%s';",
 						PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST, uuid));
 				sql.append(String.format("DELETE FROM %s WHERE uuid='%s';",
 						PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST_STEPS, uuid));
@@ -130,7 +130,7 @@ public class PlayerInfoDatabase {
 				// UPDATE ACTIVE PLAYER QUEST
 				ActivePlayerQuest quest = activePlayerQuest.get();
 				sql.append(String.format(
-						"UPDATE %s SET quest_id=%s, time_left=%s WHERE uuid='%s' LIMIT 1;",
+						"UPDATE %s SET quest_id=%s, time_left=%s WHERE uuid='%s';",
 						PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST, quest.getQuest().id(), quest.getSecondsLeft(), uuid
 				));
 				// DELETE STEPS BECAUSE, may be more id's than in new active quest
@@ -149,7 +149,7 @@ public class PlayerInfoDatabase {
 			// UPDATE ACTIVE PLAYER QUEST
 			ActivePlayerQuest quest = activePlayerQuest.get();
 			sql.append(String.format(
-					"UPDATE %s SET quest_id=%s, time_left=%s WHERE uuid='%s' LIMIT 1;",
+					"UPDATE %s SET quest_id=%s, time_left=%s WHERE uuid='%s';",
 					PlayerQuestDatabase.TABLE_PLAYER_ACTIVE_QUEST, quest.getQuest().id(), quest.getSecondsLeft(), uuid
 			));
 		}
@@ -171,7 +171,7 @@ public class PlayerInfoDatabase {
 		sql.append(String.format("UPDATE %s SET last_logout='%s'", TABLE_PLAYER, Timestamp.from(lastLogout)))
 				.append(dbInfo.isMarkLanguageDirty() ? ", language='" + questPlayer.getLanguage().getLanguageKey() + "'" : "")
 				.append(dbInfo.isMarkCoinsDirty() ? ", coins=" + questPlayer.getCoins() : "")
-				.append(" WHERE uuid='").append(uuid).append("' LIMIT 1;");
+				.append(" WHERE uuid='").append(uuid).append("';");
 
 		return sql.toString();
 	}
