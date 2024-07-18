@@ -299,6 +299,5 @@ public class QuestManager {
 		this.quests.remove(oldQuest);
 		this.quests.add(quest);
 		return QuestDatabase.getInstance().updateQuest(oldQuest, quest);
-
 	}
 }

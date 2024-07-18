@@ -106,7 +106,7 @@ public class QuestDatabase {
 	 * @param id int - quest id
 	 */
 	public void deleteQuest(int id) {
-		this.dbHandler.delete(List.of(TABLE_QUESTS), List.of("WHERE id=" + id));
+		this.dbHandler.delete(TABLE_QUESTS, "WHERE id=?", List.of(List.of(id)));
 	}
 
 	/**
@@ -199,6 +199,7 @@ public class QuestDatabase {
 
 		List<String> deleteTables = new ArrayList<>();
 		List<String> deleteWheres = new ArrayList<>();
+		List<List<Object>> deleteWheresParameter = new ArrayList<>();
 
 		// QUEST DATA
 
@@ -265,16 +266,19 @@ public class QuestDatabase {
 		}
 		if (!oldSteps.isEmpty()) {
 			deleteTables.add(TABLE_QUEST_STEPS_INFO);
-			deleteWheres.add("WHERE quest_id=" + oldQuest.id() + " AND id IN (" + oldSteps.stream().map(s -> s.getId() + "").collect(Collectors.joining(",")) + ")");
+			deleteWheres.add("WHERE quest_id=? AND id IN (" + oldSteps.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+			List<Object> deleteStepsParams = new ArrayList<>(oldQuest.id());
+			deleteStepsParams.addAll(oldSteps.stream().map(QuestStep::getId).toList());
+			deleteWheresParameter.add(deleteStepsParams);
 		}
 
 		if (!stepsUpdateColumn.isEmpty()) {
 			updateTableNames.add(TABLE_QUEST_STEPS_INFO);
 			updateColumns.add(stepsUpdateColumn);
 			updateValues.add(stepsUpdateValues);
-			updateWhereClauses.add("WHERE quest_id=? AND id in("+
-					stepsIdWheres.stream().map(s -> "?").collect(Collectors.joining(","))
-					+ ") LIMIT ?");
+			updateWhereClauses.add("WHERE quest_id=? AND id in(" +
+			                       stepsIdWheres.stream().map(s -> "?").collect(Collectors.joining(","))
+			                       + ") LIMIT ?");
 			List<Object> stepsUpdateWhereObjs = new ArrayList<>(List.of(newQuest.id()));
 			stepsUpdateWhereObjs.addAll(stepsIdWheres);
 			stepsUpdateWhereObjs.add(stepsIdWheres.size());
@@ -320,8 +324,13 @@ public class QuestDatabase {
 				}
 			}
 
-			deleteWheres.add("WHERE type in ('" + String.join("','", types) + "') AND reward_object in ('" +
-			                 String.join("','", objects) + "') AND quest_id=" + newQuest.id());
+			deleteWheres.add("WHERE type in (" + types.stream().map(t -> "?").collect(Collectors.joining(",")) + ") AND reward_object in (" +
+			                 objects.stream().map(t -> "?").collect(Collectors.joining(","))
+			                 + ") AND quest_id=?");
+			List<Object> deleteRewardsParameter = new ArrayList<>(types);
+			deleteRewardsParameter.addAll(objects);
+			deleteRewardsParameter.add(newQuest.id());
+			deleteWheresParameter.add(deleteRewardsParameter);
 		}
 
 		// FINISH
@@ -330,7 +339,7 @@ public class QuestDatabase {
 		if (!updateTableNames.isEmpty())
 			successful = dbHandler.update(updateTableNames, updateColumns, updateValues, updateWhereClauses, updateWhereObjects);
 		if (successful && !deleteTables.isEmpty())
-			successful = dbHandler.delete(deleteTables, deleteWheres);
+			successful = dbHandler.delete(deleteTables, deleteWheres, deleteWheresParameter);
 		if (successful && !insertTableNames.isEmpty())
 			successful = dbHandler.insertIntoTable(insertTableNames, insertValues);
 		return successful;

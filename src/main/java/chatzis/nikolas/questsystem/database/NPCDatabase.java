@@ -105,10 +105,10 @@ public class NPCDatabase {
 	}
 
 	public void deleteFindNPC(int id) {
-		this.databaseHandler.delete(List.of(TABLE_NPC_FINDINGS), List.of("WHERE quest_id=" + id));
+		this.databaseHandler.delete(TABLE_NPC_FINDINGS, "WHERE quest_id=?", List.of(List.of(id)));
 	}
 
 	public void deleteTaskNPC(UUID uuid) {
-		this.databaseHandler.delete(List.of(TABLE_NPC_STEPS_INFO), List.of("WHERE uuid='" + uuid + "'"));
+		this.databaseHandler.delete(TABLE_NPC_STEPS_INFO, "WHERE uuid=?", List.of(List.of(uuid)));
 	}
 }

@@ -251,11 +251,17 @@ public final class DatabaseHandler {
 	 * @param tableName   String - the table name.
 	 * @param columns     List<String> - a list of columns to be selected.
 	 * @param whereClause String - the where clause.
+	 * @param parameters  List<Object> - the parameters in the where clause.
 	 * @return ResultSet or null
 	 */
 	public ResultSet select(String tableName, List<String> columns, String whereClause, List<Object> parameters) {
 		if (!this.reconnectIfClosed())
 			return null;
+
+		if (isInvalidSQLIdentifier(tableName)) {
+			logger.log(Level.WARNING, "Could not select all from table! Invalid table name: {0}", tableName);
+			return null;
+		}
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT ");
@@ -267,7 +273,8 @@ public final class DatabaseHandler {
 
 		sql.append(" FROM ").append(tableName).append(" ").append(whereClause).append(";");
 
-		try (PreparedStatement pstmt = this.dbConnection.prepareStatement(sql.toString())) {
+		try {
+			PreparedStatement pstmt = this.dbConnection.prepareStatement(sql.toString());
 			for (int i = 0; i < parameters.size(); i++) {
 				pstmt.setObject(i + 1, parameters.get(i));
 			}
@@ -287,11 +294,16 @@ public final class DatabaseHandler {
 	 * @return ResultSet or null
 	 */
 	public ResultSet selectAll(String tableName) {
+		if (!this.reconnectIfClosed())
+			return null;
+
 		if (isInvalidSQLIdentifier(tableName)) {
-			logger.log(Level.WARNING, "Could not select table: {0}", tableName);
+			logger.log(Level.WARNING, "Could not select all from table! Invalid table name: {0}", tableName);
 			return null;
 		}
-		try (PreparedStatement pstmt = this.dbConnection.prepareStatement(String.format("SELECT * FROM %s", tableName))) {
+
+		try {
+			PreparedStatement pstmt = this.dbConnection.prepareStatement(String.format("SELECT * FROM %s", tableName));
 			return pstmt.executeQuery();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Could not perform select on table {0}: {1} (code: {2})", new Object[]{tableName, e.getMessage(), e.getErrorCode()});
@@ -359,13 +371,9 @@ public final class DatabaseHandler {
 					for (Object whereObj : whereObjects.get(w)) {
 						pstmt.setObject(paramIndex++, whereObj);
 					}
-					pstmt.addBatch();
-				}
-			}
 
-			// Execute all batches
-			try (Statement stmt = this.dbConnection.createStatement()) {
-				stmt.executeBatch();
+					pstmt.executeUpdate();
+				}
 			}
 
 			this.dbConnection.commit();  // Commit transaction
@@ -409,32 +417,79 @@ public final class DatabaseHandler {
 	}
 
 	/**
-	 * Tries to delete multiple rows throughout multiple tables.
+	 * Tries to delete multiple rows of one table and one where clause.
 	 *
-	 * @param tableNames   List<String> - the table name.
-	 * @param whereClauses List<String> - the where clauses.
+	 * @param tableName      String - the table name.
+	 * @param whereClause    String - the where clause.
+	 * @param whereParameter List<List<Object>> - the parameters for every row to delete
 	 */
-	public boolean delete(List<String> tableNames, List<String> whereClauses) {
-		if (!this.reconnectIfClosed())
-			return false;
-
-		if (tableNames.size() != whereClauses.size()) {
-			logger.warning("Length of columns is not equal to the length of tableNames, values, data types or where clause.");
-			return false;
-		}
-
-		try (Statement stmt = this.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-			for (int i = 0; i < tableNames.size(); i++) {
-				String tableName = tableNames.get(i);
-				String whereClause = whereClauses.get(i);
-				stmt.addBatch(String.format("delete from %s %s;", tableName, whereClause));
+	public boolean delete(String tableName, String whereClause, List<List<Object>> whereParameter) {
+		try (PreparedStatement stmt = this.dbConnection.prepareStatement(String.format("DELETE FROM %s %s", tableName, whereClause))) {
+			for (List<Object> parameter : whereParameter) {
+				for (int i = 0; i < parameter.size(); i++) {
+					stmt.setObject(i + 1, parameter.get(i));
+				}
+				stmt.addBatch();
 			}
 			stmt.executeBatch();
-			logger.info("Deleted data in tables: " + String.join(", ", tableNames));
-			return true;
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Could not perform delete on {0}", e.getMessage());
 			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Tries to delete multiple rows throughout multiple tables.
+	 *
+	 * @param tableNames     List<String> - the table names.
+	 * @param whereClauses   List<String> - the where clauses.
+	 * @param whereParameter List<List<Object>> - the parameter in the where clause.
+	 */
+	public boolean delete(List<String> tableNames, List<String> whereClauses, List<List<Object>> whereParameter) {
+		if (!this.reconnectIfClosed())
+			return false;
+
+		if (tableNames.size() != whereClauses.size() || whereClauses.size() != whereParameter.size()) {
+			logger.warning("Length of columns is not equal to the length of tableNames, values, data types or where clause.");
+			return false;
+		}
+		try {
+			this.dbConnection.setAutoCommit(false);
+
+			for (int i = 0; i < tableNames.size(); i++) {
+				String tableName = tableNames.get(i);
+				String where = whereClauses.get(i);
+				PreparedStatement stmt = this.dbConnection.prepareStatement(String.format("DELETE FROM %s %s", tableName, where));
+				List<Object> whereParameterOfTable = whereParameter.get(i);
+				for (int j = 0; j < whereParameterOfTable.size(); j++) {
+					stmt.setObject(j + 1, whereParameterOfTable.get(j));
+				}
+
+				if (stmt.executeUpdate() == PreparedStatement.EXECUTE_FAILED) {
+					this.dbConnection.rollback();
+					logger.warning("Batch execution failed. Transaction rolled back.");
+					return false;
+				}
+			}
+
+			this.dbConnection.commit();
+			return true;
+		} catch (SQLException e) {
+			try {
+				this.dbConnection.rollback();
+			} catch (SQLException rollbackEx) {
+				logger.log(Level.SEVERE, "Could not rollback transaction", rollbackEx);
+			}
+			logger.log(Level.WARNING, "Could not perform delete operation", e);
+			return false;
+		} finally {
+			try {
+				this.dbConnection.setAutoCommit(true);
+			} catch (SQLException autoCommitEx) {
+				logger.log(Level.SEVERE, "Could not reset auto-commit", autoCommitEx);
+			}
 		}
 	}
 

@@ -62,7 +62,7 @@ public class PlayerQuestUpdateSQLTests {
 
 		assertEquals(
 				"INSERT INTO system_quests_player_completed VALUES('23375283-2638-4775-8734-7bcfc14c919c', 1, '2024-06-14 09:05:17.1716341');" +
-				"UPDATE system_player SET last_logout='2024-06-14 09:05:17.1716341' WHERE uuid='23375283-2638-4775-8734-7bcfc14c919c' LIMIT 1;",
+				"UPDATE system_player SET last_logout='2024-06-14 09:05:17.1716341' WHERE uuid='23375283-2638-4775-8734-7bcfc14c919c';",
 				playerInfoDatabase.getUpdatePlayerSQLStatements(fakePlayer, timestamp.toInstant()));
 
 	}
@@ -73,9 +73,9 @@ public class PlayerQuestUpdateSQLTests {
 		when(fakePlayer.getActivePlayerQuest()).thenReturn(Optional.empty());
 
 		assertEquals(
-				"DELETE FROM system_quests_player_active_quest WHERE uuid='23375283-2638-4775-8734-7bcfc14c919c' LIMIT 1;" +
+				"DELETE FROM system_quests_player_active_quest WHERE uuid='23375283-2638-4775-8734-7bcfc14c919c';" +
 				"DELETE FROM system_quests_player_active_steps WHERE uuid='23375283-2638-4775-8734-7bcfc14c919c';" +
-				"UPDATE system_player SET last_logout='2024-06-14 09:05:17.1716341' WHERE uuid='23375283-2638-4775-8734-7bcfc14c919c' LIMIT 1;",
+				"UPDATE system_player SET last_logout='2024-06-14 09:05:17.1716341' WHERE uuid='23375283-2638-4775-8734-7bcfc14c919c';",
 				playerInfoDatabase.getUpdatePlayerSQLStatements(fakePlayer, timestamp.toInstant()));
 	}
 
@@ -90,7 +90,7 @@ public class PlayerQuestUpdateSQLTests {
 
 		assertEquals(
 				"INSERT INTO system_quests_player_found VALUES('23375283-2638-4775-8734-7bcfc14c919c', 1, '2024-06-14 09:05:17.1716341');" +
-				"UPDATE system_player SET last_logout='2024-06-14 09:05:17.1716341', language='en' WHERE uuid='23375283-2638-4775-8734-7bcfc14c919c' LIMIT 1;",
+				"UPDATE system_player SET last_logout='2024-06-14 09:05:17.1716341', language='en' WHERE uuid='23375283-2638-4775-8734-7bcfc14c919c';",
 				playerInfoDatabase.getUpdatePlayerSQLStatements(fakePlayer, timestamp.toInstant()));
 	}
 
