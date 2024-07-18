@@ -1,4 +1,4 @@
-package net.playlegend.questsystem;
+package chatzis.nikolas.questsystem;
 
 import chatzis.nikolas.questsystem.translation.Language;
 import chatzis.nikolas.questsystem.translation.TranslationKeys;

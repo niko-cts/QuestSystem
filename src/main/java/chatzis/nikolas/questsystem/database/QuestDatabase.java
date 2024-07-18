@@ -306,7 +306,7 @@ public class QuestDatabase {
 			insertTableNames.add(TABLE_QUEST_REWARD_INFO);
 			insertValues.add(newRewards);
 		}
-		if (!oldRewards.isEmpty()) { // delete not found rewards
+		if (!oldRewards.isEmpty()) { // delete didn't found rewards
 			deleteTables.add(TABLE_QUEST_REWARD_INFO);
 
 			List<String> types = new ArrayList<>();
@@ -321,14 +321,14 @@ public class QuestDatabase {
 			}
 
 			deleteWheres.add("WHERE type in ('" + String.join("','", types) + "') AND reward_object in ('" +
-			                 String.join("','", objects) + "') AND quest_id=" + newQuest.id() + "");
+			                 String.join("','", objects) + "') AND quest_id=" + newQuest.id());
 		}
 
 		// FINISH
 
 		boolean successful = true;
 		if (!updateTableNames.isEmpty())
-			successful = dbHandler.update(updateTableNames, updateColumns, updateValues, updateWhereClauses);
+			successful = dbHandler.update(updateTableNames, updateColumns, updateValues, updateWhereClauses, updateWhereObjects);
 		if (successful && !deleteTables.isEmpty())
 			successful = dbHandler.delete(deleteTables, deleteWheres);
 		if (successful && !insertTableNames.isEmpty())

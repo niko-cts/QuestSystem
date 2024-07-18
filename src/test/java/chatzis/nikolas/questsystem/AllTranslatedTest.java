@@ -1,6 +1,5 @@
-package net.playlegend.questsystem;
+package chatzis.nikolas.questsystem;
 
-import chatzis.nikolas.questsystem.QuestSystem;
 import chatzis.nikolas.questsystem.translation.DefaultEnglishMessages;
 import chatzis.nikolas.questsystem.translation.DefaultGermanMessages;
 import chatzis.nikolas.questsystem.translation.LanguageHandler;

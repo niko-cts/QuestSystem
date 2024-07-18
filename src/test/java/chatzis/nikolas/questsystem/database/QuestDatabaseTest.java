@@ -1,4 +1,4 @@
-package net.playlegend.questsystem.database;
+package chatzis.nikolas.questsystem.database;
 
 import chatzis.nikolas.questsystem.quest.reward.CoinsReward;
 import chatzis.nikolas.questsystem.quest.steps.MineQuestStep;

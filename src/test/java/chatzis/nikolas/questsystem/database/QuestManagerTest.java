@@ -1,6 +1,5 @@
-package net.playlegend.questsystem.database;
+package chatzis.nikolas.questsystem.database;
 
-import chatzis.nikolas.questsystem.database.QuestDatabase;
 import chatzis.nikolas.questsystem.quest.Quest;
 import chatzis.nikolas.questsystem.quest.QuestManager;
 import chatzis.nikolas.questsystem.quest.reward.CoinsReward;

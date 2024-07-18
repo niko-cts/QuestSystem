@@ -1,11 +1,10 @@
-package net.playlegend.questsystem.listener;
+package chatzis.nikolas.questsystem.listener;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.block.BlockMock;
 import chatzis.nikolas.questsystem.QuestSystem;
-import chatzis.nikolas.questsystem.listener.QuestStepListener;
 import chatzis.nikolas.questsystem.player.ActivePlayerQuest;
 import chatzis.nikolas.questsystem.player.PlayerDatabaseInformationHolder;
 import chatzis.nikolas.questsystem.player.PlayerHandler;

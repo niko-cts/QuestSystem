@@ -3,7 +3,7 @@ package chatzis.nikolas.questsystem.commands.handler;
 import chatzis.nikolas.questsystem.QuestSystem;
 import lombok.Getter;
 import org.bukkit.command.SimpleCommandMap;
-import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 
 import java.util.Arrays;
 import java.util.HashMap;

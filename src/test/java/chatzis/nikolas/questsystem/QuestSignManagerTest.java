@@ -1,9 +1,8 @@
-package net.playlegend.questsystem;
+package chatzis.nikolas.questsystem;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
-import chatzis.nikolas.questsystem.QuestSystem;
 import chatzis.nikolas.questsystem.quest.QuestSignManager;
 import org.bukkit.Location;
 import org.bukkit.Material;

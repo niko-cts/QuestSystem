@@ -1,7 +1,5 @@
-package net.playlegend.questsystem.database;
+package chatzis.nikolas.questsystem.database;
 
-import chatzis.nikolas.questsystem.database.DatabaseHandler;
-import chatzis.nikolas.questsystem.database.PlayerInfoDatabase;
 import chatzis.nikolas.questsystem.player.PlayerDatabaseInformationHolder;
 import chatzis.nikolas.questsystem.player.QuestPlayer;
 import chatzis.nikolas.questsystem.translation.Language;

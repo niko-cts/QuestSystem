@@ -1,4 +1,4 @@
-package net.playlegend.questsystem.converter;
+package chatzis.nikolas.questsystem.converter;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import chatzis.nikolas.questsystem.quest.reward.*;
